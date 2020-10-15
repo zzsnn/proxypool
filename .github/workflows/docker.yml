@@ -14,8 +14,8 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v1.1.0
         with:
-          username: zu1k
+          username: Sansui233
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: zu1k/proxypool/proxypool
+          repository: Sansui233/proxypool/proxypool
           tag_with_ref: true

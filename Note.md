@@ -64,7 +64,9 @@ cache中的key设计有：
 目前database数据只在抓取时使用，不用于处理Web请求。
 
 ### 使用数据库
-安装postgresql，建立相应user和database。
+本地运行时安装postgresql，建立相应user和database。
+
+远程运行时添加add即可，heroku自己会添加DATABASE_URL环境变量到provision，无需其他配置。
 
 ```
 	dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=disable TimeZone=Asia/Shanghai"
@@ -91,8 +93,7 @@ var _assetsHtmlSurgeHtml="[]byte("\x1f\x8b\x...")"
 
 ## 本地测试
 需要注意：
-- 修改了config的domain
-- 修改了source，注释掉较慢的源
+- 修改config的domain
+- 修改source，注释掉较慢的源
 
-增加了对config-local文件的解析。
-bindata中增加了clash-config-local.yaml字段，也增加了模板。
+增加了对config-local文件的解析。url为/clash/localconfig

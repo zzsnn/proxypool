@@ -22,7 +22,6 @@ func connect() (err error) {
 	if url := os.Getenv("DATABASE_URL"); url != "" {
 		dsn = url
 	}
-	// 该写法只支持本地连接，远程连接需要postgres.Config()，添加DriverName
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})

@@ -34,8 +34,7 @@
 
 点击按钮进入部署页面，填写基本信息然后运行
 
-其中 `DOMAIN` 需要填写为你需要绑定的域名，`CONFIG_FILE` 需要填写你的配置文件路径
-> 若使用项目内文件填`./config/config.yaml`
+其中 `DOMAIN` 需要填写为你需要绑定的域名，`CONFIG_FILE` 需要填写你的配置文件路径。
 
 配置文件模板见 config/config.yaml 文件
 
@@ -45,6 +44,8 @@
 
 > 因为爬虫程序需要持续运行，所以至少选择 $7/月 的配置
 > 免费配置长时间无人访问会被heroku强制停止
+
+heroku可选添加addon postgresql，添加后无需其他配置
 
 ### 从源码编译
 
@@ -67,9 +68,7 @@ make
 
 ### 下载预编译程序
 
-从这里下载预编译好的程序 [release](https://github.com/zu1k/proxypool/releases)
-
-> 原作者已停更，需要请自行编译
+从这里下载预编译好的程序 [release](https://github.com/Sansui233/proxypool/releases)
 
 ### 使用docker
 
@@ -99,7 +98,7 @@ proxypool -c ./config/config.yaml
 
 远程部署时Clash配置文件访问：https://domain/clash/config
 
-本地部署时Clash配置文件访问：http://127.0.0.1:8080/clash/localconfig
+本地运行时Clash配置文件访问：http://127.0.0.1:8080/clash/localconfig
 
 ## 截图
 

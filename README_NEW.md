@@ -3,10 +3,10 @@ Clash客户端支持：
 - ClashX（需要Clash Core1.3以上）
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。  
 
-TODO;
--[ ] 数据库更新逻辑
-
 ## New
+
+2020-10-21
+- 数据库更新改为保留所有节点，且会清扫失效时间大于7天的节点
 
 2020-10-10
 - 修复：对空provider添加NULL节点，防止Clash报错

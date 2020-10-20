@@ -63,6 +63,7 @@ func SaveProxyList(pl proxy.ProxyList) {
 	})
 }
 
+// Get a proxy list consists of all proxies in database
 func GetAllProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)
 	if DB == nil {
@@ -78,4 +79,20 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 		}
 	}
 	return
+}
+
+// Clear Old unusable proxies more than 1 week
+func ClearOldItems(){
+	lastWeek := time.Now().Add(-time.Hour*24*7)
+	if err := DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Delete(&Proxy{}); err != nil{
+		var pl []Proxy
+		DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Find(&pl)
+		if len(pl) == 0 {
+			fmt.Println("Nothing old to clear!")
+		}else {
+			log.Println("[database test] Delete old item failed ", err)
+		}
+	}else {
+		fmt.Println("Swept old and unusable proxies from database!")
+	}
 }

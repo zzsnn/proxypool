@@ -72,6 +72,7 @@ func CrawlGo() {
 
 	// 可用节点存储到数据库
 	database.SaveProxyList(proxies)
+	database.ClearOldItems()
 
 	cache.SetString("clashproxies", provider.Clash{
 		provider.Base{

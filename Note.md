@@ -73,11 +73,9 @@ dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=dis
 
 程序运行时建立会proxies表。每次运行时读出节点，爬虫完成后再存储可用的节点进去。
 
-原来的存储逻辑有一点点问题，由于设置了unique字段导致了数据无法使用Update(gin.save)。我还未看查重的逻辑。如果是依据link查重逻辑确实也不必更新数据。
+更新时会Update所有数据库上次可用节点的usable为false（此时useable全是false），然后存储新节点，已有的条目则Update usable。最后再自动清除7天未更新且不可用的节点。
 
-但本人十分讨厌数据库中存储无用的东西，每次抓取时也都会抓取所有的节点，usable字段并没有用到。所以现在去掉gin的软删除特性，改为直接删除整表再重新写入，因为可用的节点注定不会多，不用担心性能问题。
-
-后续会考虑研究update的问题，结合usable更新。没有更新时间实在是无法把数据库维护在最佳状态。但软删除还是不会用的，历史节点留着没用。
+重点在于，失效的条目不能更新。
 
 ## Web界面
 

@@ -6,6 +6,7 @@ import (
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"log"
 	"testing"
+	"time"
 )
 
 func TestConnect(t *testing.T) {
@@ -38,7 +39,7 @@ func TestUpdateViaGIN(t *testing.T){
 		Link:	p.Link(),
 		Identifier: p.Identifier(),
 	}
-	pDBnew.Useable=true;
+	pDBnew.Useable=true
 	fmt.Println("NEW to save: ", pDBnew)
 	// try create
 	if  err := DB.Create(&pDBnew).Error; err !=nil {
@@ -67,4 +68,14 @@ func TestDeleteProxyList(t *testing.T) {
 	if err := DB.Delete(&Proxy{},"id > ?",1); err != nil{
 		log.Print("Delete failed", err)
 	}
+}
+
+func TestClearOldItems(t *testing.T) {
+	connect()
+	timepoint := time.Now().Add(-time.Hour*24*7)
+	var pl []Proxy
+	DB.Where("updated_at < ? AND useable = ?", timepoint, false).Find(&pl)
+	fmt.Println(len(pl))
+
+	ClearOldItems()
 }

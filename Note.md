@@ -1,11 +1,13 @@
 # Note 
 
+由于个人并未学过go，看代码需要做下笔记。仅为个人参考。
+
 ## 处理订阅源：getter类
 有关订阅源的package位于pkg/getter。
 
 订阅源的类型为接口Getter，实现Getter至少需要实现Get()和Get2chan()。 
 - Get() 返回一个ProxyList
-- Get2chan() 还没研究
+- Get2chan() Send proxy to Channel用于并发抓取
 
 已实现的Getter（以sourceType命名）
 - subscribe（该实现比接口Getter多了个url）
@@ -60,38 +62,37 @@ cache中的key设计有：
 
 问题是对于失效的节点也存储，运行时间久了无用的cache会非常多。可以考虑删除对失效节点的存放。
 
-如果配置文件填写了database url会存储到database中。Database连接参数自行修改源码。  
-目前database数据只在抓取时使用，不用于处理Web请求。
-
 ### 使用数据库
-本地运行时安装postgresql，建立相应user和database。
-
 远程运行时添加add即可，heroku自己会添加DATABASE_URL环境变量到provision，无需其他配置。
 
+本地运行时安装postgresql，建立相应user和database。
+
 ```
-	dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 ```
 
-程序运行时建立会proxies表。
-每次运行时读出节点，爬虫完成后再存储可用的节点进去。
+程序运行时建立会proxies表。每次运行时读出节点，爬虫完成后再存储可用的节点进去。
 
-直接暴力删除整表再全部写入，因为可用的节点注定不会多，不用担心性能问题。
+原来的存储逻辑有一点点问题，由于设置了unique字段导致了数据无法使用Update(gin.save)。我还未看查重的逻辑。如果是依据link查重逻辑确实也不必更新数据。
+
+但本人十分讨厌数据库中存储无用的东西，每次抓取时也都会抓取所有的节点，usable字段并没有用到。所以现在去掉gin的软删除特性，改为直接删除整表再重新写入，因为可用的节点注定不会多，不用担心性能问题。
+
+后续会考虑研究update的问题，结合usable更新。没有更新时间实在是无法把数据库维护在最佳状态。但软删除还是不会用的，历史节点留着没用。
 
 ## Web界面
 
-静态的assets文件模板由zip压缩后存为字符串的形式，如
+为了方便打包，原作者将静态的assets文件模板由zip压缩后存为字符串的形式，如
 
 ```
 var _assetsHtmlSurgeHtml="[]byte("\x1f\x8b\x...")"
 ```
 
-以上字节解压后是一个go的HTML模板。解压时，由gzip的reader写入byte.Buffer，再转换为Bytes写入相应文件。
+以上字节解压后是一个go的HTML模板。解压时，由gzip的reader写入byte.Buffer，再转换为Bytes写入相应文件。因此想修改html文件请写好后自行压缩并替换字节。
 
-因此想修改html文件请写好后自行压缩并替换字节。
-
-不知道原作者为何一定要把模板设计为html generator，毕竟感觉直接使用html file也没什么问题。我猜可能是为了增加不可读性吧，免得有人用了这个项目不标明出处。那其实也不必这样做，直接在最后注入原项目地址就成了。
+为了方便修改现已替换为静态文件模板。
 
 ## 本地测试
+
 需要注意：
 - 修改config的domain
 - 修改source，注释掉较慢的源

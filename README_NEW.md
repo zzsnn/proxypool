@@ -3,6 +3,9 @@ Clash客户端支持：
 - ClashX（需要Clash Core1.3以上）
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。  
 
+TODO;
+-[ ] 数据库更新逻辑
+
 ## New
 
 2020-10-10

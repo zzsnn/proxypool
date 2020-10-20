@@ -30,34 +30,32 @@ func InitTables() {
 	// 如更改表的Column请于数据库中操作
 	err := DB.AutoMigrate(&Proxy{})
 	if err != nil {
-		log.Panic("[db/proxy.go] Database migration failed")
+		log.Println("[db/proxy.go] Database migration failed")
 		panic(err)
 	}
 }
 
-const roundSize = 100
-
 func SaveProxyList(pl proxy.ProxyList) {
-	if DB == nil {
-		return
-	}
 
 	DB.Transaction(func(tx *gorm.DB) error {
-		// Delete all records in DB
-		if err := DB.Delete(&Proxy{},"id > ?",-1).Error; err != nil{
-			log.Print("[db/proxy.go] Delete old items failed: ", err)
-			return err
+		// Set All Usable to false
+		if err := DB.Model(&Proxy{}).Where("useable = ?", true).Update("useable", "false").Error; err != nil {
+			log.Println("[db/proxy.go] Reset Usable to false failed: ", err)
 		}
-		// Store all proxies
+		// Create or Update proxies
 		for i := 0; i < pl.Len(); i++ {
 			p := Proxy{
 				Base:       *pl[i].BaseInfo(),
 				Link:       pl[i].Link(),
 				Identifier: pl[i].Identifier(),
-			};
+			}
+			p.Useable = true
 			if err:= DB.Create(&p).Error; err != nil{
-				log.Print(i,"[db/proxy.go] Save to database error: ", err);
-				return err
+				if uperr := DB.Model(&Proxy{}).Where("identifier = ?",p.Identifier).Update("useable", "true").Error; uperr != nil{
+					log.Println("[db/proxy.go] DB Update failed: ",
+						"\n\t[db/proxy.go] When Created item: ", err,
+						"\n\t[db/proxy.go] When Updated item: ", uperr)
+				}
 			}
 		}
 		fmt.Println("Database Updated!")

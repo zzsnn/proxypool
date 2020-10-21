@@ -1,6 +1,9 @@
 package proxy
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 /* 基础的接口类为Proxy，Base为Proxy的多态实现与信息补充，Vmess等继承Base，实现更多的多态与信息补充*/
 type Base struct {
@@ -74,8 +77,8 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 	} else if strings.HasPrefix(link, "trojan://") {
 		p, err = ParseTrojanLink(link)
 	}
-	if err != nil {
-		return
+	if err != nil || p == nil {
+		return nil, errors.New("link parse failed")
 	}
 	ip, country, err := geoIp.Find(p.BaseInfo().Server)
 	if err != nil {

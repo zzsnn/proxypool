@@ -46,7 +46,7 @@ func (ps ProxyList) Swap(i, j int) {
 	ps[i], ps[j] = ps[j], ps[i]
 }
 
-// 去除重复的节点
+// Deduplication by proxy indentifier
 func (ps ProxyList) Deduplication() ProxyList {
 	result := make(ProxyList, 0, len(ps))
 	temp := map[string]struct{}{}

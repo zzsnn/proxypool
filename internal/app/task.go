@@ -37,16 +37,16 @@ func CrawlGo() {
 
 	// 节点衍生并去重
 	proxies = proxies.Deduplication().Derive()
-	log.Println("CrawlGo node count:", len(proxies))
+	log.Println("CrawlGo unique node count:", len(proxies))
 	// 去除Clash(windows)不支持的节点
 	proxies = provider.Clash{
 		provider.Base{
 			Proxies: &proxies,
 		},
 	}.CleanProxies()
-	log.Println("CrawlGo cleaned node count:", len(proxies))
+	log.Println("CrawlGo clash supported node count:", len(proxies))
 	// 重命名节点名称为类似US_01的格式，并按国家排序
-	proxies.NameSetCounrty().Sort().NameAddIndex().NameAddTG()
+	proxies.NameSetCounrty().Sort().NameAddIndex() //由于原作停更，暂不加.NameAddTG()，如被认为有版权问题请告知
 	log.Println("Proxy rename DONE!")
 
 	cache.SetProxies("allproxies", proxies)

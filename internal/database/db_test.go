@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/pkg/getter"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"log"
 	"testing"
@@ -22,6 +21,7 @@ func TestGetAllProxies(t *testing.T) {
 	fmt.Println(proxies[0])
 }
 
+// Note: set work dir to root in test config
 func TestUpdateViaGIN(t *testing.T){
 	connect()
 	if DB == nil {
@@ -32,7 +32,8 @@ func TestUpdateViaGIN(t *testing.T){
 	DB.Select("link").First(&pDB)
 	fmt.Println(pDB)
 	// parse
-	p := getter.String2Proxy(pDB.Link)
+	proxy.InitGeoIpDB()
+	p,_ := proxy.ParseProxyFromLink(pDB.Link)
 	// construct
 	pDBnew := Proxy{
 		Base:	*p.BaseInfo(),
@@ -43,10 +44,10 @@ func TestUpdateViaGIN(t *testing.T){
 	fmt.Println("NEW to save: ", pDBnew)
 	// try create
 	if  err := DB.Create(&pDBnew).Error; err !=nil {
-		log.Println("[DB test] Create failed: ",err, "\n [DB test] Trying Update")
+		log.Println("\n\t\t[DB test] Create failed: ",err, "\n\t\t[DB test] Trying Update")
 		//try Update
 		result := DB.Model(Proxy{}).Where("identifier = ?",pDBnew.Identifier).Updates(&Proxy{
-			Base:	proxy.Base{Useable: true},
+			Base:	proxy.Base{Useable: false, Name: "🇦🇱 AL_01"},
 		})
 		if result.Error != nil {
 			log.Fatal("[DB test] UPDATE failed: ",err)
@@ -72,10 +73,13 @@ func TestDeleteProxyList(t *testing.T) {
 
 func TestClearOldItems(t *testing.T) {
 	connect()
-	timepoint := time.Now().Add(-time.Hour*24*7)
-	var pl []Proxy
-	DB.Where("updated_at < ? AND useable = ?", timepoint, false).Find(&pl)
-	fmt.Println(len(pl))
+	timepoint := time.Now().Add(-time.Hour*24*3)
+	var count int64
+	//var pl []Proxy
+	DB.Model(&Proxy{}).Where("created_at < ? AND useable = ?", timepoint, false).Count(&count)
+	//DB.Where("created_at < ? AND useable = ?", timepoint, false).Find(&pl)
+	fmt.Println(count)
+	//fmt.Println(len(pl))
 
-	ClearOldItems()
+	//ClearOldItems()
 }

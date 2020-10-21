@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// 设置数据库字段，不使用gnorm.model中的软删除特性，和primary key与unique一起容易导致无法更新
+// 设置数据库字段，表名为默认为type名的复数。相比于原作者，不使用软删除特性
 type Proxy struct {
 	ID        uint `gorm:"primarykey"`
 	CreatedAt time.Time
@@ -29,17 +29,20 @@ func InitTables() {
 	// 如更改表的Column请于数据库中操作
 	err := DB.AutoMigrate(&Proxy{})
 	if err != nil {
-		log.Println("[db/proxy.go] Database migration failed")
+		log.Println("\n\t\t[db/proxy.go] Database migration failed")
 		panic(err)
 	}
 }
 
 func SaveProxyList(pl proxy.ProxyList) {
+	if DB == nil {
+		return
+	}
 
 	DB.Transaction(func(tx *gorm.DB) error {
 		// Set All Usable to false
 		if err := DB.Model(&Proxy{}).Where("useable = ?", true).Update("useable", "false").Error; err != nil {
-			log.Println("[db/proxy.go] Reset Usable to false failed: ", err)
+			log.Println("\n\t\t[db/proxy.go] Reset Usable to false failed: ", err)
 		}
 		// Create or Update proxies
 		for i := 0; i < pl.Len(); i++ {
@@ -50,19 +53,21 @@ func SaveProxyList(pl proxy.ProxyList) {
 			}
 			p.Useable = true
 			if err:= DB.Create(&p).Error; err != nil{
-				if uperr := DB.Model(&Proxy{}).Where("identifier = ?",p.Identifier).Update("useable", "true").Error; uperr != nil{
-					log.Println("[db/proxy.go] DB Update failed: ",
-						"\n\t[db/proxy.go] When Created item: ", err,
-						"\n\t[db/proxy.go] When Updated item: ", uperr)
+				// Update with Identifier
+				if uperr := DB.Model(&Proxy{}).Where("identifier = ?",p.Identifier).Updates(&Proxy{
+					Base:	proxy.Base{Useable: true, Name: p.Name},
+				}).Error; uperr != nil{
+					log.Println("\n\t\t[db/proxy.go] DB Update failed: ",
+						"\n\t\t[db/proxy.go] When Created item: ", err,
+						"\n\t\t[db/proxy.go] When Updated item: ", uperr)
 				}
 			}
 		}
-		fmt.Println("Database Updated!")
+		fmt.Println("Database: Updated")
 		return nil
 	})
 }
 
-// TODO: get出来的数量不够，检查一下什么问题
 // Get a proxy list consists of all proxies in database
 func GetAllProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)
@@ -86,16 +91,19 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 
 // Clear Old unusable proxies more than 1 week
 func ClearOldItems(){
+	if DB == nil {
+		return
+	}
 	lastWeek := time.Now().Add(-time.Hour*24*7)
 	if err := DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Delete(&Proxy{}); err != nil{
-		var pl []Proxy
-		DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Find(&pl)
-		if len(pl) == 0 {
-			fmt.Println("Nothing old to clear!")
+		var count int64
+		DB.Model(&Proxy{}).Where("updated_at < ? AND useable = ?", lastWeek, false).Count(&count)
+		if count == 0 {
+			fmt.Println("Database: Nothing old to clear")
 		}else {
-			log.Println("[database test] Delete old item failed ", err)
+			log.Println("\n\t\t[db/proxy.go] Delete old item failed ", err)
 		}
 	}else {
-		fmt.Println("Swept old and unusable proxies from database!")
+		fmt.Println("Database: Swept old and unusable proxies")
 	}
 }

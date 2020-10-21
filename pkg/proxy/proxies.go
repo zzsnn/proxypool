@@ -138,3 +138,22 @@ func (ps ProxyList) Clone() ProxyList {
 	}
 	return result
 }
+
+// Derive 将原有节点中的ss和ssr互相转换进行衍生
+func (ps ProxyList) Derive() ProxyList {
+	proxies := ps
+	for _, p := range ps {
+		if p.TypeName() == "ss" {
+			ssr, err := Convert2SSR(p)
+			if err == nil {
+				proxies = append(proxies, ssr)
+			}
+		} else if p.TypeName() == "ssr" {
+			ss, err := Convert2SS(p)
+			if err == nil {
+				proxies = append(proxies, ss)
+			}
+		}
+	}
+	return proxies.Deduplication()
+}

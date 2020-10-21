@@ -63,6 +63,7 @@ func SaveProxyList(pl proxy.ProxyList) {
 	})
 }
 
+// TODO: get出来的数量不够，检查一下什么问题
 // Get a proxy list consists of all proxies in database
 func GetAllProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)

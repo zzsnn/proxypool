@@ -52,11 +52,11 @@ func SaveProxyList(pl proxy.ProxyList) {
 				Identifier: pl[i].Identifier(),
 			}
 			p.Useable = true
-			if err:= DB.Create(&p).Error; err != nil{
+			if err := DB.Create(&p).Error; err != nil {
 				// Update with Identifier
-				if uperr := DB.Model(&Proxy{}).Where("identifier = ?",p.Identifier).Updates(&Proxy{
-					Base:	proxy.Base{Useable: true, Name: p.Name},
-				}).Error; uperr != nil{
+				if uperr := DB.Model(&Proxy{}).Where("identifier = ?", p.Identifier).Updates(&Proxy{
+					Base: proxy.Base{Useable: true, Name: p.Name},
+				}).Error; uperr != nil {
 					log.Println("\n\t\t[db/proxy.go] DB Update failed: ",
 						"\n\t\t[db/proxy.go] When Created item: ", err,
 						"\n\t\t[db/proxy.go] When Updated item: ", uperr)
@@ -90,20 +90,20 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 }
 
 // Clear Old unusable proxies more than 1 week
-func ClearOldItems(){
+func ClearOldItems() {
 	if DB == nil {
 		return
 	}
-	lastWeek := time.Now().Add(-time.Hour*24*7)
-	if err := DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Delete(&Proxy{}); err != nil{
+	lastWeek := time.Now().Add(-time.Hour * 24 * 7)
+	if err := DB.Where("updated_at < ? AND useable = ?", lastWeek, false).Delete(&Proxy{}); err != nil {
 		var count int64
 		DB.Model(&Proxy{}).Where("updated_at < ? AND useable = ?", lastWeek, false).Count(&count)
 		if count == 0 {
 			fmt.Println("Database: Nothing old to clear")
-		}else {
+		} else {
 			log.Println("\n\t\t[db/proxy.go] Delete old item failed ", err)
 		}
-	}else {
+	} else {
 		fmt.Println("Database: Swept old and unusable proxies")
 	}
 }

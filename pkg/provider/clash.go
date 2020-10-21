@@ -13,7 +13,7 @@ type Clash struct {
 	Base
 }
 
-// CleanProxies() cleans unsupported proxy type of clash
+// CleanProxies cleans unsupported proxy type of clash
 func (c Clash) CleanProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)
 	for _, p := range *c.Proxies {
@@ -24,7 +24,7 @@ func (c Clash) CleanProxies() (proxies proxy.ProxyList) {
 	return
 }
 
-// Provide() of clash generates providers for clash configuration
+// Provide of clash generates providers for clash configuration
 func (c Clash) Provide() string {
 	c.preFilter()
 

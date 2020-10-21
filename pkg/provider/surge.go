@@ -13,7 +13,7 @@ type Surge struct {
 	Base
 }
 
-// Provide() of Surge generates proxy list supported by surge
+// Provide of Surge generates proxy list supported by surge
 func (s Surge) Provide() string {
 	s.preFilter()
 

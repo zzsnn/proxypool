@@ -8,8 +8,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/oschwald/geoip2-golang"
 	bingeoip "github.com/Sansui233/proxypool/internal/bindata/geoip"
+	"github.com/oschwald/geoip2-golang"
 )
 
 var geoIp GeoIP

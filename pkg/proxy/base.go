@@ -14,7 +14,7 @@ type Base struct {
 	UDP     bool   `yaml:"udp,omitempty" json:"udp,omitempty"`
 	Country string `yaml:"country,omitempty" json:"country,omitempty" gorm:"index"`
 	// 这个单词的原作者拼写是错误的，但我不想改了，我也没有早点发现这件事，在写where查询老写错，非常的无奈
-	Useable bool   `yaml:"useable,omitempty" json:"useable,omitempty" gorm:"index"`
+	Useable bool `yaml:"useable,omitempty" json:"useable,omitempty" gorm:"index"`
 }
 
 // Note: Go只有值传递，必需传入指针才能改变传入的结构体

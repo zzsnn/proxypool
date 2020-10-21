@@ -28,7 +28,7 @@ type Shadowsocks struct {
 	PluginOpts map[string]interface{} `yaml:"plugin-opts,omitempty" json:"plugin-opts,omitempty"`
 }
 
-// Identifier() generates an unique identifier of one proxy
+// Identifier generates an unique identifier of one proxy
 func (ss Shadowsocks) Identifier() string {
 	return net.JoinHostPort(ss.Server, strconv.Itoa(ss.Port)) + ss.Password
 }
@@ -41,7 +41,7 @@ func (ss Shadowsocks) String() string {
 	return string(data)
 }
 
-// ToClash() converts proxy to clash proxy string
+// ToClash converts proxy to clash proxy string
 func (ss Shadowsocks) ToClash() string {
 	data, err := json.Marshal(ss)
 	if err != nil {
@@ -50,7 +50,7 @@ func (ss Shadowsocks) ToClash() string {
 	return "- " + string(data)
 }
 
-// ToSurge() converts proxy to surge proxy string
+// ToSurge converts proxy to surge proxy string
 func (ss Shadowsocks) ToSurge() string {
 	// node1 = ss, server, port, encrypt-method=, password=, obfs=, obfs-host=, udp-relay=false
 	if ss.Plugin == "obfs" {
@@ -71,7 +71,7 @@ func (ss Shadowsocks) Clone() Proxy {
 }
 
 // https://shadowsocks.org/en/config/quick-guide.html
-// Link() converts a ss proxy to string
+// Link converts a ss proxy to string
 func (ss Shadowsocks) Link() (link string) {
 	payload := fmt.Sprintf("%s:%s@%s:%d", ss.Cipher, ss.Password, ss.Server, ss.Port)
 	payload = tool.Base64EncodeString(payload, false)

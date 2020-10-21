@@ -63,7 +63,8 @@ func freessrxyzFetch(link string) proxy.ProxyList {
 
 	result := make([]string, 0)
 	for _, node := range ssrs {
-		result = append(result, node.Url)
+		u := node.Url[0:15] + node.Url[16:]
+		result = append(result, u)
 	}
 
 	return StringArray2ProxyArray(result)

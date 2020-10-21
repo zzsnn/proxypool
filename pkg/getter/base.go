@@ -2,7 +2,6 @@ package getter
 
 import (
 	"errors"
-	"strings"
 	"sync"
 
 	"github.com/Sansui233/proxypool/pkg/proxy"
@@ -34,29 +33,10 @@ func NewGetter(sourceType string, options tool.Options) (getter Getter, err erro
 	return nil, ErrorCreaterNotSupported
 }
 
-// 解析链接为相应Proxy对象
-func String2Proxy(link string) proxy.Proxy {
-	var err error
-	var data proxy.Proxy
-	if strings.HasPrefix(link, "ssr://") {
-		data, err = proxy.ParseSSRLink(link)
-	} else if strings.HasPrefix(link, "vmess://") {
-		data, err = proxy.ParseVmessLink(link)
-	} else if strings.HasPrefix(link, "ss://") {
-		data, err = proxy.ParseSSLink(link)
-	} else if strings.HasPrefix(link, "trojan://") {
-		data, err = proxy.ParseTrojanLink(link)
-	}
-	if err != nil {
-		return nil
-	}
-	return data
-}
-
 func StringArray2ProxyArray(origin []string) proxy.ProxyList {
 	results := make(proxy.ProxyList, 0)
 	for _, link := range origin {
-		results = append(results, String2Proxy(link))
+		results = append(results, proxy.ParseProxyFromLink(link))
 	}
 	return results
 }

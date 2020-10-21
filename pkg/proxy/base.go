@@ -1,5 +1,7 @@
 package proxy
 
+import "strings"
+
 /* 基础的接口类为Proxy，Base为Proxy的多态实现与信息补充，Vmess等继承Base，实现更多的多态与信息补充*/
 type Base struct {
 	Name    string `yaml:"name" json:"name" gorm:"index"`
@@ -60,4 +62,31 @@ type Proxy interface {
 	Clone() Proxy
 	SetUseable(useable bool)
 	SetCountry(country string)
+}
+
+func ParseProxyFromLink(link string) Proxy {
+	var err error
+	var data Proxy
+	if strings.HasPrefix(link, "ssr://") {
+		data, err = ParseSSRLink(link)
+	} else if strings.HasPrefix(link, "vmess://") {
+		data, err = ParseVmessLink(link)
+	} else if strings.HasPrefix(link, "ss://") {
+		data, err = ParseSSLink(link)
+	} else if strings.HasPrefix(link, "trojan://") {
+		data, err = ParseTrojanLink(link)
+	}
+	if err != nil {
+		return nil
+	}
+	ip, country, err := geoIp.Find(data.BaseInfo().Server)
+	if err != nil {
+		country = "🏁 ZZ"
+	}
+	data.SetCountry(country)
+	// trojan依赖域名？
+	if data.TypeName() != "trojan" {
+		data.SetIP(ip)
+	}
+	return data
 }

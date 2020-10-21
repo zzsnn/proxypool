@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/pkg/getter"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"gorm.io/gorm"
 	"log"
@@ -76,7 +75,7 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 
 	for _, proxyDB := range proxiesDB {
 		if proxiesDB != nil {
-			proxies = append(proxies, getter.String2Proxy(proxyDB.Link))
+			proxies = append(proxies, proxy.ParseProxyFromLink(proxyDB.Link))
 		}
 	}
 	return

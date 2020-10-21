@@ -46,7 +46,7 @@ func CrawlGo() {
 	}.CleanProxies()
 	log.Println("CrawlGo cleaned node count:", len(proxies))
 	// 重命名节点名称为类似US_01的格式，并按国家排序
-	proxies.NameAddCounrty().Sort().NameAddIndex().NameAddTG()
+	proxies.NameSetCounrty().Sort().NameAddIndex().NameAddTG()
 	log.Println("Proxy rename DONE!")
 
 	cache.SetProxies("allproxies", proxies)

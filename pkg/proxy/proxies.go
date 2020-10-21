@@ -46,7 +46,7 @@ func (ps ProxyList) Swap(i, j int) {
 	ps[i], ps[j] = ps[j], ps[i]
 }
 
-// Deduplication by proxy indentifier
+// Deduplication by proxy identifier
 func (ps ProxyList) Deduplication() ProxyList {
 	result := make(ProxyList, 0, len(ps))
 	temp := map[string]struct{}{}
@@ -92,27 +92,12 @@ func (ps ProxyList) NameReIndex() ProxyList {
 	return ps
 }
 
-// ？
 func (ps ProxyList) NameAddTG() ProxyList {
 	num := len(ps)
 	for i := 0; i < num; i++ {
 		ps[i].SetName(fmt.Sprintf("%s %s", ps[i].BaseInfo().Name, "TG@peekfun"))
 	}
 	return ps
-}
-
-func Deduplication(src ProxyList) ProxyList {
-	result := make(ProxyList, 0, len(src))
-	temp := map[string]struct{}{}
-	for _, item := range src {
-		if item != nil {
-			if _, ok := temp[item.Identifier()]; !ok {
-				temp[item.Identifier()] = struct{}{}
-				result = append(result, item)
-			}
-		}
-	}
-	return result
 }
 
 func (ps ProxyList) Clone() ProxyList {

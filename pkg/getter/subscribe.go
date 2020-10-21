@@ -15,12 +15,12 @@ func init() {
 	Register("subscribe", NewSubscribe)
 }
 
-/* A Getter with an additional property */
+// Subscribe is A Getter with an additional property
 type Subscribe struct {
 	Url string
 }
 
-// Implement Getter interface
+// Get() of Subscribe is to implement Getter interface
 func (s *Subscribe) Get() proxy.ProxyList {
 	resp, err := tool.GetHttpClient().Get(s.Url)
 	if err != nil {
@@ -42,6 +42,7 @@ func (s *Subscribe) Get() proxy.ProxyList {
 	return StringArray2ProxyArray(nodes)
 }
 
+// Get2Chan() of Subscribe is to implement Getter interface. It gets proxies and send proxy to channel one by one
 func (s *Subscribe) Get2Chan(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
 	nodes := s.Get()

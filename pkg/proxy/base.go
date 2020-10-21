@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-/* 基础的接口类为Proxy，Base为Proxy的多态实现与信息补充，Vmess等继承Base，实现更多的多态与信息补充*/
+/* Base implements interface Proxy. It's the basic proxy struct. Vmess etc extends Base*/
 type Base struct {
 	Name    string `yaml:"name" json:"name" gorm:"index"`
 	Server  string `yaml:"server" json:"server" gorm:"index"`
@@ -19,6 +19,7 @@ type Base struct {
 
 // Note: Go只有值传递，必需传入指针才能改变传入的结构体
 
+// TypeName() Get specific proxy type
 func (b *Base) TypeName() string {
 	if b.Type == "" {
 		return "unknown"
@@ -26,28 +27,33 @@ func (b *Base) TypeName() string {
 	return b.Type
 }
 
+// SetName() to a proxy
 func (b *Base) SetName(name string) {
 	b.Name = name
 }
 
+// SetIP() to a proxy
 func (b *Base) SetIP(ip string) {
 	b.Server = ip
 }
 
-// 返回传入的参数（约等于无效果只是为了接口规范）
+// BaseInfo() get basic info struct of a proxy
 func (b *Base) BaseInfo() *Base {
 	return b
 }
 
+// Clone() returns a new basic proxy
 func (b *Base) Clone() Base {
 	c := *b
 	return c
 }
 
+// SetUseable() set Base info "Useable" (true or false)
 func (b *Base) SetUseable(useable bool) {
 	b.Useable = useable
 }
 
+// SetUseable() set Base info "Country" (string)
 func (b *Base) SetCountry(country string) {
 	b.Country = country
 }

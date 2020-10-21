@@ -8,10 +8,12 @@ import (
 	"github.com/Sansui233/proxypool/pkg/proxy"
 )
 
+// Surge provides functions that make proxies support clash client
 type Surge struct {
 	Base
 }
 
+// Provide() of Surge generates proxy list supported by surge
 func (s Surge) Provide() string {
 	s.preFilter()
 

@@ -8,10 +8,12 @@ import (
 	"github.com/Sansui233/proxypool/pkg/proxy"
 )
 
+// Clash provides functions that make proxies support clash client
 type Clash struct {
 	Base
 }
 
+// CleanProxies() cleans unsupported proxy type of clash
 func (c Clash) CleanProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)
 	for _, p := range *c.Proxies {
@@ -22,7 +24,7 @@ func (c Clash) CleanProxies() (proxies proxy.ProxyList) {
 	return
 }
 
-// 生成Clash的Provider配置文件
+// Provide() of clash generates providers for clash configuration
 func (c Clash) Provide() string {
 	c.preFilter()
 

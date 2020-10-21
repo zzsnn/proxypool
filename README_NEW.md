@@ -7,6 +7,7 @@ Clash客户端支持：
 
 2020-10-21
 - 数据库更新改为保留所有节点，且会清扫失效时间大于7天的节点
+- Manually sync to original source v0.3.10
 
 2020-10-10
 - 修复：对空provider添加NULL节点，防止Clash报错

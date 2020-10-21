@@ -16,7 +16,7 @@ func TestGetAllFilePaths(t *testing.T) {
 }
 
 func TestLoadTemplate(t *testing.T) {
-	template, err := LoadTemplate();
+	template, err := loadHTMLTemplate();
 	if err != nil {
 		fmt.Println("[Testing] Fail to load template")
 	}

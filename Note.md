@@ -85,9 +85,9 @@ dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=dis
 var _assetsHtmlSurgeHtml="[]byte("\x1f\x8b\x...")"
 ```
 
-以上字节解压后是一个go的HTML模板。解压时，由gzip的reader写入byte.Buffer，再转换为Bytes写入相应文件。因此想修改html文件请写好后自行压缩并替换字节。
+以上字节解压后是一个go的HTML模板。解压时，由gzip的reader写入byte.Buffer，再转换为Bytes写入相应文件。
 
-为了方便修改现已替换为静态文件模板。
+打包工具见：[这里](https://github.com/shuLhan/go-bindata)或[这里][https://github.com/go-bindata/go-bindata]。修改html文件请在修改后执行docs里的shell脚本
 
 根据原作者要求，请勿修改原作者版权信息。
 

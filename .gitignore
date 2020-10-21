@@ -21,9 +21,7 @@ vendor
 # macOS file
 .DS_Store
 
-# assets (only remain local test file)
-assets/html/clash.html
-assets/html/clash-config.yaml
-assets/html/index.html
-assets/html/surge*
+# assets
+assets/html/*
+assets/css/*
 

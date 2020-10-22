@@ -26,9 +26,9 @@ func connect() (err error) {
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err == nil {
-		log.Println("[db.go] DB connect success: ", DB.Name())
+		log.Println("Database: successfully connected to: ", DB.Name())
 	} else {
-		log.Println("[db.go] DB connect failed OR no DB. Only use cache to store proxies")
+		log.Println("\n\t\t[db.go] DB connect failed OR no DB. Only use cache to store proxies: ", err)
 	}
 	return
 }

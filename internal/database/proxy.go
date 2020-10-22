@@ -42,7 +42,7 @@ func SaveProxyList(pl proxy.ProxyList) {
 	DB.Transaction(func(tx *gorm.DB) error {
 		// Set All Usable to false
 		if err := DB.Model(&Proxy{}).Where("useable = ?", true).Update("useable", "false").Error; err != nil {
-			log.Println("\n\t\t[db/proxy.go] Reset Usable to false failed: ", err)
+			log.Println("\n\t\t[db/proxy.go] Reset useable to false failed: ", err)
 		}
 		// Create or Update proxies
 		for i := 0; i < pl.Len(); i++ {
@@ -89,7 +89,7 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 	return
 }
 
-// Clear Old unusable proxies more than 1 week
+// Clear proxies unusable more than 1 week
 func ClearOldItems() {
 	if DB == nil {
 		return
@@ -101,7 +101,7 @@ func ClearOldItems() {
 		if count == 0 {
 			fmt.Println("Database: Nothing old to clear")
 		} else {
-			log.Println("\n\t\t[db/proxy.go] Delete old item failed ", err)
+			log.Println("\n\t\t[db/proxy.go] Delete old item failed: ", err)
 		}
 	} else {
 		fmt.Println("Database: Swept old and unusable proxies")

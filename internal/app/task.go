@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+	"github.com/Sansui233/proxypool/config"
 	"log"
 	"sync"
 	"time"
@@ -84,4 +86,6 @@ func CrawlGo() {
 			Proxies: &proxies,
 		},
 	}.Provide())
+
+	fmt.Println("All done. Open ", config.Config.Domain, ":8080 to check")
 }

@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net"
 	"net/url"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -215,7 +216,16 @@ func ParseVmessLink(link string) (*Vmess, error) {
 		vmessJson := vmessLinkJson{}
 		err = json.Unmarshal([]byte(payload), &vmessJson)
 		if err != nil {
-			return nil, err
+			typ := reflect.TypeOf(err)
+			// Trying handling UnmarshalTypeError. This only fills one non-string field. More fields can't be detected by json.Unmarshal
+			if typ.String() == "*json.UnmarshalTypeError" {
+				e := err.(*json.UnmarshalTypeError)
+				if e.Field != "ps" { // ignore err if it's PS type error
+					return nil, err
+				}
+			} else {
+				return nil, err // Other json type error
+			}
 		}
 		port := 443
 		portInterface := vmessJson.Port

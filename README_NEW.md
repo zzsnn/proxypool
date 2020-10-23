@@ -4,10 +4,13 @@ Clash客户端支持：
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。
 
 TODO
-- [ ] Database报错逻辑修正
 - [ ] set http context time(dev)
 
 ## New
+
+2020-10-23
+- 修复数据库未连接时的err提示
+- 忽略vmess的Unmarshal时的ps类型错误
 
 2020-10-21
 - 数据库更新改为保留所有节点，且会清扫失效时间大于7天的节点

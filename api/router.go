@@ -3,7 +3,6 @@ package api
 import (
 	binhtml "github.com/Sansui233/proxypool/internal/bindata/html"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -243,26 +242,11 @@ func loadHTMLTemplate() (t *template.Template, err error) {
 		if strings.Contains(fileName, "css") {
 			continue
 		}
-		data := binhtml.MustAsset(fileName)          // 读取页面数据
+		data := binhtml.MustAsset(fileName)          //读取页面数据
 		t, err = t.New(fileName).Parse(string(data)) //生成带路径名称的模板
 		if err != nil {
 			return nil, err
 		}
 	}
 	return t, nil
-}
-
-// Get all files' full relative paths recursively TODO: This function shouldn't be here
-// 静态模板文件批处理时使用
-func GetAllFilePaths(pathname string) (filenames []string, err error) {
-	rd, err := ioutil.ReadDir(pathname)
-	for _, fi := range rd {
-		if fi.IsDir() {
-			GetAllFilePaths(pathname + string(os.PathSeparator) + fi.Name())
-		} else {
-			filename := pathname + string(os.PathSeparator) + fi.Name()
-			filenames = append(filenames, filename)
-		}
-	}
-	return filenames, err
 }

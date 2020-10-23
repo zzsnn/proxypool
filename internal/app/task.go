@@ -66,8 +66,8 @@ func CrawlGo() {
 	log.Println("Now proceed proxy health check...")
 	proxies = proxy.CleanBadProxiesWithGrpool(proxies)
 	log.Println("CrawlGo clash usable node count:", len(proxies))
-	proxies.NameReIndex()                //由于原作停更，暂不加.NameAddTG()，如被认为有版权问题请告知
-	cache.SetProxies("proxies", proxies) //存放可用的节点到程序的缓存中
+	proxies.NameReIndex() //由于原作停更，暂不加.NameAddTG()，如被认为有版权问题请告知
+	cache.SetProxies("proxies", proxies)
 	cache.UsefullProxiesCount = proxies.Len()
 
 	// 可用节点存储到数据库

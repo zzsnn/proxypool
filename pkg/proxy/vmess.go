@@ -96,17 +96,17 @@ func (v Vmess) Link() (link string) {
 }
 
 type vmessLinkJson struct {
-	Add  string      `json:"add"`
-	V    string      `json:"v"`
-	Ps   string      `json:"ps"`
-	Port interface{} `json:"port"`
-	Id   string      `json:"id"`
-	Aid  string      `json:"aid"`
-	Net  string      `json:"net"`
-	Type string      `json:"type"`
-	Host string      `json:"host"`
-	Path string      `json:"path"`
-	Tls  string      `json:"tls"`
+	Add  string `json:"add"`
+	V    string `json:"v"`
+	Ps   string `json:"ps"`
+	Port int    `json:"port"`
+	Id   string `json:"id"`
+	Aid  string `json:"aid"`
+	Net  string `json:"net"`
+	Type string `json:"type"`
+	Host string `json:"host"`
+	Path string `json:"path"`
+	Tls  string `json:"tls"`
 }
 
 func (v Vmess) toLinkJson() vmessLinkJson {
@@ -214,26 +214,13 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			return nil, ErrorVmessPayloadParseFail
 		}
 		vmessJson := vmessLinkJson{}
-		err = json.Unmarshal([]byte(payload), &vmessJson)
+		jsonMap, err := str2jsonDynaUnmarshal(payload)
 		if err != nil {
-			typ := reflect.TypeOf(err)
-			// Trying handling UnmarshalTypeError. This only fills one non-string field. More fields can't be detected by json.Unmarshal
-			if typ.String() == "*json.UnmarshalTypeError" {
-				e := err.(*json.UnmarshalTypeError)
-				if e.Field != "ps" { // ignore err if it's PS type error
-					return nil, err
-				}
-			} else {
-				return nil, err // Other json type error
-			}
+			return nil, err
 		}
-		port := 443
-		portInterface := vmessJson.Port
-		switch portInterface.(type) {
-		case int:
-			port = portInterface.(int)
-		case string:
-			port, _ = strconv.Atoi(portInterface.(string))
+		vmessJson, err = mapStrInter2VmessLinkJson(jsonMap)
+		if err != nil {
+			return nil, err
 		}
 
 		alterId, err := strconv.Atoi(vmessJson.Aid)
@@ -254,7 +241,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			Base: Base{
 				Name:   vmessJson.Ps + "_" + strconv.Itoa(rand.Int()),
 				Server: vmessJson.Add,
-				Port:   port,
+				Port:   vmessJson.Port,
 				Type:   "vmess",
 				UDP:    false,
 			},
@@ -283,4 +270,55 @@ func GrepVmessLinkFromString(text string) []string {
 		results = append(results, vmessPlainRe.FindAllString("vmess://"+text, -1)...)
 	}
 	return results
+}
+
+func str2jsonDynaUnmarshal(s string) (jsn map[string]interface{}, err error) {
+	var f interface{}
+	err = json.Unmarshal([]byte(s), &f)
+	if err != nil {
+		return nil, err
+	}
+	jsn = f.(interface{}).(map[string]interface{}) // f is pointer point to map struct
+	if jsn == nil {
+		return nil, ErrorVmessPayloadParseFail
+	}
+	return jsn, err
+}
+
+func mapStrInter2VmessLinkJson(jsn map[string]interface{}) (vmessLinkJson, error) {
+	vmess := vmessLinkJson{}
+	var err error
+
+	vmessVal := reflect.ValueOf(&vmess).Elem()
+	for i := 0; i < vmessVal.NumField(); i++ {
+		tags := vmessVal.Type().Field(i).Tag.Get("json")
+		tag := strings.Split(tags, ",")
+		if jsnVal, ok := jsn[strings.ToLower(tag[0])]; ok {
+			if strings.ToLower(tag[0]) == "port" { // set int in port
+				switch jsnVal.(type) {
+				case int:
+					vmessVal.Field(i).SetInt(jsnVal.(int64))
+					break
+				case string: // Force Convert
+					valInt, err := strconv.Atoi(jsnVal.(string))
+					if err != nil {
+						continue
+					}
+					vmessVal.Field(i).SetInt(int64(valInt))
+					break
+				default:
+					vmessVal.Field(i).SetInt(443)
+				}
+			} else { // set string in other fields
+				switch jsnVal.(type) {
+				case string:
+					vmessVal.Field(i).SetString(jsnVal.(string))
+					break
+				default: // Force Convert
+					vmessVal.Field(i).SetString(fmt.Sprintf("%v", jsnVal))
+				}
+			}
+		}
+	}
+	return vmess, err
 }

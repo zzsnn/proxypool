@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"fmt"
+	"github.com/Sansui233/proxypool/pkg/tool"
 	"testing"
 )
 
@@ -60,4 +61,20 @@ func TestVmessLink(t *testing.T) {
 		t.Error(err)
 	}
 	fmt.Println(v)
+}
+
+func TestNewVmessParser(t *testing.T) {
+	linkPayload := "ew0KICAidiI6ICIyIiwNCiAgInBzIjogIuW+ruS/oeWFrOS8l+WPtyDlpJrlvannmoTlpKfljYPkuJbnlYwiLA0KICAiYWRkIjogInMyNzEuc25vZGUueHl6IiwNCiAgInBvcnQiOiAiNDQzIiwNCiAgImlkIjogIjZhOTAwZDYzLWNiOTItMzVhMC1hZWYwLTNhMGMxMWFhODUyMyIsDQogICJhaWQiOiAiMSIsDQogICJuZXQiOiAid3MiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiczI3MS5zbm9kZS54eXoiLA0KICAicGF0aCI6ICIvcGFuZWwiLA0KICAidGxzIjogInRscyINCn0="
+	payload, err := tool.Base64DecodeString(linkPayload)
+	if err != nil {
+		fmt.Println("vmess link payload parse failed")
+		return
+	}
+	jsonMap, err := str2jsonDynaUnmarshal(payload)
+	if err != nil {
+		fmt.Println("err: ", err)
+		return
+	}
+	vmessJson, err := mapStrInter2VmessLinkJson(jsonMap)
+	fmt.Println(vmessJson)
 }

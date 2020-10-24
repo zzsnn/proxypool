@@ -302,7 +302,7 @@ func mapStrInter2VmessLinkJson(jsn map[string]interface{}) (vmessLinkJson, error
 				case string: // Force Convert
 					valInt, err := strconv.Atoi(jsnVal.(string))
 					if err != nil {
-						continue
+						valInt = 443
 					}
 					vmessVal.Field(i).SetInt(int64(valInt))
 					break

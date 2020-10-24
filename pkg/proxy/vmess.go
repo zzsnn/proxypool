@@ -296,8 +296,8 @@ func mapStrInter2VmessLinkJson(jsn map[string]interface{}) (vmessLinkJson, error
 		if jsnVal, ok := jsn[strings.ToLower(tag[0])]; ok {
 			if strings.ToLower(tag[0]) == "port" { // set int in port
 				switch jsnVal.(type) {
-				case int:
-					vmessVal.Field(i).SetInt(jsnVal.(int64))
+				case float64:
+					vmessVal.Field(i).SetInt(int64(jsnVal.(float64)))
 					break
 				case string: // Force Convert
 					valInt, err := strconv.Atoi(jsnVal.(string))

@@ -1,9 +1,10 @@
-package proxy
+package healthcheck
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/Sansui233/proxypool/pkg/proxy"
 	"sync"
 	"time"
 
@@ -14,7 +15,7 @@ import (
 
 const defaultURLTestTimeout = time.Second * 5
 
-func testDelay(p Proxy) (delay uint16, err error) {
+func testDelay(p proxy.Proxy) (delay uint16, err error) {
 	pmap := make(map[string]interface{})
 	err = json.Unmarshal([]byte(p.String()), &pmap)
 	if err != nil {
@@ -38,7 +39,7 @@ func testDelay(p Proxy) (delay uint16, err error) {
 	return delay, err
 }
 
-func CleanBadProxiesWithGrpool(proxies []Proxy) (cproxies []Proxy) {
+func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// Note: Grpool实现对go并发管理的封装，主要是在数据量大时减少内存占用，不会提高效率。
 	pool := grpool.NewPool(500, 200)
 
@@ -79,7 +80,7 @@ func CleanBadProxiesWithGrpool(proxies []Proxy) (cproxies []Proxy) {
 				okMap[r.name] = struct{}{}
 			}
 		case <-done:
-			cproxies = make(ProxyList, 0, 500) // 定义返回的proxylist
+			cproxies = make(proxy.ProxyList, 0, 500) // 定义返回的proxylist
 			for _, p := range proxies {
 				if _, ok := okMap[p.Identifier()]; ok {
 					cproxies = append(cproxies, p.Clone())
@@ -90,7 +91,7 @@ func CleanBadProxiesWithGrpool(proxies []Proxy) (cproxies []Proxy) {
 	}
 }
 
-func CleanBadProxies(proxies []Proxy) (cproxies []Proxy) {
+func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	c := make(chan checkResult, 40)
 	wg := &sync.WaitGroup{}
 	wg.Add(len(proxies))
@@ -108,7 +109,7 @@ func CleanBadProxies(proxies []Proxy) (cproxies []Proxy) {
 			okMap[r.name] = struct{}{}
 		}
 	}
-	cproxies = make(ProxyList, 0, 500)
+	cproxies = make(proxy.ProxyList, 0, 500)
 	for _, p := range proxies {
 		if _, ok := okMap[p.Identifier()]; ok {
 			p.SetUseable(true)
@@ -125,7 +126,7 @@ type checkResult struct {
 	delay uint16
 }
 
-func testProxyDelayToChan(p Proxy, c chan checkResult, wg *sync.WaitGroup) {
+func testProxyDelayToChan(p proxy.Proxy, c chan checkResult, wg *sync.WaitGroup) {
 	defer wg.Done()
 	delay, err := testDelay(p)
 	if err == nil {

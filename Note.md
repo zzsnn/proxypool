@@ -77,6 +77,12 @@ dsn := "user=proxypool password=proxypool dbname=proxypool port=5432 sslmode=dis
 
 重点在于，失效的条目不能更新。
 
+## Health Check
+
+I have moved it from proxy.
+
+
+
 ## Web界面
 
 为了方便打包，原作者将静态的assets文件模板由zip压缩后存为字符串的形式，如

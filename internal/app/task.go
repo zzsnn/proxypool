@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/Sansui233/proxypool/config"
+	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"log"
 	"sync"
 	"time"
@@ -66,7 +67,7 @@ func CrawlGo() {
 
 	// 节点可用性检测并存储
 	log.Println("Now proceed proxy health check...")
-	proxies = proxy.CleanBadProxiesWithGrpool(proxies)
+	proxies = healthcheck.CleanBadProxiesWithGrpool(proxies)
 	log.Println("CrawlGo clash usable node count:", len(proxies))
 	proxies.NameReIndex() //由于原作停更，暂不加.NameAddTG()，如被认为有版权问题请告知
 	cache.SetProxies("proxies", proxies)

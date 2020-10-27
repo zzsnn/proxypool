@@ -102,6 +102,10 @@ proxypool -c ./config/config.yaml
 
 本地运行时Clash配置文件访问：http://127.0.0.1:8080/clash/localconfig
 
+## 本地检查节点可用性
+
+此项非必须。为了提高实际可用性，可选择增加一个本地服务器，检测远程proxypool节点在本地的可用性并提供配置，见[proxypoolCheck](https://github.com/Sansui233/proxypoolCheck)。
+
 ## 截图
 
 ![Speedtest](docs/speedtest.png)

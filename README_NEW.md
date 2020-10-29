@@ -8,6 +8,9 @@ TODO
 
 ## New
 
+2020-10-30
+- 减少启动时的内存占用（使用release版本第一次运行时除外）
+
 2020-10-26
 - 单独分离出healthcheck模块
 - 分离出用于本地检测proxypool可用性的部分，见[proxypoolCheck](https://github.com/Sansui233/proxypoolCheck)项目

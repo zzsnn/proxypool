@@ -104,3 +104,11 @@ var _assetsHtmlSurgeHtml="[]byte("\x1f\x8b\x...")"
 - 修改source，注释掉较慢的源
 
 增加了对config-local文件的解析。url为/clash/localconfig
+
+## Github Action Release和源码自行make版本的区别
+
+Release版本在make之前还打包了所有的静态文件，其中包括了一个60M的GeoIP数据库。  
+缺点是打包体积相对较大，因为geoip.go经过gobindata打包后的文件是120。且第一次部署运行时会占用较多内存。  
+优点是不需要额外自行下载数据库。打包的体积也比自己下载数据库的体积小太多。
+
+自行源码make版本在不修改bindata/GeoIP的情况下，不包含数据库，打包程序较小。缺点是要自已下载数据库（源码都有了这不算是问题）

@@ -8,6 +8,9 @@ TODO
 
 ## New
 
+2020-11-06
+- 修改vmess struct至与Clash相同。
+
 2020-11-05
 - vmess增加http与https解析的支持（仅理论支持，没有测试客户端对于缺少参数时的支持情况）
 

@@ -28,7 +28,7 @@ type Vmess struct {
 	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
 	HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
-	H2Opts         H2Options         `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
+	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
 	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
 	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
@@ -37,13 +37,13 @@ type Vmess struct {
 
 type HTTPOptions struct {
 	Method  string              `yaml:"method,omitempty" json:"method,omitempty"`
-	Path    string              `yaml:"path,omitempty" json:"path,omitempty"` // 暂只处理一个Domain
+	Path    []string            `yaml:"path,omitempty" json:"path,omitempty"`
 	Headers map[string][]string `yaml:"headers,omitempty" json:"headers,omitempty"`
 }
 
-type H2Options struct {
-	Host string `yaml:"host,omitempty" json:"method,omitempty"` // 暂只处理一个Domain
-	Path string `yaml:"path,omitempty" json:"path,omitempty"`   // 暂只处理一个Path
+type HTTP2Options struct {
+	Host []string `yaml:"host,omitempty" json:"method,omitempty"`
+	Path string   `yaml:"path,omitempty" json:"path,omitempty"` // 暂只处理一个Path
 }
 
 func (v Vmess) Identifier() string {
@@ -147,7 +147,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 	}
 	linkPayload := vmessmix[1]
 	if strings.Contains(linkPayload, "?") {
-		// 使用第二种解析方法 目测是Shadowrocker格式
+		// 使用第二种解析方法 目测是Shadowrocket格式
 		var infoPayloads []string
 		if strings.Contains(linkPayload, "/?") {
 			infoPayloads = strings.SplitN(linkPayload, "/?", 2)
@@ -185,7 +185,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 
 		// Transmission protocol
 		wsHeaders := make(map[string]string)
-		h2Opt := H2Options{}
+		h2Opt := HTTP2Options{}
 		httpOpt := HTTPOptions{}
 
 		obfs := moreInfo.Get("obfs")
@@ -207,7 +207,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			case "websocket":
 				wsHeaders["Host"] = host
 			case "h2":
-				h2Opt.Host = host
+				h2Opt.Host = append(h2Opt.Host, host)
 			}
 		}
 
@@ -220,7 +220,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			h2Opt.Path = path
 			path = ""
 		case "http":
-			httpOpt.Path = path
+			httpOpt.Path = append(httpOpt.Path, path)
 			path = ""
 		}
 
@@ -250,7 +250,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			TLS:            tls,
 			Network:        network,
 			HTTPOpts:       httpOpt,
-			H2Opts:         h2Opt,
+			HTTP2Opts:      h2Opt,
 			WSPath:         path,
 			WSHeaders:      wsHeaders,
 			SkipCertVerify: true,
@@ -283,7 +283,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 		}
 
 		wsHeaders := make(map[string]string)
-		h2Opt := H2Options{}
+		h2Opt := HTTP2Options{}
 		httpOpt := HTTPOptions{}
 
 		if vmessJson.Net == "http" {
@@ -293,7 +293,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 		if vmessJson.Host != "" {
 			switch vmessJson.Net {
 			case "h2":
-				h2Opt.Host = vmessJson.Host // 不知道为空时会不会报错
+				h2Opt.Host = append(h2Opt.Host, vmessJson.Host) // 不知道为空时会不会报错
 			case "ws":
 				wsHeaders["HOST"] = vmessJson.Host
 			}
@@ -307,7 +307,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			h2Opt.Path = vmessJson.Path
 			vmessJson.Path = ""
 		case "http":
-			httpOpt.Path = vmessJson.Path
+			httpOpt.Path = append(httpOpt.Path, vmessJson.Path)
 			vmessJson.Path = ""
 		}
 
@@ -325,7 +325,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			TLS:            tls,
 			Network:        vmessJson.Net,
 			HTTPOpts:       httpOpt,
-			H2Opts:         h2Opt,
+			HTTP2Opts:      h2Opt,
 			WSPath:         vmessJson.Path,
 			WSHeaders:      wsHeaders,
 			SkipCertVerify: true,

@@ -5,8 +5,6 @@ import (
 	"encoding/xml"
 	C "github.com/Dreamacro/clash/constant"
 	"math"
-	"sort"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -54,7 +52,7 @@ func (b ByDistance) Less(i, j int) bool {
 	return b.Servers[i].Distance < b.Servers[j].Distance
 }
 
-func fetchServerList(user User, clashProxy C.Proxy) (*ServerList, error) {
+func fetchServerList(clashProxy C.Proxy) (*ServerList, error) {
 	url := "http://www.speedtest.net/speedtest-servers-static.php"
 	body, err := HTTPGetBodyViaProxy(clashProxy, url)
 	if err != nil {
@@ -83,19 +81,6 @@ func fetchServerList(user User, clashProxy C.Proxy) (*ServerList, error) {
 		}
 	}
 
-	// Calculate distance
-	for i := range list.Servers {
-		server := &list.Servers[i]
-		sLat, _ := strconv.ParseFloat(server.Lat, 64)
-		sLon, _ := strconv.ParseFloat(server.Lon, 64)
-		uLat, _ := strconv.ParseFloat(user.Lat, 64)
-		uLon, _ := strconv.ParseFloat(user.Lon, 64)
-		server.Distance = distance(sLat, sLon, uLat, uLon)
-	}
-
-	// Sort by distance
-	sort.Sort(ByDistance{list.Servers})
-
 	return &list, nil
 }
 
@@ -114,15 +99,21 @@ func distance(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
 // StartTest : start testing to the servers.
 func (svrs Servers) StartTest(clashProxy C.Proxy) {
 	var wg sync.WaitGroup
-	for i, s := range svrs {
+	for i, _ := range svrs {
 		wg.Add(1)
-		latency := pingTest(clashProxy, s.URL)
-		if latency == time.Second*5 { // fail to get latency, skip
-			continue
-		}
-		dlSpeed := downloadTest(clashProxy, s.URL, latency)
-		svrs[i].DLSpeed = dlSpeed
+		ii := i
+		go func() {
+			latency := pingTest(clashProxy, svrs[ii].URL)
+			if latency == time.Second*5 { // fail to get latency, skip
+				wg.Done()
+			} else {
+				dlSpeed := downloadTest(clashProxy, svrs[ii].URL, latency)
+				svrs[ii].DLSpeed = dlSpeed
+				wg.Done()
+			}
+		}()
 	}
+	wg.Wait()
 }
 
 // GetResult : return testing result. -1 for no effective result

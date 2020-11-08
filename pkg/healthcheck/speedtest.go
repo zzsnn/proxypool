@@ -6,6 +6,7 @@ import (
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Sansui233/proxypool/pkg/proxy"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -19,7 +20,7 @@ func SpeedTest(proxies []proxy.Proxy) {
 
 }
 
-// speedResult: Mbit/s (not MB/s). <0(-1) for error
+// speedResult: Mbit/s (not MB/s). -1 for error
 func proxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// convert to clash proxy struct
 	pmap := make(map[string]interface{})
@@ -38,16 +39,46 @@ func proxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	}
 
 	// start speedtest using speedtest.net
-	user, err := fetchUserInfo(clashProxy)
+	// fetch server info
+	var user *User
+	var serverList *ServerList
+	errorCh := make(chan error)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		user, err = fetchUserInfo(clashProxy)
+		if err != nil {
+			errorCh <- err
+			return
+		}
+	}()
+	serverList, err = fetchServerList(clashProxy)
+	wg.Wait()
+	close(errorCh)
+	var ok bool
+	if err, ok = <-errorCh; ok {
+	} // clear channel cahe
 	if err != nil {
 		return -1, err
 	}
-	serverList, err := fetchServerList(*user, clashProxy)
-	if err != nil {
-		return -1, err
+
+	// Calculate distance
+	for i := range serverList.Servers {
+		server := &serverList.Servers[i]
+		sLat, _ := strconv.ParseFloat(server.Lat, 64)
+		sLon, _ := strconv.ParseFloat(server.Lon, 64)
+		uLat, _ := strconv.ParseFloat(user.Lat, 64)
+		uLon, _ := strconv.ParseFloat(user.Lon, 64)
+		server.Distance = distance(sLat, sLon, uLat, uLon)
 	}
+	// Sort by distance
+	sort.Sort(ByDistance{serverList.Servers})
+
 	var targets Servers
 	targets = append(serverList.Servers[:3])
+
+	// Test
 	targets.StartTest(clashProxy)
 	speedResult = targets.GetResult()
 
@@ -59,18 +90,11 @@ func proxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 var dlSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
 var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB
 
-//func pingTests(clashProxy C.Proxy, sURLs []string) []time.Duration {
-//	for i, sURL := range sURLs {
-//		sURLs[i] = strings.Split(sURL, "/upload")[0] + "/latency.txt"
-//	}
-//	l := make(3, time.Duration, 0)
-//}
-
 func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 	pingURL := strings.Split(sURL, "/upload")[0] + "/latency.txt"
 
 	l := time.Second * 10
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 2; i++ {
 		sTime := time.Now()
 		err := HTTPGetViaProxy(clashProxy, pingURL)
 		fTime := time.Now()
@@ -105,13 +129,13 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	workload := 0
 	weight := 0
 	if 10.0 < wuSpeed {
-		workload = 16
-		weight = 4
-	} else if 4.0 < wuSpeed {
 		workload = 8
 		weight = 4
-	} else if 2.5 < wuSpeed {
+	} else if 4.0 < wuSpeed {
 		workload = 4
+		weight = 4
+	} else if 2.5 < wuSpeed {
+		workload = 2
 		weight = 4
 	} else { // if too slow, skip main test to save time
 		return wuSpeed

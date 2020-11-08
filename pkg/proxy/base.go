@@ -32,6 +32,10 @@ func (b *Base) SetName(name string) {
 	b.Name = name
 }
 
+func (b *Base) AddToName(name string) {
+	b.Name = b.Name + name
+}
+
 // SetIP() to a proxy
 func (b *Base) SetIP(ip string) {
 	b.Server = ip
@@ -65,6 +69,7 @@ type Proxy interface {
 	Link() string
 	Identifier() string
 	SetName(name string)
+	AddToName(name string)
 	SetIP(ip string)
 	TypeName() string //ss ssr vmess trojan
 	BaseInfo() *Base

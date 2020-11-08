@@ -13,37 +13,18 @@ import (
 	"github.com/Dreamacro/clash/adapters/outbound"
 )
 
-const defaultURLTestTimeout = time.Second * 5
-
-func testDelay(p proxy.Proxy) (delay uint16, err error) {
-	pmap := make(map[string]interface{})
-	err = json.Unmarshal([]byte(p.String()), &pmap)
-	if err != nil {
-		return
-	}
-
-	pmap["port"] = int(pmap["port"].(float64))
-	if p.TypeName() == "vmess" {
-		pmap["alterId"] = int(pmap["alterId"].(float64))
-	}
-
-	clashProxy, err := outbound.ParseProxy(pmap)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), defaultURLTestTimeout)
-	delay, err = clashProxy.URLTest(ctx, "http://www.gstatic.com/generate_204")
-	cancel()
-	return delay, err
+type delayResult struct {
+	name  string
+	delay uint16
 }
+
+const defaultURLTestTimeout = time.Second * 7
 
 func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// Note: Grpool实现对go并发管理的封装，主要是在数据量大时减少内存占用，不会提高效率。
 	pool := grpool.NewPool(500, 200)
 
-	c := make(chan checkResult)
+	c := make(chan delayResult)
 	defer close(c)
 
 	pool.WaitCount(len(proxies))
@@ -55,7 +36,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 				defer pool.JobDone()
 				delay, err := testDelay(pp)
 				if err == nil {
-					c <- checkResult{
+					c <- delayResult{
 						name:  pp.Identifier(),
 						delay: delay,
 					}
@@ -91,8 +72,43 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	}
 }
 
+func testDelay(p proxy.Proxy) (delay uint16, err error) {
+	pmap := make(map[string]interface{})
+	err = json.Unmarshal([]byte(p.String()), &pmap)
+	if err != nil {
+		return
+	}
+
+	pmap["port"] = int(pmap["port"].(float64))
+	if p.TypeName() == "vmess" {
+		pmap["alterId"] = int(pmap["alterId"].(float64))
+	}
+
+	clashProxy, err := outbound.ParseProxy(pmap)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), defaultURLTestTimeout)
+	delay, err = clashProxy.URLTest(ctx, "http://www.gstatic.com/generate_204")
+	cancel()
+	return delay, err
+}
+
+func testProxyDelayToChan(p proxy.Proxy, c chan delayResult, wg *sync.WaitGroup) {
+	defer wg.Done()
+	delay, err := testDelay(p)
+	if err == nil {
+		c <- delayResult{
+			name:  p.Identifier(),
+			delay: delay,
+		}
+	}
+}
+
 func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
-	c := make(chan checkResult, 40)
+	c := make(chan delayResult, 40)
 	wg := &sync.WaitGroup{}
 	wg.Add(len(proxies))
 	for _, p := range proxies {
@@ -119,20 +135,4 @@ func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 		}
 	}
 	return
-}
-
-type checkResult struct {
-	name  string
-	delay uint16
-}
-
-func testProxyDelayToChan(p proxy.Proxy, c chan checkResult, wg *sync.WaitGroup) {
-	defer wg.Done()
-	delay, err := testDelay(p)
-	if err == nil {
-		c <- checkResult{
-			name:  p.Identifier(),
-			delay: delay,
-		}
-	}
 }

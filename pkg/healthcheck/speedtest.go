@@ -2,10 +2,13 @@ package healthcheck
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/ivpusic/grpool"
+	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,14 +17,54 @@ import (
 )
 
 // SpeedResult proxy.Identifier string-> speedresult string
-type SpeedResult map[string]string
 
-func SpeedTest(proxies []proxy.Proxy) {
+var SpeedResults map[string]float64
 
+func SpeedTests(proxies []proxy.Proxy) {
+	fmt.Println("Speed Test START")
+	SpeedResults = make(map[string]float64) // every time it'll be empty
+	pool := grpool.NewPool(20, 6)
+	pool.WaitCount(len(proxies))
+
+	// DEBUG
+	var que []int
+
+	for i, p := range proxies {
+		pp := p
+		ii := i
+		pool.JobQueue <- func() {
+			defer pool.JobDone()
+
+			// DEBUG PRINT QUE
+			log.Println("+ Test", ii)
+			que = append(que, ii)
+			fmt.Println(que)
+
+			result, err := ProxySpeedTest(pp)
+			if err != nil || result < 0 {
+
+				// DEBUG PRINT COUNT
+				log.Println("- Test", ii, ", err:", err)
+				que = DeleteElement(ii, que)
+				fmt.Println(que)
+
+				return
+			}
+			SpeedResults[pp.Identifier()] = result
+
+			// DEBUG
+			log.Println("- Test ", ii, ", result ", result)
+			que = DeleteElement(ii, que)
+			fmt.Println(que)
+		}
+	}
+	pool.WaitAll()
+	fmt.Println("Speed Test Done")
+	pool.Release()
 }
 
 // speedResult: Mbit/s (not MB/s). -1 for error
-func proxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
+func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// convert to clash proxy struct
 	pmap := make(map[string]interface{})
 	err = json.Unmarshal([]byte(p.String()), &pmap)
@@ -41,31 +84,37 @@ func proxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// start speedtest using speedtest.net
 	// fetch server info
 	var user *User
-	var serverList *ServerList
-	errorCh := make(chan error)
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		user, err = fetchUserInfo(clashProxy)
-		if err != nil {
-			errorCh <- err
-			return
-		}
+		user, _ = fetchUserInfo(clashProxy)
 	}()
-	serverList, err = fetchServerList(clashProxy)
-	wg.Wait()
-	close(errorCh)
-	var ok bool
-	if err, ok = <-errorCh; ok {
-	} // clear channel cahe
+	serverList, err := fetchServerList(clashProxy)
 	if err != nil {
 		return -1, err
 	}
 
+	// deal fetchUserInfo routine
+	wg.Wait()
+
+	// some error handling
+	if err != nil {
+		return -1, err
+	}
+	if user == nil {
+		return -1, errors.New("fetch User Info failed in go routine") // 我真的不会用channel抛出err，go routine的不明原因阻塞我服了。下面的两个BUG现在都不知道原因，逻辑上不该出现的
+	}
+	if &serverList == nil {
+		return -1, errors.New("Unexpected error when fetching serverlist: addr of var serverlist nil")
+	}
+	if len(serverList.Servers) == 0 {
+		return -1, errors.New("Unexpected error when fetching serverlist: unexpected 0 servers")
+	}
+
 	// Calculate distance
 	for i := range serverList.Servers {
-		server := &serverList.Servers[i]
+		server := serverList.Servers[i]
 		sLat, _ := strconv.ParseFloat(server.Lat, 64)
 		sLon, _ := strconv.ParseFloat(server.Lon, 64)
 		uLat, _ := strconv.ParseFloat(user.Lat, 64)
@@ -111,7 +160,6 @@ func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 
 func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float64 {
 	dlURL := strings.Split(sURL, "/upload")[0]
-	fmt.Printf("Download Test: ")
 	wg := new(sync.WaitGroup)
 
 	// Warming up

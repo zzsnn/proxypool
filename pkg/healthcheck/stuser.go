@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	C "github.com/Dreamacro/clash/constant"
-	"log"
 )
 
 // speedtest.net config
@@ -38,7 +37,7 @@ func fetchUserInfo(clashProxy C.Proxy) (user *User, err error) {
 		}
 	}
 	if users.Users == nil {
-		log.Println("Warning: Cannot fetch user information. http://www.speedtest.net/speedtest-config.php is temporarily unavailable.")
+		//log.Println("Warning: Cannot fetch user information. http://www.speedtest.net/speedtest-config.php is temporarily unavailable.")
 		return nil, errors.New("No user to speedtest.net. ")
 	}
 	return &users.Users[0], nil

@@ -18,7 +18,7 @@ type delayResult struct {
 	delay uint16
 }
 
-const defaultURLTestTimeout = time.Second * 7
+const defaultURLTestTimeout = time.Second * 5
 
 func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// Note: Grpool实现对go并发管理的封装，主要是在数据量大时减少内存占用，不会提高效率。

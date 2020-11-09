@@ -16,3 +16,7 @@ source-files:
   - ./config/source.yaml
   # use web file
 #  - https://example.com/config/source.yaml
+
+# speedtest
+speedtest: true # default false. Be care, this will consume large net resource.
+connection: 20  # default 20.

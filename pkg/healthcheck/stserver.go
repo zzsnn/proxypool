@@ -3,6 +3,7 @@ package healthcheck
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	C "github.com/Dreamacro/clash/constant"
 	"math"
 	"sync"
@@ -52,24 +53,24 @@ func (b ByDistance) Less(i, j int) bool {
 	return b.Servers[i].Distance < b.Servers[j].Distance
 }
 
-func fetchServerList(clashProxy C.Proxy) (*ServerList, error) {
+func fetchServerList(clashProxy C.Proxy) (ServerList, error) {
 	url := "http://www.speedtest.net/speedtest-servers-static.php"
 	body, err := HTTPGetBodyViaProxy(clashProxy, url)
 	if err != nil {
-		return nil, err
+		return ServerList{}, err
 	}
 
 	if len(body) == 0 {
 		url = "http://c.speedtest.net/speedtest-servers-static.php"
 		body, err = HTTPGetBodyViaProxy(clashProxy, url)
 		if err != nil {
-			return nil, err
+			return ServerList{}, err
 		}
 	}
 
 	// Decode xml
 	decoder := xml.NewDecoder(bytes.NewReader(body))
-	list := ServerList{}
+	var serverList ServerList
 	for {
 		t, _ := decoder.Token()
 		if t == nil {
@@ -77,11 +78,13 @@ func fetchServerList(clashProxy C.Proxy) (*ServerList, error) {
 		}
 		switch se := t.(type) {
 		case xml.StartElement:
-			decoder.DecodeElement(&list, &se)
+			_ = decoder.DecodeElement(&serverList, &se)
 		}
 	}
-
-	return &list, nil
+	if len(serverList.Servers) == 0 {
+		return ServerList{}, errors.New("No speedtest server")
+	}
+	return serverList, nil
 }
 
 func distance(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {

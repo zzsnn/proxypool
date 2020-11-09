@@ -8,7 +8,6 @@ import (
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
-	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,39 +22,18 @@ var SpeedResults map[string]float64
 func SpeedTests(proxies []proxy.Proxy) {
 	fmt.Println("Speed Test START")
 	SpeedResults = make(map[string]float64) // every time it'll be empty
-	pool := grpool.NewPool(20, 6)
+	pool := grpool.NewPool(20, 6)           // TODO config it when release
 	pool.WaitCount(len(proxies))
 
-	// DEBUG
-	var que []int
-
-	for i, p := range proxies {
+	for _, p := range proxies {
 		pp := p
-		ii := i
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
-
-			// DEBUG PRINT QUE
-			log.Println("+ Test", ii)
-			que = append(que, ii)
-			fmt.Println(que)
-
 			result, err := ProxySpeedTest(pp)
 			if err != nil || result < 0 {
-
-				// DEBUG PRINT COUNT
-				log.Println("- Test", ii, ", err:", err)
-				que = DeleteElement(ii, que)
-				fmt.Println(que)
-
 				return
 			}
 			SpeedResults[pp.Identifier()] = result
-
-			// DEBUG
-			log.Println("- Test ", ii, ", result ", result)
-			que = DeleteElement(ii, que)
-			fmt.Println(que)
 		}
 	}
 	pool.WaitAll()
@@ -98,10 +76,7 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// deal fetchUserInfo routine
 	wg.Wait()
 
-	// some error handling
-	if err != nil {
-		return -1, err
-	}
+	// some logically unexpected error handling
 	if user == nil {
 		return -1, errors.New("fetch User Info failed in go routine") // 我真的不会用channel抛出err，go routine的不明原因阻塞我服了。下面的两个BUG现在都不知道原因，逻辑上不该出现的
 	}
@@ -148,7 +123,6 @@ func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 		err := HTTPGetViaProxy(clashProxy, pingURL)
 		fTime := time.Now()
 		if err != nil {
-			//log.Println("\n\t\t[speedtest.go] Warning: fail to test latency, This may lead to inaccuracy in speed test.\n\t\t", err)
 			continue
 		}
 		if fTime.Sub(sTime) < l {

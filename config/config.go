@@ -18,6 +18,8 @@ type ConfigOptions struct {
 	CFEmail     string   `json:"cf_email" yaml:"cf_email"`
 	CFKey       string   `json:"cf_key" yaml:"cf_key"`
 	SourceFiles []string `json:"source-files" yaml:"source-files"`
+	SpeedTest   bool     `json:"speed-test" yaml:"speed_test"`
+	Connection  int      `json:"connection" yaml:"connection"`
 }
 
 // Config 配置
@@ -38,6 +40,11 @@ func Parse(path string) error {
 	err = yaml.Unmarshal(fileData, &Config)
 	if err != nil {
 		return err
+	}
+
+	// set default
+	if Config.Connection <= 0 {
+		Config.Connection = 20
 	}
 
 	// 部分配置环境变量优先

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
+	"github.com/Sansui233/proxypool/config"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
 	"sort"
@@ -16,29 +17,45 @@ import (
 )
 
 // SpeedResult proxy.Identifier string-> speedresult string
-
+// no stored in cache to get the live result
 var SpeedResults map[string]float64
 
 func SpeedTests(proxies []proxy.Proxy) {
-	fmt.Println("Speed Test START")
-	SpeedResults = make(map[string]float64) // every time it'll be empty
-	pool := grpool.NewPool(20, 6)           // TODO config it when release
-	pool.WaitCount(len(proxies))
+	if config.Config.SpeedTest == false {
+		fmt.Println("Speed Test OFF")
+		return
+	}
+	numWorker := config.Config.Connection
+	numJob := 1
+	if numWorker > 4 {
+		numJob = (numWorker + 2) / 4
+	}
 
+	fmt.Println("Speed Test ON")
+	if SpeedResults == nil {
+		SpeedResults = make(map[string]float64)
+	}
+
+	doneCount := 0
+	pool := grpool.NewPool(numWorker, numJob)
+	pool.WaitCount(len(proxies))
 	for _, p := range proxies {
 		pp := p
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 			result, err := ProxySpeedTest(pp)
-			if err != nil || result < 0 {
-				return
+			if err == nil || result > 0 {
+				SpeedResults[pp.Identifier()] = result
 			}
-			SpeedResults[pp.Identifier()] = result
+			doneCount++
+			progress := float64(doneCount) * 100 / float64(len(proxies))
+			fmt.Printf("\r\t[%5.1f%% DONE]", progress)
 		}
 	}
 	pool.WaitAll()
-	fmt.Println("Speed Test Done")
+	fmt.Println("\nSpeed Test Done")
 	pool.Release()
+
 }
 
 // speedResult: Mbit/s (not MB/s). -1 for error
@@ -60,7 +77,6 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	}
 
 	// start speedtest using speedtest.net
-	// fetch server info
 	var user *User
 	wg := sync.WaitGroup{}
 	wg.Add(1)
@@ -81,10 +97,10 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 		return -1, errors.New("fetch User Info failed in go routine") // 我真的不会用channel抛出err，go routine的不明原因阻塞我服了。下面的两个BUG现在都不知道原因，逻辑上不该出现的
 	}
 	if &serverList == nil {
-		return -1, errors.New("Unexpected error when fetching serverlist: addr of var serverlist nil")
+		return -1, errors.New("unexpected error when fetching serverlist: addr of var serverlist nil")
 	}
 	if len(serverList.Servers) == 0 {
-		return -1, errors.New("Unexpected error when fetching serverlist: unexpected 0 servers")
+		return -1, errors.New("unexpected error when fetching serverlist: unexpected 0 server")
 	}
 
 	// Calculate distance

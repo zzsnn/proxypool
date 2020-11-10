@@ -18,5 +18,5 @@ source-files:
 #  - https://example.com/config/source.yaml
 
 # speedtest
-speed_test: false  # default false. Warning: this will consume large net resource.
+speedtest: false  # default false. Warning: this will consume large net resource.
 connection: 20    # default 20.

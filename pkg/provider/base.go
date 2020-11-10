@@ -1,6 +1,8 @@
 package provider
 
 import (
+	"fmt"
+	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"strings"
 
 	"github.com/Sansui233/proxypool/pkg/proxy"
@@ -78,4 +80,16 @@ func (b *Base) preFilter() {
 	}
 
 	b.Proxies = &proxies
+}
+
+func checkSpeedResult(p proxy.Proxy) proxy.Proxy {
+	if healthcheck.SpeedResults == nil {
+		return p
+	}
+	if speed, ok := healthcheck.SpeedResults[p.Identifier()]; ok {
+		pp := p.Clone()
+		pp.AddToName(fmt.Sprintf("_%5.2fMb", speed))
+		return pp
+	}
+	return p
 }

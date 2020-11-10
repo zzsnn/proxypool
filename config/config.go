@@ -18,7 +18,7 @@ type ConfigOptions struct {
 	CFEmail     string   `json:"cf_email" yaml:"cf_email"`
 	CFKey       string   `json:"cf_key" yaml:"cf_key"`
 	SourceFiles []string `json:"source-files" yaml:"source-files"`
-	SpeedTest   bool     `json:"speed-test" yaml:"speed_test"`
+	SpeedTest   bool     `json:"speedtest" yaml:"speedtest"`
 	Connection  int      `json:"connection" yaml:"connection"`
 }
 

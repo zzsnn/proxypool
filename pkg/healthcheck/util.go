@@ -139,7 +139,7 @@ func HTTPGetBodyViaProxy(clashProxy C.Proxy, url string) ([]byte, error) {
 	return body, nil
 }
 
-func DeleteElement(v int, arr []int) []int {
+func deleteElementInArray(v int, arr []int) []int {
 	if arr == nil {
 		return nil
 	}

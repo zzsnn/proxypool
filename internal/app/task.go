@@ -24,10 +24,30 @@ func CrawlGo() {
 		// 并发执行抓取node并存到pc
 		go g.Get2Chan(pc, wg)
 	}
-	// 获取go中缓存的所有proxylist（包括不可用的）
 	proxies := cache.GetProxies("allproxies")
-	// 获取database中的proxylist
-	proxies = append(proxies, database.GetAllProxies()...)
+	db_proxies := database.GetAllProxies()
+	proxies = append(proxies, db_proxies...)
+
+	// Show last time result when launch
+	if db_proxies != nil {
+		if proxies == nil {
+			cache.SetProxies("allproxies", db_proxies)
+		}
+		cache.SetProxies("proxies", db_proxies)
+		cache.SetString("clashproxies", provider.Clash{
+			provider.Base{
+				Proxies: &db_proxies,
+			},
+		}.Provide())
+		cache.SetString("surgeproxies", provider.Clash{
+			provider.Base{
+				Proxies: &db_proxies,
+			},
+		}.Provide())
+		cache.LastCrawlTime = "抓取中，已载入上次数据库数据"
+		fmt.Println("Database loaded. Open ", config.Config.Domain, ":8080 to check")
+	}
+
 	go func() {
 		wg.Wait()
 		close(pc)
@@ -89,4 +109,13 @@ func CrawlGo() {
 	}.Provide())
 
 	fmt.Println("All done. Open ", config.Config.Domain, ":8080 to check")
+
+	// speed check
+	healthcheck.SpeedTests(proxies)
+	// Flush provider
+	cache.SetString("clashproxies", provider.Clash{
+		provider.Base{
+			Proxies: &proxies,
+		},
+	}.Provide())
 }

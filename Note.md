@@ -97,6 +97,8 @@ var _assetsHtmlSurgeHtml="[]byte("\x1f\x8b\x...")"
 
 根据原作者要求，请勿修改原作者版权信息。
 
+Web数据根据cache更新，而非Get一次更新一次
+
 ## 本地测试
 
 需要注意：

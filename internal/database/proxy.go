@@ -72,7 +72,7 @@ func SaveProxyList(pl proxy.ProxyList) {
 func GetAllProxies() (proxies proxy.ProxyList) {
 	proxies = make(proxy.ProxyList, 0)
 	if DB == nil {
-		return
+		return nil
 	}
 
 	proxiesDB := make([]Proxy, 0)
@@ -82,6 +82,7 @@ func GetAllProxies() (proxies proxy.ProxyList) {
 		if proxiesDB != nil {
 			p, err := proxy.ParseProxyFromLink(proxyDB.Link)
 			if err == nil && p != nil {
+				p.SetUseable(false)
 				proxies = append(proxies, p)
 			}
 		}

@@ -1,9 +1,8 @@
 package provider
 
 import (
-	"strings"
-
 	"github.com/Sansui233/proxypool/pkg/tool"
+	"strings"
 
 	"github.com/Sansui233/proxypool/pkg/proxy"
 )
@@ -32,6 +31,7 @@ func (c Clash) Provide() string {
 	resultBuilder.WriteString("proxies:\n")
 	for _, p := range *c.Proxies {
 		if checkClashSupport(p) {
+			p := checkSpeedResult(p)
 			resultBuilder.WriteString(p.ToClash() + "\n")
 		}
 	}

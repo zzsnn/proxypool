@@ -26,13 +26,8 @@ func CrawlGo() {
 	}
 	proxies := cache.GetProxies("allproxies")
 	db_proxies := database.GetAllProxies()
-	proxies = append(proxies, db_proxies...)
-
 	// Show last time result when launch
-	if db_proxies != nil {
-		if proxies == nil {
-			cache.SetProxies("allproxies", db_proxies)
-		}
+	if proxies == nil && db_proxies != nil {
 		cache.SetProxies("proxies", db_proxies)
 		cache.SetString("clashproxies", provider.Clash{
 			provider.Base{
@@ -45,8 +40,9 @@ func CrawlGo() {
 			},
 		}.Provide())
 		cache.LastCrawlTime = "抓取中，已载入上次数据库数据"
-		fmt.Println("Database loaded. Open ", config.Config.Domain, ":8080 to check")
+		fmt.Println("Database: loaded")
 	}
+	proxies = append(proxies, db_proxies...)
 
 	go func() {
 		wg.Wait()
@@ -108,14 +104,9 @@ func CrawlGo() {
 		},
 	}.Provide())
 
-	fmt.Println("All done. Open ", config.Config.Domain, ":8080 to check")
+	fmt.Println("Usable checking done. Open ", config.Config.Domain, ":8080 to check")
 
 	// speed check
 	healthcheck.SpeedTests(proxies)
-	// Flush provider
-	cache.SetString("clashproxies", provider.Clash{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide())
+	cache.SetString("trigger", "1") // Force flush gin page update with cache update
 }

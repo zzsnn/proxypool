@@ -32,11 +32,12 @@ func SpeedTests(proxies []proxy.Proxy) {
 	}
 
 	fmt.Println("Speed Test ON")
+	var lock = sync.Mutex{}
 	if SpeedResults == nil {
 		SpeedResults = make(map[string]float64)
 	}
-
 	doneCount := 0
+	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
 	pool.WaitCount(len(proxies))
 	for _, p := range proxies {
@@ -45,7 +46,9 @@ func SpeedTests(proxies []proxy.Proxy) {
 			defer pool.JobDone()
 			result, err := ProxySpeedTest(pp)
 			if err == nil || result > 0 {
+				lock.Lock()
 				SpeedResults[pp.Identifier()] = result
+				lock.Unlock()
 			}
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
@@ -64,7 +67,7 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	pmap := make(map[string]interface{})
 	err = json.Unmarshal([]byte(p.String()), &pmap)
 	if err != nil {
-		return
+		return -1, err
 	}
 	pmap["port"] = int(pmap["port"].(float64))
 	if p.TypeName() == "vmess" {

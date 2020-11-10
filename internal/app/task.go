@@ -108,5 +108,10 @@ func CrawlGo() {
 
 	// speed check
 	healthcheck.SpeedTests(proxies)
-	cache.SetString("trigger", "1") // Force flush gin page update with cache update
+	// Force flush gin page with cache update
+	cache.SetString("clashproxies", provider.Clash{
+		provider.Base{
+			Proxies: &proxies,
+		},
+	}.Provide())
 }

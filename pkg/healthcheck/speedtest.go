@@ -58,7 +58,6 @@ func SpeedTests(proxies []proxy.Proxy) {
 	pool.WaitAll()
 	fmt.Println("\nSpeed Test Done")
 	pool.Release()
-
 }
 
 // speedResult: Mbit/s (not MB/s). -1 for error
@@ -131,7 +130,8 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 
 /* Test with SpeedTest.net */
 var dlSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
-var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB
+
+//var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB
 
 func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 	pingURL := strings.Split(sURL, "/upload")[0] + "/latency.txt"

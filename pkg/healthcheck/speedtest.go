@@ -129,6 +129,7 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 }
 
 /* Test with SpeedTest.net */
+// Downaload Size(MB)  0.245 0.5 1.125  2   5     8     12.5  18    24.5  32
 var dlSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
 
 //var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB
@@ -151,6 +152,7 @@ func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 	return l / 2.0
 }
 
+// return a speed(Mbps)
 func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float64 {
 	dlURL := strings.Split(sURL, "/upload")[0]
 	wg := new(sync.WaitGroup)

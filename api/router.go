@@ -241,13 +241,15 @@ func setupRouter() {
 
 func Run() {
 	setupRouter()
-	port := config.Config.Port
-	if envp := os.Getenv("PORT"); envp != "" {
-		port = envp
+	servePort := config.Config.Port
+	envp := os.Getenv("PORT") // envp for heroku. DO NOT SET ENV PORT IN PERSONAL SERVER UNLESS YOU KNOW WHAT YOU ARE DOING
+	if envp != "" {
+		servePort = envp
+	} else {
+		servePort = config.Config.Port
 	}
-	config.Config.Port = port // in case local var exits
 	// Run on this server
-	err := router.Run(":" + port)
+	err := router.Run(":" + servePort)
 	if err != nil {
 		log.Fatal("[router.go] Remote server starting failed")
 	}

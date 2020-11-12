@@ -14,6 +14,7 @@ var configFilePath = "config.yaml"
 
 type ConfigOptions struct {
 	Domain      string   `json:"domain" yaml:"domain"`
+	Port        string   `json:"port" yaml:"port"`
 	DatabaseUrl string   `json:"database_url" yaml:"database_url"`
 	CFEmail     string   `json:"cf_email" yaml:"cf_email"`
 	CFKey       string   `json:"cf_key" yaml:"cf_key"`
@@ -45,6 +46,9 @@ func Parse(path string) error {
 	// set default
 	if Config.Connection <= 0 {
 		Config.Connection = 20
+	}
+	if Config.Port == "" {
+		Config.Port = "8080"
 	}
 
 	// 部分配置环境变量优先

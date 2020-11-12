@@ -43,6 +43,7 @@ func setupRouter() {
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/index.html", gin.H{
 			"domain":               config.Config.Domain,
+			"port":                 config.Config.Port,
 			"getters_count":        C.GettersCount,
 			"all_proxies_count":    C.AllProxiesCount,
 			"ss_proxies_count":     C.SSProxiesCount,
@@ -58,18 +59,21 @@ func setupRouter() {
 	router.GET("/clash", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash.html", gin.H{
 			"domain": config.Config.Domain,
+			"port":   config.Config.Port,
 		})
 	})
 
 	router.GET("/surge", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/surge.html", gin.H{
 			"domain": config.Config.Domain,
+			"port":   config.Config.Port,
 		})
 	})
 
 	router.GET("/clash/config", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash-config.yaml", gin.H{
 			"domain": config.Config.Domain,
+			"port":   config.Config.Port,
 		})
 	})
 	router.GET("/clash/localconfig", func(c *gin.Context) {
@@ -79,6 +83,7 @@ func setupRouter() {
 	router.GET("/surge/config", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/surge.conf", gin.H{
 			"domain": config.Config.Domain,
+			"port":   config.Config.Port,
 		})
 	})
 
@@ -223,16 +228,16 @@ func setupRouter() {
 
 func Run() {
 	setupRouter()
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	port := config.Config.Port
+	if envp := os.Getenv("PORT"); envp != "" {
+		port = envp
 	}
+	config.Config.Port = port // in case local var exits
 	// Run on this server
 	err := router.Run(":" + port)
 	if err != nil {
 		log.Fatal("[router.go] Remote server starting failed")
 	}
-
 }
 
 // 返回页面templates

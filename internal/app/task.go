@@ -104,7 +104,7 @@ func CrawlGo() {
 		},
 	}.Provide())
 
-	fmt.Println("Usable checking done. Open ", config.Config.Domain, ":8080 to check")
+	fmt.Println("Usable checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
 
 	// speed check
 	healthcheck.SpeedTests(proxies)

@@ -4,12 +4,14 @@ Clash客户端支持：
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。
 
 TODO
-- [ ] set http context time(dev)
+- []自定义更新间隔
 
 ## New
 
 2020-11-12
-- 配置文件增加端口
+- 增加自定义端口
+- 增加速度筛选
+- 改进启动流程，启动时载入数据库数据，解决heroku冷启动问题
 
 2020-11-11
 - 增加并发测速。

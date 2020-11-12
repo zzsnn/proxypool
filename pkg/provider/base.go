@@ -17,6 +17,7 @@ type Base struct {
 	Types      string           `yaml:"type"`
 	Country    string           `yaml:"country"`
 	NotCountry string           `yaml:"not_country"`
+	Speed      float64          `yaml:"speed"`
 }
 
 // 根据子类的的Provide()传入的信息筛选节点，结果会改变传入的proxylist。
@@ -26,6 +27,7 @@ func (b *Base) preFilter() {
 	needFilterType := true
 	needFilterCountry := true
 	needFilterNotCountry := true
+	needFilterSpeed := true
 	if b.Types == "" || b.Types == "all" {
 		needFilterType = false
 	}
@@ -34,6 +36,9 @@ func (b *Base) preFilter() {
 	}
 	if b.NotCountry == "" {
 		needFilterNotCountry = false
+	}
+	if b.Speed < 0 {
+		needFilterSpeed = false
 	}
 	types := strings.Split(b.Types, ",")
 	countries := strings.Split(b.Country, ",")
@@ -75,21 +80,32 @@ func (b *Base) preFilter() {
 			}
 		}
 
+		if needFilterSpeed && healthcheck.SpeedResults != nil {
+			if speed, ok := healthcheck.SpeedResults[p.Identifier()]; ok {
+				// clear history result on name
+				names := strings.Split(p.BaseInfo().Name, " |")
+				if len(names) > 1 {
+					p.BaseInfo().Name = names[0]
+				}
+				// check speed
+				if speed > b.Speed {
+					p.AddToName(fmt.Sprintf(" |%5.2fMb", speed))
+				} else {
+					goto exclude
+				}
+			} else {
+				goto exclude
+			}
+		} else { // clear speed tag. But I don't know why speed is stored in name while provider get proxies from cache everytime. It's name should be refreshed without speed tag. Because of gin-cache?
+			names := strings.Split(p.BaseInfo().Name, " |")
+			if len(names) > 1 {
+				p.BaseInfo().Name = names[0]
+			}
+		}
+
 		proxies = append(proxies, p)
 	exclude:
 	}
 
 	b.Proxies = &proxies
-}
-
-func checkSpeedResult(p proxy.Proxy) proxy.Proxy {
-	if healthcheck.SpeedResults == nil {
-		return p
-	}
-	if speed, ok := healthcheck.SpeedResults[p.Identifier()]; ok {
-		pp := p.Clone()
-		pp.AddToName(fmt.Sprintf("_%5.2fMb", speed))
-		return pp
-	}
-	return p
 }

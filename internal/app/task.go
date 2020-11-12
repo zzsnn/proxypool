@@ -29,16 +29,6 @@ func CrawlGo() {
 	// Show last time result when launch
 	if proxies == nil && db_proxies != nil {
 		cache.SetProxies("proxies", db_proxies)
-		cache.SetString("clashproxies", provider.Clash{
-			provider.Base{
-				Proxies: &db_proxies,
-			},
-		}.Provide())
-		cache.SetString("surgeproxies", provider.Clash{
-			provider.Base{
-				Proxies: &db_proxies,
-			},
-		}.Provide())
 		cache.LastCrawlTime = "抓取中，已载入上次数据库数据"
 		fmt.Println("Database: loaded")
 	}
@@ -81,35 +71,30 @@ func CrawlGo() {
 	log.Println("TrojanProxiesCount:", cache.TrojanProxiesCount)
 	cache.LastCrawlTime = time.Now().In(location).Format("2006-01-02 15:04:05")
 
-	// 节点可用性检测并存储
+	// 节点可用性检测
 	log.Println("Now proceed proxy health check...")
 	proxies = healthcheck.CleanBadProxiesWithGrpool(proxies)
 	log.Println("CrawlGo clash usable node count:", len(proxies))
 	proxies.NameReIndex() //由于原作停更，暂不加.NameAddTG()，如被认为有版权问题请告知
+
+	// 可用节点存储
 	cache.SetProxies("proxies", proxies)
 	cache.UsefullProxiesCount = proxies.Len()
-
-	// 可用节点存储到数据库
 	database.SaveProxyList(proxies)
 	database.ClearOldItems()
 
-	cache.SetString("clashproxies", provider.Clash{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide())
-	cache.SetString("surgeproxies", provider.Surge{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide())
-
 	fmt.Println("Usable checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
 
+	// TODO DEBUG CODE
+	proxies = proxies[:20]
 	// speed check
 	healthcheck.SpeedTests(proxies)
-	// Force flush gin page with cache update
 	cache.SetString("clashproxies", provider.Clash{
+		provider.Base{
+			Proxies: &proxies,
+		},
+	}.Provide()) // update static string provider
+	cache.SetString("surgeproxies", provider.Surge{
 		provider.Base{
 			Proxies: &proxies,
 		},

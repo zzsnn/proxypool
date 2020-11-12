@@ -31,7 +31,6 @@ func (c Clash) Provide() string {
 	resultBuilder.WriteString("proxies:\n")
 	for _, p := range *c.Proxies {
 		if checkClashSupport(p) {
-			p := checkSpeedResult(p)
 			resultBuilder.WriteString(p.ToClash() + "\n")
 		}
 	}

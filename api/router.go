@@ -91,13 +91,18 @@ func setupRouter() {
 		proxyTypes := c.DefaultQuery("type", "")
 		proxyCountry := c.DefaultQuery("c", "")
 		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed, err := strconv.ParseFloat(c.DefaultQuery("speed", "0"), 64)
+		if err != nil {
+			log.Println("[router.go]", err)
+			proxySpeed = 0
+		}
 		text := ""
-		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" {
-			text = C.GetString("clashproxies")
+		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == 0 {
+			text = C.GetString("clashproxies") // A string. To show speed in this if condition, this must be updated after speedtest
 			if text == "" {
 				proxies := C.GetProxies("proxies")
 				clash := provider.Clash{
-					provider.Base{
+					Base: provider.Base{
 						Proxies: &proxies,
 					},
 				}
@@ -112,6 +117,7 @@ func setupRouter() {
 					Types:      proxyTypes,
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
+					Speed:      proxySpeed,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点
@@ -123,6 +129,7 @@ func setupRouter() {
 					Types:      proxyTypes,
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
+					Speed:      proxySpeed,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点
@@ -133,9 +140,14 @@ func setupRouter() {
 		proxyTypes := c.DefaultQuery("type", "")
 		proxyCountry := c.DefaultQuery("c", "")
 		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed, err := strconv.ParseFloat(c.DefaultQuery("speed", "0"), 64)
+		if err != nil {
+			log.Println("[router.go]", err)
+			proxySpeed = 0
+		}
 		text := ""
-		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" {
-			text = C.GetString("surgeproxies")
+		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == 0 {
+			text = C.GetString("surgeproxies") // A string. To show speed in this if condition, this must be updated after speedtest
 			if text == "" {
 				proxies := C.GetProxies("proxies")
 				surge := provider.Surge{
@@ -154,6 +166,7 @@ func setupRouter() {
 					Types:      proxyTypes,
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
+					Speed:      proxySpeed,
 				},
 			}
 			text = surge.Provide()

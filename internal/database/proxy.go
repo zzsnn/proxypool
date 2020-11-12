@@ -100,7 +100,7 @@ func ClearOldItems() {
 		var count int64
 		DB.Model(&Proxy{}).Where("updated_at < ? AND useable = ?", lastWeek, false).Count(&count)
 		if count == 0 {
-			fmt.Println("Database: data is cleared") // todo 永远都执行这一句……缺乏DEBUG条件，不修复倒也不太影响
+			fmt.Println("Database: data is cleared")
 		} else {
 			log.Println("\n\t\t[db/proxy.go] Delete old item failed: ", err)
 		}

@@ -85,8 +85,6 @@ func CrawlGo() {
 
 	fmt.Println("Usable checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
 
-	// TODO DEBUG CODE
-	proxies = proxies[:20]
 	// speed check
 	healthcheck.SpeedTests(proxies)
 	cache.SetString("clashproxies", provider.Clash{

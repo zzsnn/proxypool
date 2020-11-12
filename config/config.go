@@ -48,7 +48,7 @@ func Parse(path string) error {
 		Config.Connection = 20
 	}
 	if Config.Port == "" {
-		Config.Port = "8080"
+		Config.Port = "443"
 	}
 
 	// 部分配置环境变量优先

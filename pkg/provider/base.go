@@ -94,7 +94,9 @@ func (b *Base) preFilter() {
 					goto exclude
 				}
 			} else {
-				goto exclude
+				if b.Speed != 0 {
+					goto exclude
+				}
 			}
 		} else { // clear speed tag. But I don't know why speed is stored in name while provider get proxies from cache everytime. It's name should be refreshed without speed tag. Because of gin-cache?
 			names := strings.Split(p.BaseInfo().Name, " |")

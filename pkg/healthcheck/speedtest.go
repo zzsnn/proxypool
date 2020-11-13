@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
-	"github.com/Sansui233/proxypool/config"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
 	"sort"
@@ -16,16 +15,15 @@ import (
 	"time"
 )
 
-// SpeedResult proxy.Identifier string-> speedresult string
-// no stored in cache to get the live result
+// SpeedResults is a map of proxy.Identifier -> speedresult
 var SpeedResults map[string]float64
 
-func SpeedTests(proxies []proxy.Proxy) {
-	if config.Config.SpeedTest == false {
-		fmt.Println("Speed Test OFF")
-		return
+// SpeedTests test speed for a group of proxy. Result it stored in SpeedResults
+func SpeedTests(proxies []proxy.Proxy, conns int) {
+	numWorker := conns
+	if numWorker == 0 {
+		numWorker = 20
 	}
-	numWorker := config.Config.Connection
 	numJob := 1
 	if numWorker > 4 {
 		numJob = (numWorker + 2) / 4
@@ -60,7 +58,7 @@ func SpeedTests(proxies []proxy.Proxy) {
 	pool.Release()
 }
 
-// speedResult: Mbit/s (not MB/s). -1 for error
+// ProxySpeedTest returns a speed result for a proxy. Result is like Mbit/s. -1 for error.
 func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// convert to clash proxy struct
 	pmap := make(map[string]interface{})

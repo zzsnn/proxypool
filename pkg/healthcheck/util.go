@@ -138,24 +138,3 @@ func HTTPGetBodyViaProxy(clashProxy C.Proxy, url string) ([]byte, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 	return body, nil
 }
-
-func deleteElementInArray(v int, arr []int) []int {
-	if arr == nil {
-		return nil
-	}
-	if len(arr) == 0 {
-		return arr
-	}
-	for i, val := range arr {
-		if v == val {
-			if i == 0 {
-				arr = arr[i+1:]
-			} else if i == len(arr)-1 {
-				arr = arr[:i]
-			} else {
-				arr = append(arr[:i], arr[i+1:]...)
-			}
-		}
-	}
-	return arr
-}

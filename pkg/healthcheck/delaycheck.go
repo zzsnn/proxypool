@@ -13,6 +13,9 @@ import (
 	"github.com/Dreamacro/clash/adapters/outbound"
 )
 
+// SpeedResults is a map of proxy.Identifier -> delayresult
+var DelayResults map[string]uint16
+
 type delayResult struct {
 	name  string
 	delay uint16
@@ -54,10 +57,14 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	}()
 
 	okMap := make(map[string]struct{})
+	if DelayResults == nil {
+		DelayResults = make(map[string]uint16)
+	}
 	for { // Note: 无限循环，直到能读取到done。处理并发也算是挺有创意的写法
 		select {
 		case r := <-c:
 			if r.delay > 0 {
+				DelayResults[r.name] = r.delay
 				okMap[r.name] = struct{}{}
 			}
 		case <-done:

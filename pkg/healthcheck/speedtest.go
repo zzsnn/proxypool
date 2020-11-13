@@ -18,7 +18,7 @@ import (
 // SpeedResults is a map of proxy.Identifier -> speedresult
 var SpeedResults map[string]float64
 
-// SpeedTests test speed for a group of proxy. Result it stored in SpeedResults
+// SpeedTests tests speed for a group of proxies. Results are stored in SpeedResults
 func SpeedTests(proxies []proxy.Proxy, conns int) {
 	numWorker := conns
 	if numWorker == 0 {
@@ -58,7 +58,7 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 	pool.Release()
 }
 
-// ProxySpeedTest returns a speed result for a proxy. Result is like Mbit/s. -1 for error.
+// ProxySpeedTest returns a speed result for a proxy. The speed result is like 20Mbit/s. -1 for error.
 func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// convert to clash proxy struct
 	pmap := make(map[string]interface{})

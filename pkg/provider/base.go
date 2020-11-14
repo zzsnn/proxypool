@@ -3,6 +3,8 @@ package provider
 import (
 	"fmt"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
+	"math"
+	"strconv"
 	"strings"
 
 	"github.com/Sansui233/proxypool/pkg/proxy"
@@ -17,7 +19,7 @@ type Base struct {
 	Types      string           `yaml:"type"`
 	Country    string           `yaml:"country"`
 	NotCountry string           `yaml:"not_country"`
-	Speed      float64          `yaml:"speed"`
+	Speed      string           `yaml:"speed"`
 }
 
 // 根据子类的的Provide()传入的信息筛选节点，结果会改变传入的proxylist。
@@ -37,12 +39,18 @@ func (b *Base) preFilter() {
 	if b.NotCountry == "" {
 		needFilterNotCountry = false
 	}
-	if b.Speed < 0 {
-		needFilterSpeed = false
+	if b.Speed == "" {
+		needFilterSpeed = true
 	}
 	types := strings.Split(b.Types, ",")
 	countries := strings.Split(b.Country, ",")
 	notCountries := strings.Split(b.NotCountry, ",")
+	speed := strings.Split(b.Speed, ",")
+	speedMin, speedMax := checkSpeed(speed)
+
+	if speedMin == -1 {
+		needFilterSpeed = false
+	}
 
 	bProxies := *b.Proxies
 	for _, p := range bProxies {
@@ -88,17 +96,17 @@ func (b *Base) preFilter() {
 					p.BaseInfo().Name = names[0]
 				}
 				// check speed
-				if speed > b.Speed {
+				if speed > speedMin && speed < speedMax {
 					p.AddToName(fmt.Sprintf(" |%5.2fMb", speed))
 				} else {
 					goto exclude
 				}
 			} else {
-				if b.Speed != 0 {
+				if speedMin != 0 { // still show no speed proxy when speed Min is 0
 					goto exclude
 				}
 			}
-		} else { // clear speed tag. But I don't know why speed is stored in name while provider get proxies from cache everytime. It's name should be refreshed without speed tag. Because of gin-cache?
+		} else { // When no filter needed: clear speed tag. But I don't know why speed is stored in name while provider get proxies from cache everytime. It's name should be refreshed without speed tag. Because of gin-cache?
 			names := strings.Split(p.BaseInfo().Name, " |")
 			if len(names) > 1 {
 				p.BaseInfo().Name = names[0]
@@ -110,4 +118,25 @@ func (b *Base) preFilter() {
 	}
 
 	b.Proxies = &proxies
+}
+
+func checkSpeed(speed []string) (speedMin float64, speedMax float64) {
+	speedMin, speedMax = 0, 1000
+	var err1, err2 error
+	switch len(speed) {
+	case 1:
+		if speed[0] != "" {
+			speedMin, err1 = strconv.ParseFloat(speed[0], 64)
+		}
+	case 2:
+		speedMin, err1 = strconv.ParseFloat(speed[0], 64)
+		speedMax, err2 = strconv.ParseFloat(speed[1], 64)
+	}
+	if math.IsNaN(speedMin) || err1 != nil {
+		speedMin = 0.00
+	}
+	if math.IsNaN(speedMax) || err2 != nil {
+		speedMax = 1000.00
+	}
+	return speedMin, speedMax
 }

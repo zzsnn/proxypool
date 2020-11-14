@@ -19,4 +19,5 @@ source-files:
 
 # speedtest
 speedtest: false  # default false. Warning: this will consume large net resource.
-connection: 20    # default 20.
+connection:       # default 5.
+timeout:          # default 10 (seconds).

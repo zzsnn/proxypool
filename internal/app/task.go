@@ -84,12 +84,21 @@ func CrawlGo() {
 	database.ClearOldItems()
 
 	log.Println("Usable checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
-	SpeedTest(proxies)
+	var pl = make(proxy.ProxyList, 0)
+	// DEBUG
+	for i := 2; i < 300; i += 15 {
+		pl = append(pl, proxies[i]) // or do whatever
+	}
+	SpeedTest(pl)
+	//SpeedTest(proxies)
 }
 
 func SpeedTest(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
+		if config.Config.Timeout > 0 {
+			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
+		}
 		healthcheck.SpeedTests(proxies, config.Config.Connection)
 	}
 	cache.SetString("clashproxies", provider.Clash{

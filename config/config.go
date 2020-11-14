@@ -21,6 +21,7 @@ type ConfigOptions struct {
 	SourceFiles []string `json:"source-files" yaml:"source-files"`
 	SpeedTest   bool     `json:"speedtest" yaml:"speedtest"`
 	Connection  int      `json:"connection" yaml:"connection"`
+	Timeout     int      `json:"timeout" yaml:"timeout"`
 }
 
 // Config 配置

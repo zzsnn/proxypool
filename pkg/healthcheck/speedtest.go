@@ -1,6 +1,7 @@
 package healthcheck
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
+	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,14 +17,16 @@ import (
 	"time"
 )
 
+var SpeedTimeout = time.Second * 10
+
 // SpeedResults is a map of proxy.Identifier -> speedresult
 var SpeedResults map[string]float64
 
 // SpeedTests tests speed for a group of proxies. Results are stored in SpeedResults
 func SpeedTests(proxies []proxy.Proxy, conns int) {
 	numWorker := conns
-	if numWorker == 0 {
-		numWorker = 20
+	if numWorker <= 0 {
+		numWorker = 5
 	}
 	numJob := 1
 	if numWorker > 4 {
@@ -153,30 +157,27 @@ func pingTest(clashProxy C.Proxy, sURL string) time.Duration {
 // return a speed(Mbps)
 func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float64 {
 	dlURL := strings.Split(sURL, "/upload")[0]
-	wg := new(sync.WaitGroup)
 
 	// Warming up
 	sTime := time.Now()
-	for i := 0; i < 2; i++ {
-		wg.Add(1)
-		go dlWarmUp(clashProxy, wg, dlURL)
+	err := dlWarmUp(clashProxy, dlURL)
+	if err != nil {
+		log.Println("[Error] WarmupTest: when get http body", clashProxy.Name(), err)
+		return 0
 	}
-	wg.Wait()
 	fTime := time.Now()
 	// 1.125MB for each request (750 * 750 * 2)
 	wuSpeed := 1.125 * 8 * 2 / fTime.Sub(sTime.Add(latency)).Seconds()
+	log.Println("[Debug] Warmup speed", clashProxy.Name(), wuSpeed, "Mbps")
 
 	// Decide workload by warm up speed. Weight is the level of size.
 	workload := 0
 	weight := 0
 	if 10.0 < wuSpeed {
-		workload = 8
-		weight = 4
-	} else if 4.0 < wuSpeed {
-		workload = 4
-		weight = 4
-	} else if 2.5 < wuSpeed {
-		workload = 2
+		workload = 1
+		weight = 5
+	} else if 5 < wuSpeed {
+		workload = 1
 		weight = 4
 	} else { // if too slow, skip main test to save time
 		return wuSpeed
@@ -185,32 +186,37 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	// Main speedtest
 	dlSpeed := wuSpeed
 	sTime = time.Now()
-	for i := 0; i < workload; i++ {
-		wg.Add(1)
-		go downloadRequest(clashProxy, wg, dlURL, weight)
+	err = downloadRequest(clashProxy, dlURL, weight)
+	if err != nil && errors.Is(err, context.DeadlineExceeded) {
+		log.Println("[Error] DLTest: when get http body", clashProxy.Name(), err)
+		return dlSpeed
 	}
-	wg.Wait()
 	fTime = time.Now()
-
 	reqMB := dlSizes[weight] * dlSizes[weight] * 2 / 1000 / 1000
 	dlSpeed = float64(reqMB) * 8 * float64(workload) / fTime.Sub(sTime).Seconds()
-
+	log.Println("[Debug] DL speed", clashProxy.Name(), dlSpeed, "Mbps")
+	if wuSpeed > dlSpeed {
+		return wuSpeed
+	}
 	return dlSpeed
 }
 
-func dlWarmUp(clashProxy C.Proxy, wg *sync.WaitGroup, dlURL string) {
+func dlWarmUp(clashProxy C.Proxy, dlURL string) error {
 	size := dlSizes[2]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-	HTTPGetBodyViaProxy(clashProxy, url)
-
-	wg.Done()
+	_, err := HTTPGetBodyViaProxyWithTime(clashProxy, url, SpeedTimeout)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func downloadRequest(clashProxy C.Proxy, wg *sync.WaitGroup, dlURL string, w int) {
+func downloadRequest(clashProxy C.Proxy, dlURL string, w int) error {
 	size := dlSizes[w]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-
-	HTTPGetBodyViaProxy(clashProxy, url)
-
-	wg.Done()
+	_, err := HTTPGetBodyViaProxyWithTime(clashProxy, url, SpeedTimeout)
+	if err != nil {
+		return err
+	}
+	return nil
 }

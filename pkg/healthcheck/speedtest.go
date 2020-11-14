@@ -49,7 +49,9 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 			result, err := ProxySpeedTest(pp)
 			if err == nil || result > 0 {
 				if r, ok := SpeedResults[pp.Identifier()]; ok {
-					result = (r + result) / 2
+					if r < 60 {
+						result = 0.3*r + 0.7*result
+					}
 				}
 				lock.Lock()
 				SpeedResults[pp.Identifier()] = result

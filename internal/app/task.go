@@ -90,6 +90,9 @@ func CrawlGo() {
 func SpeedTest(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
+		if config.Config.Timeout > 0 {
+			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
+		}
 		healthcheck.SpeedTests(proxies, config.Config.Connection)
 	}
 	cache.SetString("clashproxies", provider.Clash{

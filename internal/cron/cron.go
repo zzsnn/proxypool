@@ -1,6 +1,7 @@
 package cron
 
 import (
+	"github.com/Sansui233/proxypool/config"
 	"runtime"
 
 	"github.com/Sansui233/proxypool/internal/app"
@@ -8,7 +9,7 @@ import (
 )
 
 func Cron() {
-	_ = gocron.Every(60).Minutes().Do(crawlTask)
+	_ = gocron.Every(config.Config.CronTime).Minutes().Do(crawlTask)
 	<-gocron.Start()
 }
 

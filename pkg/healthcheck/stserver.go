@@ -6,7 +6,6 @@ import (
 	"errors"
 	C "github.com/Dreamacro/clash/constant"
 	"math"
-	"sync"
 	"time"
 )
 
@@ -101,22 +100,18 @@ func distance(lat1 float64, lon1 float64, lat2 float64, lon2 float64) float64 {
 
 // StartTest : start testing to the servers.
 func (svrs Servers) StartTest(clashProxy C.Proxy) {
-	var wg sync.WaitGroup
 	for i, _ := range svrs {
-		wg.Add(1)
-		ii := i
-		go func() {
-			latency := pingTest(clashProxy, svrs[ii].URL)
-			if latency == time.Second*5 { // fail to get latency, skip
-				wg.Done()
-			} else {
-				dlSpeed := downloadTest(clashProxy, svrs[ii].URL, latency)
-				svrs[ii].DLSpeed = dlSpeed
-				wg.Done()
+		latency := pingTest(clashProxy, svrs[i].URL)
+		if latency == time.Second*5 { // fail to get latency, skip
+			continue
+		} else {
+			dlSpeed := downloadTest(clashProxy, svrs[i].URL, latency)
+			if dlSpeed > 0 {
+				svrs[i].DLSpeed = dlSpeed
+				break // once effective, end the test
 			}
-		}()
+		}
 	}
-	wg.Wait()
 }
 
 // GetResult : return testing result. -1 for no effective result
@@ -127,7 +122,7 @@ func (svrs Servers) GetResult() float64 {
 		avgDL := 0.0
 		count := 0
 		for _, s := range svrs {
-			if s.DLSpeed != 0 {
+			if s.DLSpeed > 0 {
 				avgDL = avgDL + s.DLSpeed
 				count++
 			}

@@ -177,6 +177,8 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 		weight = 5
 	} else if 5 < wuSpeed {
 		weight = 4
+	} else if 2.5 < wuSpeed {
+		weight = 3
 	} else { // if too slow, skip main test to save time
 		return wuSpeed
 	}

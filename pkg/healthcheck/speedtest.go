@@ -172,13 +172,10 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	wuSpeed := 1.125 * 8 * 2 / fTime.Sub(sTime.Add(latency)).Seconds()
 
 	// Decide workload by warm up speed. Weight is the level of size.
-	workload := 0
 	weight := 0
 	if 10.0 < wuSpeed {
-		workload = 1
 		weight = 5
 	} else if 5 < wuSpeed {
-		workload = 1
 		weight = 4
 	} else { // if too slow, skip main test to save time
 		return wuSpeed
@@ -193,7 +190,7 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	}
 	fTime = time.Now()
 	reqMB := dlSizes[weight] * dlSizes[weight] * 2 / 1000 / 1000
-	dlSpeed = float64(reqMB) * 8 * float64(workload) / fTime.Sub(sTime).Seconds()
+	dlSpeed = float64(reqMB) * 8 / fTime.Sub(sTime).Seconds()
 	if wuSpeed > dlSpeed {
 		return wuSpeed
 	}

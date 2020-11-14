@@ -47,7 +47,7 @@ func Parse(path string) error {
 
 	// set default
 	if Config.Connection <= 0 {
-		Config.Connection = 20
+		Config.Connection = 5
 	}
 	if Config.Port == "" {
 		Config.Port = "443"

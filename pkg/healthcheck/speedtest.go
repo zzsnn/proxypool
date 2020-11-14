@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
 	"github.com/Sansui233/proxypool/pkg/proxy"
@@ -59,7 +58,7 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 			}
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
-			fmt.Printf("\r\t[%5.1f%% DONE]", progress)
+			log.Printf("\r\t[%5.1f%% DONE]", progress)
 		}
 	}
 	pool.WaitAll()

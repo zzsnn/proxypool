@@ -142,23 +142,23 @@ func HTTPGetBodyViaProxy(clashProxy C.Proxy, url string) ([]byte, error) {
 	return body, nil
 }
 
-func HTTPGetBodyViaProxyWithTime(clashProxy C.Proxy, url string, t time.Duration) ([]byte, error) {
+func HTTPGetBodyForSpeedTest(clashProxy C.Proxy, url string, t time.Duration) error {
 	ctx, cancel := context.WithTimeout(context.Background(), t)
 	defer cancel()
 
 	addr, err := urlToMetadata(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	conn, err := clashProxy.DialContext(ctx, &addr) // 建立到proxy server的connection，对Proxy的类别做了自适应相当于泛型
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer conn.Close()
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	req = req.WithContext(ctx)
 
@@ -184,14 +184,14 @@ func HTTPGetBodyViaProxyWithTime(clashProxy C.Proxy, url string, t time.Duration
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
 	// read speedtest config file
-	body, err := ioutil.ReadAll(resp.Body)
+	_, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return body, nil
+	return nil
 }

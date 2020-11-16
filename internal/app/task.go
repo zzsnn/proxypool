@@ -83,7 +83,7 @@ func CrawlGo() {
 	database.SaveProxyList(proxies)
 	database.ClearOldItems()
 
-	log.Println("Usable checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
+	log.Println("Usablility checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
 	SpeedTest(proxies)
 }
 

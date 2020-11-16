@@ -100,7 +100,7 @@ func ClearOldItems() {
 		var count int64
 		DB.Model(&Proxy{}).Where("updated_at < ? AND useable = ?", lastWeek, false).Count(&count)
 		if count == 0 {
-			fmt.Println("Database: data is cleared")
+			fmt.Println("Database: Nothing old to sweep") // TODO always this line?
 		} else {
 			log.Println("\n\t\t[db/proxy.go] Delete old item failed: ", err)
 		}

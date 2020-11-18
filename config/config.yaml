@@ -1,6 +1,6 @@
 # your domain
 domain: example.com
-port:             # default 443
+port:             # default 12580
 
 # database dsn(postgresql)
 # 暂不支持远程数据库，留空以启用本地数据库默认连接参数

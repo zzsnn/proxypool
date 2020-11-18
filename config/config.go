@@ -50,7 +50,7 @@ func Parse(path string) error {
 		Config.Connection = 5
 	}
 	if Config.Port == "" {
-		Config.Port = "443"
+		Config.Port = "12580"
 	}
 	if Config.CronTime == 0 {
 		Config.CronTime = 60

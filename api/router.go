@@ -43,7 +43,6 @@ func setupRouter() {
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/index.html", gin.H{
 			"domain":               config.Config.Domain,
-			"port":                 config.Config.Port,
 			"getters_count":        appcache.GettersCount,
 			"all_proxies_count":    appcache.AllProxiesCount,
 			"ss_proxies_count":     appcache.SSProxiesCount,
@@ -59,21 +58,18 @@ func setupRouter() {
 	router.GET("/clash", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash.html", gin.H{
 			"domain": config.Config.Domain,
-			"port":   config.Config.Port,
 		})
 	})
 
 	router.GET("/surge", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/surge.html", gin.H{
 			"domain": config.Config.Domain,
-			"port":   config.Config.Port,
 		})
 	})
 
 	router.GET("/clash/config", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash-config.yaml", gin.H{
 			"domain": config.Config.Domain,
-			"port":   config.Config.Port,
 		})
 	})
 	router.GET("/clash/localconfig", func(c *gin.Context) {
@@ -83,7 +79,6 @@ func setupRouter() {
 	router.GET("/surge/config", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/surge.conf", gin.H{
 			"domain": config.Config.Domain,
-			"port":   config.Config.Port,
 		})
 	})
 
@@ -241,7 +236,9 @@ func Run() {
 	// Run on this server
 	err := router.Run(":" + servePort)
 	if err != nil {
-		log.Fatal("[router.go] Remote server starting failed. Make sure your port has not been used", err)
+		log.Fatal("[router.go] Remote server starting failed. Make sure your port", servePort, "has not been used", err)
+	} else {
+		log.Println("Run on port", servePort)
 	}
 }
 

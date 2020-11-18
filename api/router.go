@@ -241,7 +241,7 @@ func Run() {
 	// Run on this server
 	err := router.Run(":" + servePort)
 	if err != nil {
-		log.Fatal("[router.go] Remote server starting failed")
+		log.Fatal("[router.go] Remote server starting failed. Make sure your port has not been used", err)
 	}
 }
 

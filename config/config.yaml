@@ -2,23 +2,24 @@
 domain: example.com
 port:             # default 12580
 
-# database dsn(postgresql)
-# 暂不支持远程数据库，留空以启用本地数据库默认连接参数
-database_url: ""
-
-# time duration between each execution
-crontime:   # default 60
-
-# cloudflare api
-cf_email: ""
-cf_key: ""
-
 # source definition file
 source-files:
   # use local file
   - ./config/source.yaml
   # use web file
-#  - https://example.com/config/source.yaml
+  # - https://example.com/config/source.yaml
+
+# (optinal) postgresql database info
+database_url: ""
+
+# time duration between each execution
+crontime:         # default 60
+
+# (optinal) cloudflare api
+cf_email: ""
+cf_key: ""
+
+
 
 # speedtest
 speedtest: false  # default false. Warning: this will consume large net resource.

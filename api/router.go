@@ -58,6 +58,7 @@ func setupRouter() {
 	router.GET("/clash", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash.html", gin.H{
 			"domain": config.Config.Domain,
+			"port": config.Config.Port,
 		})
 	})
 
@@ -73,7 +74,9 @@ func setupRouter() {
 		})
 	})
 	router.GET("/clash/localconfig", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "assets/html/clash-config-local.yaml", gin.H{})
+		c.HTML(http.StatusOK, "assets/html/clash-config-local.yaml", gin.H{
+			"port": config.Config.Port,
+		})
 	})
 
 	router.GET("/surge/config", func(c *gin.Context) {
@@ -236,9 +239,9 @@ func Run() {
 	// Run on this server
 	err := router.Run(":" + servePort)
 	if err != nil {
-		log.Fatal("[router.go] Remote server starting failed. Make sure your port", servePort, "has not been used", err)
+		log.Fatal("[router.go] Web server starting failed. Make sure your port [", servePort, "] has not been used.", err)
 	} else {
-		log.Println("Run on port", servePort)
+		log.Println("Proxypool is serving on port: ", servePort)
 	}
 }
 

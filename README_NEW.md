@@ -4,8 +4,7 @@ Clash客户端支持：
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。
 
 TODO
--[ ] 自定义更新间隔
--[ ] 打印日志。手工Debug太难了。
+- [ ] 储存日志。
 
 ## New
 
@@ -57,4 +56,5 @@ TODO
 
 2020-10-09
 - 增加本地http运行用的配置文件  
+  
     > clash的本地配置文件位于127.0.0.1:8080/clash/localconfig

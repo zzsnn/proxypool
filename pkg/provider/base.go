@@ -3,6 +3,7 @@ package provider
 import (
 	"fmt"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
+	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -26,6 +27,12 @@ type Base struct {
 func (b *Base) preFilter() {
 	proxies := make(proxy.ProxyList, 0)
 
+	if ok := checkErrorProxies(*b.Proxies); !ok {
+		log.Println("[provider/base.go] Nothing to provide")
+		b.Proxies = &proxies
+		return
+	}
+
 	needFilterType := true
 	needFilterCountry := true
 	needFilterNotCountry := true
@@ -45,8 +52,7 @@ func (b *Base) preFilter() {
 	types := strings.Split(b.Types, ",")
 	countries := strings.Split(b.Country, ",")
 	notCountries := strings.Split(b.NotCountry, ",")
-	speed := strings.Split(b.Speed, ",")
-	speedMin, speedMax := checkSpeed(speed)
+	speedMin, speedMax := checkSpeed(strings.Split(b.Speed, ","))
 
 	if speedMin == -1 {
 		needFilterSpeed = false
@@ -88,21 +94,27 @@ func (b *Base) preFilter() {
 			}
 		}
 
-		if needFilterSpeed && healthcheck.SpeedResults != nil {
-			if speed, ok := healthcheck.SpeedResults[p.Identifier()]; ok {
-				// clear history result on name
-				names := strings.Split(p.BaseInfo().Name, " |")
-				if len(names) > 1 {
-					p.BaseInfo().Name = names[0]
-				}
-				// check speed
-				if speed > speedMin && speed < speedMax {
-					p.AddToName(fmt.Sprintf(" |%5.2fMb", speed))
+		if needFilterSpeed && len(healthcheck.PStats) != 0 {
+			if ps, ok := healthcheck.PStats.Find(p); ok {
+				if ps.Speed != 0 {
+					// clear history speed tag
+					names := strings.Split(p.BaseInfo().Name, " |")
+					if len(names) > 1 {
+						p.BaseInfo().Name = names[0]
+					}
+					// check speed
+					if ps.Speed > speedMin && ps.Speed < speedMax {
+						p.AddToName(fmt.Sprintf(" |%5.2fMb", ps.Speed))
+					} else {
+						goto exclude
+					}
 				} else {
-					goto exclude
+					if speedMin != 0 { // still show 0 speed proxy when speed Min is 0
+						goto exclude
+					}
 				}
 			} else {
-				if speedMin != 0 { // still show no speed proxy when speed Min is 0
+				if speedMin != 0 { // still show no speed result proxy when speed Min is 0
 					goto exclude
 				}
 			}
@@ -118,6 +130,19 @@ func (b *Base) preFilter() {
 	}
 
 	b.Proxies = &proxies
+}
+
+func checkErrorProxies(proxies []proxy.Proxy) bool {
+	if proxies == nil {
+		return false
+	}
+	if len(proxies) == 0 {
+		return false
+	}
+	if proxies[0] == nil {
+		return false
+	}
+	return true
 }
 
 func checkSpeed(speed []string) (speedMin float64, speedMax float64) {

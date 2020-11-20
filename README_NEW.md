@@ -7,6 +7,7 @@ TODO
 - [ ] 储存日志。
 
 ## New
+- 重构healthcheck
 
 2020-11-18
 - 修改前端逻辑。config文件中的port不再影响前端。前端订阅强制使用https+443端口。

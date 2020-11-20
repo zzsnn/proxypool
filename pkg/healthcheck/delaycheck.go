@@ -1,11 +1,9 @@
 package healthcheck
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/Sansui233/proxypool/pkg/proxy"
-	"sync"
 	"time"
 
 	"github.com/ivpusic/grpool"
@@ -13,21 +11,13 @@ import (
 	"github.com/Dreamacro/clash/adapters/outbound"
 )
 
-// SpeedResults is a map of proxy.Identifier -> delayresult
-var DelayResults map[string]uint16
-
-type delayResult struct {
-	name  string
-	delay uint16
-}
-
 const defaultURLTestTimeout = time.Second * 5
 
 func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// Note: Grpool实现对go并发管理的封装，主要是在数据量大时减少内存占用，不会提高效率。
 	pool := grpool.NewPool(500, 200)
 
-	c := make(chan delayResult)
+	c := make(chan *Stat)
 	defer close(c)
 
 	pool.WaitCount(len(proxies))
@@ -39,9 +29,16 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 				defer pool.JobDone()
 				delay, err := testDelay(pp)
 				if err == nil {
-					c <- delayResult{
-						name:  pp.Identifier(),
-						delay: delay,
+					if ps, ok := PStats.Find(p); ok {
+						ps.UpdatePSDelay(delay)
+						c <- ps
+					} else {
+						ps = &Stat{
+							Id:    pp.Identifier(),
+							Delay: delay,
+						}
+						PStats = append(PStats, *ps)
+						c <- ps
 					}
 				}
 			}
@@ -57,18 +54,15 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	}()
 
 	okMap := make(map[string]struct{})
-	if DelayResults == nil {
-		DelayResults = make(map[string]uint16)
-	}
-	for { // Note: 无限循环，直到能读取到done。处理并发也算是挺有创意的写法
+	for { // Note: 无限循环，直到能读取到done
 		select {
-		case r := <-c:
-			if r.delay > 0 {
-				DelayResults[r.name] = r.delay
-				okMap[r.name] = struct{}{}
+		case ps := <-c:
+			if ps.Delay > 0 {
+				okMap[ps.Id] = struct{}{}
 			}
 		case <-done:
 			cproxies = make(proxy.ProxyList, 0, 500) // 定义返回的proxylist
+			// check usable proxy
 			for _, p := range proxies {
 				if _, ok := okMap[p.Identifier()]; ok {
 					cproxies = append(cproxies, p.Clone())
@@ -97,49 +91,57 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), defaultURLTestTimeout)
-	delay, err = clashProxy.URLTest(ctx, "http://www.gstatic.com/generate_204")
-	cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), defaultURLTestTimeout)
+	//delay, err = clashProxy.URLTest(ctx, "http://www.gstatic.com/generate_204")
+	//cancel()
+
+	sTime := time.Now()
+	err = HTTPHeadViaProxy(clashProxy, "http://www.gstatic.com/generate_204")
+	if err != nil {
+		return
+	}
+	fTime := time.Now()
+	delay = uint16(fTime.Sub(sTime) / time.Millisecond)
 	return delay, err
 }
 
-func testProxyDelayToChan(p proxy.Proxy, c chan delayResult, wg *sync.WaitGroup) {
-	defer wg.Done()
-	delay, err := testDelay(p)
-	if err == nil {
-		c <- delayResult{
-			name:  p.Identifier(),
-			delay: delay,
-		}
-	}
-}
+//func testProxyDelayToChan(p proxy.Proxy, c chan delayResult, wg *sync.WaitGroup) {
+//	defer wg.Done()
+//	delay, err := testDelay(p)
+//	if err == nil {
+//		c <- delayResult{
+//			name:  p.Identifier(),
+//			delay: delay,
+//		}
+//	}
+//}
 
-func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
-	c := make(chan delayResult, 40)
-	wg := &sync.WaitGroup{}
-	wg.Add(len(proxies))
-	for _, p := range proxies {
-		go testProxyDelayToChan(p, c, wg)
-	}
-	go func() {
-		wg.Wait()
-		close(c)
-	}()
-
-	okMap := make(map[string]struct{})
-	for r := range c {
-		if r.delay > 0 {
-			okMap[r.name] = struct{}{}
-		}
-	}
-	cproxies = make(proxy.ProxyList, 0, 500)
-	for _, p := range proxies {
-		if _, ok := okMap[p.Identifier()]; ok {
-			p.SetUseable(true)
-			cproxies = append(cproxies, p.Clone())
-		} else {
-			p.SetUseable(false)
-		}
-	}
-	return
-}
+//func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
+//	c := make(chan delayResult, 40)
+//	wg := &sync.WaitGroup{}
+//	wg.Add(len(proxies))
+//	for _, p := range proxies {
+//		go testProxyDelayToChan(p, c, wg)
+//	}
+//	go func() {
+//		wg.Wait()
+//		close(c)
+//	}()
+//
+//	okMap := make(map[string]struct{})
+//	for r := range c {
+//		if r.delay > 0 {
+//			okMap[r.name] = struct{}{}
+//		}
+//	}
+//	cproxies = make(proxy.ProxyList, 0, 500)
+//	for _, p := range proxies {
+//		if _, ok := okMap[p.Identifier()]; ok {
+//			p.SetUseable(true)
+//			cproxies = append(cproxies, p.Clone())
+//		} else {
+//			p.SetUseable(false)
+//		}
+//	}
+//	return
+//}

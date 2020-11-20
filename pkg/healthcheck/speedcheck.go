@@ -19,11 +19,11 @@ import (
 
 var SpeedTimeout = time.Second * 10
 
-// SpeedResults is a map of proxy.Identifier -> speedresult
-var SpeedResults map[string]float64
-
-// SpeedTests tests speed for a group of proxies. Results are stored in SpeedResults
-func SpeedTests(proxies []proxy.Proxy, conns int) {
+// SpeedTestAll tests speed for a group of proxies. Results are stored in PStats
+func SpeedTestAll(proxies []proxy.Proxy, conns int) {
+	if ok := checkErrorProxies(proxies); !ok {
+		return
+	}
 	numWorker := conns
 	if numWorker <= 0 {
 		numWorker = 5
@@ -32,12 +32,9 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 	if numWorker > 4 {
 		numJob = (numWorker + 2) / 4
 	}
+	resultCount := 0
 
 	log.Println("Speed Test ON")
-	var lock = sync.Mutex{}
-	if SpeedResults == nil {
-		SpeedResults = make(map[string]float64)
-	}
 	doneCount := 0
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
@@ -46,16 +43,17 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 		pp := p
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
-			result, err := ProxySpeedTest(pp)
-			if err == nil || result > 0 {
-				if r, ok := SpeedResults[pp.Identifier()]; ok {
-					if r < 60 {
-						result = 0.3*r + 0.7*result
-					}
+			speed, err := ProxySpeedTest(pp)
+			if err == nil || speed > 0 {
+				if proxyStat, ok := PStats.Find(pp); ok {
+					proxyStat.UpdatePSSpeed(speed)
+				} else {
+					PStats = append(PStats, Stat{
+						Id:    pp.Identifier(),
+						Speed: speed,
+					})
 				}
-				lock.Lock()
-				SpeedResults[pp.Identifier()] = result
-				lock.Unlock()
+				resultCount++
 			}
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
@@ -64,7 +62,58 @@ func SpeedTests(proxies []proxy.Proxy, conns int) {
 	}
 	pool.WaitAll()
 	pool.Release()
-	log.Println("\nSpeed Test Done. Count all speed results:", len(SpeedResults))
+	log.Println("\nSpeed Test Done. Count all speed results:", resultCount)
+}
+
+// SpeedTestNew tests speed for new proxies which is not in PStats. Then appended to PStats
+func SpeedTestNew(proxies []proxy.Proxy, conns int) {
+	if ok := checkErrorProxies(proxies); !ok {
+		return
+	}
+	numWorker := conns
+	if numWorker <= 0 {
+		numWorker = 5
+	}
+	numJob := 1
+	if numWorker > 4 {
+		numJob = (numWorker + 2) / 4
+	}
+	resultCount := 0
+
+	log.Println("Speed Test ON")
+	doneCount := 0
+	// use grpool
+	pool := grpool.NewPool(numWorker, numJob)
+	pool.WaitCount(len(proxies))
+	for _, p := range proxies {
+		pp := p
+		pool.JobQueue <- func() {
+			defer pool.JobDone()
+			if proxyStat, ok := PStats.Find(pp); !ok {
+				// when ProxyStat not exits
+				speed, err := ProxySpeedTest(pp)
+				if err == nil || speed > 0 {
+					PStats = append(PStats, Stat{
+						Id:    pp.Identifier(),
+						Speed: speed,
+					})
+					resultCount++
+				}
+			} else if proxyStat.Speed == 0 {
+				speed, err := ProxySpeedTest(pp)
+				if err == nil || speed > 0 {
+					proxyStat.UpdatePSSpeed(speed)
+					resultCount++
+				}
+			}
+			doneCount++
+			progress := float64(doneCount) * 100 / float64(len(proxies))
+			fmt.Printf("\r\t[%5.1f%% DONE]", progress)
+		}
+	}
+	pool.WaitAll()
+	pool.Release()
+	log.Println("\nSpeed Test Done. New speed results count:", resultCount)
 }
 
 // ProxySpeedTest returns a speed result for a proxy. The speed result is like 20Mbit/s. -1 for error.

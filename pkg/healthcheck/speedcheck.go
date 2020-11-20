@@ -62,7 +62,8 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	}
 	pool.WaitAll()
 	pool.Release()
-	log.Println("\nSpeed Test Done. Count all speed results:", resultCount)
+	fmt.Println()
+	log.Println("Speed Test Done. Count all speed results:", resultCount)
 }
 
 // SpeedTestNew tests speed for new proxies which is not in PStats. Then appended to PStats
@@ -113,7 +114,8 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	}
 	pool.WaitAll()
 	pool.Release()
-	log.Println("\nSpeed Test Done. New speed results count:", resultCount)
+	fmt.Println()
+	log.Println("Speed Test Done. New speed results count:", resultCount)
 }
 
 // ProxySpeedTest returns a speed result for a proxy. The speed result is like 20Mbit/s. -1 for error.

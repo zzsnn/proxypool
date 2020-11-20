@@ -13,16 +13,17 @@ import (
 var configFilePath = "config.yaml"
 
 type ConfigOptions struct {
-	Domain      string   `json:"domain" yaml:"domain"`
-	Port        string   `json:"port" yaml:"port"`
-	DatabaseUrl string   `json:"database_url" yaml:"database_url"`
-	CronTime    uint64   `json:"crontime" yaml:"crontime"`
-	CFEmail     string   `json:"cf_email" yaml:"cf_email"`
-	CFKey       string   `json:"cf_key" yaml:"cf_key"`
-	SourceFiles []string `json:"source-files" yaml:"source-files"`
-	SpeedTest   bool     `json:"speedtest" yaml:"speedtest"`
-	Connection  int      `json:"connection" yaml:"connection"`
-	Timeout     int      `json:"timeout" yaml:"timeout"`
+	Domain            string   `json:"domain" yaml:"domain"`
+	Port              string   `json:"port" yaml:"port"`
+	DatabaseUrl       string   `json:"database_url" yaml:"database_url"`
+	CronTime          uint64   `json:"crontime" yaml:"crontime"`
+	CFEmail           string   `json:"cf_email" yaml:"cf_email"`
+	CFKey             string   `json:"cf_key" yaml:"cf_key"`
+	SourceFiles       []string `json:"source-files" yaml:"source-files"`
+	SpeedTest         bool     `json:"speedtest" yaml:"speedtest"`
+	SpeedTestInterval uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
+	Connection        int      `json:"connection" yaml:"connection"`
+	Timeout           int      `json:"timeout" yaml:"timeout"`
 }
 
 // Config 配置
@@ -54,6 +55,9 @@ func Parse(path string) error {
 	}
 	if Config.CronTime == 0 {
 		Config.CronTime = 60
+	}
+	if Config.SpeedTestInterval == 0 {
+		Config.SpeedTestInterval = 12
 	}
 
 	// 部分配置环境变量优先

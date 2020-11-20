@@ -86,11 +86,10 @@ func CrawlGo() {
 	log.Println("Usablility checking done. Open", config.Config.Domain+":"+config.Config.Port, "to check")
 
 	// 测速
-	// TODO DEBUG
-	// proxies = proxies[:20]
 	speedTestNew(proxies)
 }
 
+// Speed test for new proxies
 func speedTestNew(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
@@ -111,6 +110,7 @@ func speedTestNew(proxies proxy.ProxyList) {
 	}.Provide())
 }
 
+// Speed test for all proxies
 func SpeedTest(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {

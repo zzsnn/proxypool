@@ -5,9 +5,11 @@ Clash客户端支持：
 
 TODO
 - [ ] 储存日志。
+- [ ] external api for config update
 
 ## New
 - 重构healthcheck
+- 分离节点抓取与测速，增加自定义测速间隔，减缓节点过多时的服务器流量压力
 
 2020-11-18
 - 修改前端逻辑。config文件中的port不再影响前端。前端订阅强制使用https+443端口。

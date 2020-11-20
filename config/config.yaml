@@ -13,15 +13,14 @@ source-files:
 database_url: ""
 
 # time duration between each execution
-crontime:         # default 60
+crontime:         # default 60min
+
+# speedtest
+speedtest-interval:   # default 12 hours
+speedtest: false  # default false. Warning: this will consume large net resource.
+connection:       # default 5.
+timeout:          # default 10 (seconds).
 
 # (optinal) cloudflare api
 cf_email: ""
 cf_key: ""
-
-
-
-# speedtest
-speedtest: false  # default false. Warning: this will consume large net resource.
-connection:       # default 5.
-timeout:          # default 10 (seconds).

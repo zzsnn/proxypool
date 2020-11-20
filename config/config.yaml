@@ -12,14 +12,19 @@ source-files:
 # (optinal) postgresql database info
 database_url: ""
 
-# time duration between each execution
-crontime:         # default 60min
+# interval between each execution
+cron-interval:            # default 60 min
 
 # speedtest
 speedtest-interval:   # default 12 hours
-speedtest: false  # default false. Warning: this will consume large net resource.
-connection:       # default 5.
-timeout:          # default 10 (seconds).
+speedtest:            # default false. Warning: this will consume large net resource.
+connection:           # default 5.
+timeout:              # default 10 (seconds).
+
+# active proxy check
+active-interval:      # default 1h
+active-frequency:     # default 80/h
+
 
 # (optinal) cloudflare api
 cf_email: ""

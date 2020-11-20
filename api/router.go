@@ -19,7 +19,7 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 )
 
-const version = "v0.4.4"
+const version = "v0.5.0"
 
 var router *gin.Engine
 
@@ -58,7 +58,7 @@ func setupRouter() {
 	router.GET("/clash", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/clash.html", gin.H{
 			"domain": config.Config.Domain,
-			"port": config.Config.Port,
+			"port":   config.Config.Port,
 		})
 	})
 

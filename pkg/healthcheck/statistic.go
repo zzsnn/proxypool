@@ -2,6 +2,7 @@ package healthcheck
 
 import "github.com/Sansui233/proxypool/pkg/proxy"
 
+// Statistic for a proxy
 type Stat struct {
 	Speed    float64
 	Delay    uint16
@@ -9,6 +10,7 @@ type Stat struct {
 	Id       string
 }
 
+// Statistic array for proxies
 type StatList []Stat
 
 // Global var
@@ -46,4 +48,23 @@ func (pss StatList) Find(p proxy.Proxy) (*Stat, bool) {
 		}
 	}
 	return nil, false
+}
+
+// Return proxies that request count more than a given nubmer
+// todo 不该人为指定n，不同时段不同服务器都有差别，计算比例有可能更好，流量也
+func (pss StatList) ReqCountThan(n uint16, pl []proxy.Proxy, reset bool) []proxy.Proxy {
+	proxies := make([]proxy.Proxy, 0)
+	for _, p := range pl {
+		for j, _ := range pss {
+			if pss[j].ReqCount > n && p.Identifier() == pss[j].Id {
+				proxies = append(proxies, p)
+			}
+		}
+	}
+	if reset {
+		for i, _ := range pss {
+			pss[i].ReqCount = 0
+		}
+	}
+	return proxies
 }

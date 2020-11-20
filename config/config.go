@@ -16,7 +16,7 @@ type ConfigOptions struct {
 	Domain            string   `json:"domain" yaml:"domain"`
 	Port              string   `json:"port" yaml:"port"`
 	DatabaseUrl       string   `json:"database_url" yaml:"database_url"`
-	CronTime          uint64   `json:"crontime" yaml:"crontime"`
+	CronInterval      uint64   `json:"cron-interval" yaml:"cron-interval"`
 	CFEmail           string   `json:"cf_email" yaml:"cf_email"`
 	CFKey             string   `json:"cf_key" yaml:"cf_key"`
 	SourceFiles       []string `json:"source-files" yaml:"source-files"`
@@ -24,6 +24,8 @@ type ConfigOptions struct {
 	SpeedTestInterval uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
 	Connection        int      `json:"connection" yaml:"connection"`
 	Timeout           int      `json:"timeout" yaml:"timeout"`
+	ActiveFrequency   uint16   `json:"active-frequency" yaml:"active-frequency" `
+	ActiveInterval    uint64   `json:"active-interval" yaml:"active-interval"`
 }
 
 // Config 配置
@@ -53,11 +55,17 @@ func Parse(path string) error {
 	if Config.Port == "" {
 		Config.Port = "12580"
 	}
-	if Config.CronTime == 0 {
-		Config.CronTime = 60
+	if Config.CronInterval == 0 {
+		Config.CronInterval = 60
 	}
 	if Config.SpeedTestInterval == 0 {
 		Config.SpeedTestInterval = 12
+	}
+	if Config.ActiveInterval == 0 {
+		Config.ActiveInterval = 1
+	}
+	if Config.ActiveFrequency == 0 {
+		Config.ActiveFrequency = 100
 	}
 
 	// 部分配置环境变量优先

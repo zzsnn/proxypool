@@ -40,16 +40,12 @@
 
 > heroku app域名为appname.herokuapp.com。项目内配置文件为./config/config.yaml
 
-配置文件模板见 config/config.yaml 文件
-
-`CF` 开头的选项暂不需要填写，不影响程序运行
+配置文件模板见 config/config.yaml 文件，可选项区域均可不填。完整配置选项请查看[配置文件说明](https://github.com/Sansui233/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)。
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 > 因为爬虫程序需要持续运行，所以至少选择 $7/月 的配置
 > 免费配置长时间无人访问会被heroku强制停止
-
-数据库使用的是PostgreSQL, 没有数据库不影响程序的基本运行。如果使用heroku只需要添加一个Addon，如果是自托管需要自己进行安装
 
 ### 从源码编译
 
@@ -85,9 +81,7 @@ docker pull docker.pkg.github.com/Sansui233/proxypool/proxypool:latest
 
 ### 修改配置文件
 
-首先修改 config.yaml 中的必要配置信息，cf开头的选项不需要填写
-
-source.yaml 文件中定义了抓取源，需要定期手动维护更新
+首先修改 config.yaml 中的必要配置信息。带有默认值的字段均可不填写。完整的配置选项见[配置文件说明](https://github.com/Sansui233/proxypool/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)
 
 ### 启动程序
 

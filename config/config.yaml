@@ -15,18 +15,18 @@ source-files:
 database_url: ""
 
 # interval between each crawling
-cron-interval:        #  v0.5.x default 60 min
-crontime:            #  v0.4.x default 60 min. Deprecated in the newiest version
+cron-interval:        #  v0.5.x default 60 (minutes)
+crontime:             #  v0.4.x default 60 (minutes). Deprecated in the newiest version
 
 # speed test
 speedtest: false      # default false. Warning: this will consume large network resources.
-speedtest-interval:   # default 12 hours
-connection:           # default 5.
+speedtest-interval:   # default 12 (hours)
+connection:           # default 5. The number of speed test connections simultaneously
 timeout:              # default 10 (seconds).
 
 # active proxy check
-active-interval:      # default 1h
-active-frequency:     # default 100/h
+active-interval:      # default 1 (hour)
+active-frequency:     # default 100 (requests per hour)
 
 # cloudflare api
 cf_email: ""

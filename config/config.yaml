@@ -20,11 +20,10 @@ crontime:             #  v0.4.x default 60 (minutes). Deprecated in the newiest 
 
 # speed test
 speedtest: false      # default false. Warning: this will consume large network resources.
-speedtest-interval:   # default 720 (min) 12 hours
+speedtest-interval:   # default 720 (min)
 connection:           # default 5. The number of speed test connections simultaneously
 timeout:              # default 10 (seconds).
-
-# active proxy check
+## active proxy speed test
 active-interval:      # default 60 (min)
 active-frequency:     # default 100 (requests per hour)
 

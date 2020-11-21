@@ -12,9 +12,9 @@ import (
 )
 
 func Cron() {
-	_ = gocron.Every(config.Config.CronInterval).Minutes().Do(crawlTask)
-	_ = gocron.Every(config.Config.SpeedTestInterval).Hour().Do(speedTestTask)
-	_ = gocron.Every(config.Config.ActiveInterval).Hour().Do(frequentSpeedTestTask)
+	_ = gocron.Every(config.Config.CrawlInterval).Minutes().Do(crawlTask)
+	_ = gocron.Every(config.Config.SpeedTestInterval).Minutes().Do(speedTestTask)
+	_ = gocron.Every(config.Config.ActiveInterval).Minutes().Do(frequentSpeedTestTask)
 	<-gocron.Start()
 }
 

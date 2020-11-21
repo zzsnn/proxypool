@@ -16,7 +16,7 @@ type ConfigOptions struct {
 	Domain            string   `json:"domain" yaml:"domain"`
 	Port              string   `json:"port" yaml:"port"`
 	DatabaseUrl       string   `json:"database_url" yaml:"database_url"`
-	CronInterval      uint64   `json:"cron-interval" yaml:"cron-interval"`
+	CrawlInterval     uint64   `json:"crawl-interval" yaml:"crawl-interval"`
 	CFEmail           string   `json:"cf_email" yaml:"cf_email"`
 	CFKey             string   `json:"cf_key" yaml:"cf_key"`
 	SourceFiles       []string `json:"source-files" yaml:"source-files"`
@@ -55,14 +55,14 @@ func Parse(path string) error {
 	if Config.Port == "" {
 		Config.Port = "12580"
 	}
-	if Config.CronInterval == 0 {
-		Config.CronInterval = 60
+	if Config.CrawlInterval == 0 {
+		Config.CrawlInterval = 60
 	}
 	if Config.SpeedTestInterval == 0 {
-		Config.SpeedTestInterval = 12
+		Config.SpeedTestInterval = 720
 	}
 	if Config.ActiveInterval == 0 {
-		Config.ActiveInterval = 1
+		Config.ActiveInterval = 60
 	}
 	if Config.ActiveFrequency == 0 {
 		Config.ActiveFrequency = 100

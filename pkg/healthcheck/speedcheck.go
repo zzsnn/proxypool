@@ -217,10 +217,10 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	// Warming up
 	sTime := time.Now()
 	err := dlWarmUp(clashProxy, dlURL)
+	fTime := time.Now()
 	if err != nil {
 		return 0
 	}
-	fTime := time.Now()
 	// 1.125MB for each request (750 * 750 * 2)
 	wuSpeed := 1.125 * 8 * 2 / fTime.Sub(sTime.Add(latency)).Seconds()
 
@@ -240,15 +240,12 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 	dlSpeed := wuSpeed
 	sTime = time.Now()
 	err = downloadRequest(clashProxy, dlURL, weight)
-	if err != nil && errors.Is(err, context.DeadlineExceeded) {
-		return wuSpeed
-	}
 	fTime = time.Now()
+	if err != nil && errors.Is(err, context.DeadlineExceeded) {
+		return wuSpeed // todo Incorrect Result
+	}
 	reqMB := dlSizes[weight] * dlSizes[weight] * 2 / 1000 / 1000
 	dlSpeed = float64(reqMB) * 8 / fTime.Sub(sTime).Seconds()
-	if wuSpeed > dlSpeed {
-		return wuSpeed
-	}
 	return dlSpeed
 }
 

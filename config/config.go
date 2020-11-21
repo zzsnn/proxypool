@@ -26,6 +26,7 @@ type ConfigOptions struct {
 	Timeout           int      `json:"timeout" yaml:"timeout"`
 	ActiveFrequency   uint16   `json:"active-frequency" yaml:"active-frequency" `
 	ActiveInterval    uint64   `json:"active-interval" yaml:"active-interval"`
+	ActiveMaxNumber   uint16   `json:"active-max-number" yaml:"active-max-number"`
 }
 
 // Config 配置
@@ -66,6 +67,9 @@ func Parse(path string) error {
 	}
 	if Config.ActiveFrequency == 0 {
 		Config.ActiveFrequency = 100
+	}
+	if Config.ActiveMaxNumber == 0 {
+		Config.ActiveMaxNumber = 100
 	}
 
 	// 部分配置环境变量优先

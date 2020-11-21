@@ -50,8 +50,8 @@ func frequentSpeedTestTask() {
 	_ = config.Parse("")
 	pl_all := cache.GetProxies("proxies")
 	pl := healthcheck.ProxyStats.ReqCountThan(config.Config.ActiveFrequency, pl_all, true)
-	if len(pl) > 200 {
-		pl = healthcheck.ProxyStats.SortProxiesBySpeed(pl)[:200]
+	if len(pl) > int(config.Config.ActiveMaxNumber) {
+		pl = healthcheck.ProxyStats.SortProxiesBySpeed(pl)[:config.Config.ActiveMaxNumber]
 	}
 	log.Println("Active proxies count:", len(pl))
 

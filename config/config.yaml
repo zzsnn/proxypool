@@ -2,20 +2,23 @@
 domain: example.com
 port:                 # default 12580
 
-# source definition file
+# source list file
 source-files:
   # use local file
   - ./config/source.yaml
   # use web file
   # - https://example.com/config/source.yaml
 
-# (optinal) postgresql database info
+# ======= 可选项，留空使用default值  =======
+
+# postgresql database info
 database_url: ""
 
-# interval between each execution
-cron-interval:        # default 60 min
+# interval between each crawling
+cron-interval:        #  v0.5.x default 60 min
+crontime:            #  v0.4.x default 60 min. Deprecated in the newiest version
 
-# speedtest
+# speed test
 speedtest: false      # default false. Warning: this will consume large network resources.
 speedtest-interval:   # default 12 hours
 connection:           # default 5.
@@ -25,6 +28,6 @@ timeout:              # default 10 (seconds).
 active-interval:      # default 1h
 active-frequency:     # default 100/h
 
-# (optinal) cloudflare api
+# cloudflare api
 cf_email: ""
 cf_key: ""

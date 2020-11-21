@@ -29,7 +29,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 				defer pool.JobDone()
 				delay, err := testDelay(pp)
 				if err == nil {
-					if ps, ok := PStats.Find(p); ok {
+					if ps, ok := ProxyStats.Find(p); ok {
 						ps.UpdatePSDelay(delay)
 						c <- ps
 					} else {
@@ -37,7 +37,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 							Id:    pp.Identifier(),
 							Delay: delay,
 						}
-						PStats = append(PStats, *ps)
+						ProxyStats = append(ProxyStats, *ps)
 						c <- ps
 					}
 				}
@@ -91,10 +91,6 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 		return
 	}
 
-	//ctx, cancel := context.WithTimeout(context.Background(), defaultURLTestTimeout)
-	//delay, err = clashProxy.URLTest(ctx, "http://www.gstatic.com/generate_204")
-	//cancel()
-
 	sTime := time.Now()
 	err = HTTPHeadViaProxy(clashProxy, "http://www.gstatic.com/generate_204")
 	if err != nil {
@@ -102,46 +98,6 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 	}
 	fTime := time.Now()
 	delay = uint16(fTime.Sub(sTime) / time.Millisecond)
+
 	return delay, err
 }
-
-//func testProxyDelayToChan(p proxy.Proxy, c chan delayResult, wg *sync.WaitGroup) {
-//	defer wg.Done()
-//	delay, err := testDelay(p)
-//	if err == nil {
-//		c <- delayResult{
-//			name:  p.Identifier(),
-//			delay: delay,
-//		}
-//	}
-//}
-
-//func CleanBadProxies(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
-//	c := make(chan delayResult, 40)
-//	wg := &sync.WaitGroup{}
-//	wg.Add(len(proxies))
-//	for _, p := range proxies {
-//		go testProxyDelayToChan(p, c, wg)
-//	}
-//	go func() {
-//		wg.Wait()
-//		close(c)
-//	}()
-//
-//	okMap := make(map[string]struct{})
-//	for r := range c {
-//		if r.delay > 0 {
-//			okMap[r.name] = struct{}{}
-//		}
-//	}
-//	cproxies = make(proxy.ProxyList, 0, 500)
-//	for _, p := range proxies {
-//		if _, ok := okMap[p.Identifier()]; ok {
-//			p.SetUseable(true)
-//			cproxies = append(cproxies, p.Clone())
-//		} else {
-//			p.SetUseable(false)
-//		}
-//	}
-//	return
-//}

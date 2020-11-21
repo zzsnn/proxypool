@@ -5,6 +5,7 @@ import (
 	"github.com/Sansui233/proxypool/internal/cache"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"github.com/Sansui233/proxypool/pkg/provider"
+	"log"
 	"runtime"
 
 	"github.com/Sansui233/proxypool/internal/app"
@@ -26,8 +27,10 @@ func crawlTask() {
 }
 
 func speedTestTask() {
+	log.Println("Doing speed test task...")
 	_ = config.Parse("")
 	pl := cache.GetProxies("proxies")
+
 	app.SpeedTest(pl)
 	cache.SetString("clashproxies", provider.Clash{
 		provider.Base{
@@ -43,9 +46,15 @@ func speedTestTask() {
 }
 
 func frequentSpeedTestTask() {
+	log.Println("Doing speed test task for active proxies...")
 	_ = config.Parse("")
 	pl_all := cache.GetProxies("proxies")
-	pl := healthcheck.PStats.ReqCountThan(config.Config.ActiveFrequency, pl_all, true)
+	pl := healthcheck.ProxyStats.ReqCountThan(config.Config.ActiveFrequency, pl_all, true)
+	if len(pl) > 200 {
+		pl = healthcheck.ProxyStats.SortProxiesBySpeed(pl)[:200]
+	}
+	log.Println("Active proxies count:", len(pl))
+
 	app.SpeedTest(pl)
 	cache.SetString("clashproxies", provider.Clash{
 		provider.Base{

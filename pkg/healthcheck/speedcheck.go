@@ -19,7 +19,7 @@ import (
 
 var SpeedTimeout = time.Second * 10
 
-// SpeedTestAll tests speed for a group of proxies. Results are stored in PStats
+// SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
 func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	if ok := checkErrorProxies(proxies); !ok {
 		return
@@ -45,10 +45,10 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 			defer pool.JobDone()
 			speed, err := ProxySpeedTest(pp)
 			if err == nil || speed > 0 {
-				if proxyStat, ok := PStats.Find(pp); ok {
+				if proxyStat, ok := ProxyStats.Find(pp); ok {
 					proxyStat.UpdatePSSpeed(speed)
 				} else {
-					PStats = append(PStats, Stat{
+					ProxyStats = append(ProxyStats, Stat{
 						Id:    pp.Identifier(),
 						Speed: speed,
 					})
@@ -66,7 +66,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	log.Println("Speed Test Done. Count all speed results:", resultCount)
 }
 
-// SpeedTestNew tests speed for new proxies which is not in PStats. Then appended to PStats
+// SpeedTestNew tests speed of new proxies which is not in ProxyStats. Then appended to ProxyStats
 func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	if ok := checkErrorProxies(proxies); !ok {
 		return
@@ -90,11 +90,11 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 		pp := p
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
-			if proxyStat, ok := PStats.Find(pp); !ok {
+			if proxyStat, ok := ProxyStats.Find(pp); !ok {
 				// when ProxyStat not exits
 				speed, err := ProxySpeedTest(pp)
 				if err == nil || speed > 0 {
-					PStats = append(PStats, Stat{
+					ProxyStats = append(ProxyStats, Stat{
 						Id:    pp.Identifier(),
 						Speed: speed,
 					})
@@ -118,7 +118,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	log.Println("Speed Test Done. New speed results count:", resultCount)
 }
 
-// ProxySpeedTest returns a speed result for a proxy. The speed result is like 20Mbit/s. -1 for error.
+// ProxySpeedTest returns a speed result of a proxy. The speed result is like 20Mbit/s. -1 for error.
 func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 	// convert to clash proxy struct
 	pmap := make(map[string]interface{})
@@ -187,7 +187,7 @@ func ProxySpeedTest(p proxy.Proxy) (speedResult float64, err error) {
 }
 
 /* Test with SpeedTest.net */
-// Downaload Size(MB)  0.245 0.5 1.125  2   5     8     12.5  18    24.5  32
+// Download Size(MB)  0.245 0.5 1.125  2   5     8     12.5  18    24.5  32
 var dlSizes = [...]int{350, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000}
 
 //var ulSizes = [...]int{100, 300, 500, 800, 1000, 1500, 2500, 3000, 3500, 4000} //kB

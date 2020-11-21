@@ -87,6 +87,16 @@ func CrawlGo() {
 
 	// 测速
 	speedTestNew(proxies)
+	cache.SetString("clashproxies", provider.Clash{
+		provider.Base{
+			Proxies: &proxies,
+		},
+	}.Provide()) // update static string provider
+	cache.SetString("surgeproxies", provider.Surge{
+		provider.Base{
+			Proxies: &proxies,
+		},
+	}.Provide())
 }
 
 // Speed test for new proxies
@@ -101,19 +111,9 @@ func speedTestNew(proxies proxy.ProxyList) {
 	} else {
 		cache.IsSpeedTest = "未开启"
 	}
-	cache.SetString("clashproxies", provider.Clash{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide()) // update static string provider
-	cache.SetString("surgeproxies", provider.Surge{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide())
 }
 
-// Speed test for all proxies
+// Speed test for all proxies in proxy.ProxyList
 func SpeedTest(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
@@ -125,14 +125,4 @@ func SpeedTest(proxies proxy.ProxyList) {
 	} else {
 		cache.IsSpeedTest = "未开启"
 	}
-	cache.SetString("clashproxies", provider.Clash{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide()) // update static string provider
-	cache.SetString("surgeproxies", provider.Surge{
-		provider.Base{
-			Proxies: &proxies,
-		},
-	}.Provide())
 }

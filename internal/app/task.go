@@ -93,10 +93,13 @@ func CrawlGo() {
 func speedTestNew(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
+		cache.IsSpeedTest = "已开启"
 		if config.Config.Timeout > 0 {
 			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
 		}
 		healthcheck.SpeedTestNew(proxies, config.Config.Connection)
+	} else {
+		cache.IsSpeedTest = "未开启"
 	}
 	cache.SetString("clashproxies", provider.Clash{
 		provider.Base{
@@ -114,10 +117,13 @@ func speedTestNew(proxies proxy.ProxyList) {
 func SpeedTest(proxies proxy.ProxyList) {
 	// speed check
 	if config.Config.SpeedTest {
+		cache.IsSpeedTest = "已开启"
 		if config.Config.Timeout > 0 {
 			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
 		}
 		healthcheck.SpeedTestAll(proxies, config.Config.Connection)
+	} else {
+		cache.IsSpeedTest = "未开启"
 	}
 	cache.SetString("clashproxies", provider.Clash{
 		provider.Base{

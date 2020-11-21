@@ -51,6 +51,7 @@ func setupRouter() {
 			"trojan_proxies_count": appcache.TrojanProxiesCount,
 			"useful_proxies_count": appcache.UsefullProxiesCount,
 			"last_crawl_time":      appcache.LastCrawlTime,
+			"is_speed_test":        appcache.IsSpeedTest,
 			"version":              version,
 		})
 	})

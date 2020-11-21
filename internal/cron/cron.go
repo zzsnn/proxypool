@@ -25,12 +25,14 @@ func crawlTask() {
 }
 
 func speedTestTask() {
+	_ = config.Parse("")
 	pl := cache.GetProxies("proxies")
 	app.SpeedTest(pl)
 	runtime.GC()
 }
 
 func frequentSpeedTestTask() {
+	_ = config.Parse("")
 	pl := cache.GetProxies("proxies")
 	pl = healthcheck.PStats.ReqCountThan(config.Config.ActiveFrequency, pl, true)
 	app.SpeedTest(pl)

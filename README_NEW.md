@@ -9,6 +9,9 @@ TODO
 
 ## New
 
+2020-11-24
+- 修改一个getter，移除cf cdn的email obfs（可以爬到更多节点）。
+
 2020-11-21
 - 重构healthcheck
 - 分离节点抓取与测速，增加自定义测速间隔，减缓节点过多时的服务器流量压力
@@ -47,7 +50,7 @@ TODO
 - 分离出用于本地检测proxypool可用性的部分，见[proxypoolCheck](https://github.com/Sansui233/proxypoolCheck)项目
 
 2020-10-24
-- Vmess动态格式解析，对链接的字段类型进行强制转换，提高一点点抓取数量。
+- Vmess动态格式解析，对链接的字段类型进行强制转换（可以爬到更多节点）
 
 2020-10-23
 - 修复数据库未连接时的err提示

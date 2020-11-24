@@ -3,7 +3,6 @@ package getter
 import (
 	"fmt"
 	"log"
-	"regexp"
 	"strings"
 	"sync"
 
@@ -40,10 +39,13 @@ func NewWebFanqiangdangGetter(options tool.Options) (getter Getter, err error) {
 func (w *WebFanqiangdang) Get() proxy.ProxyList {
 	w.results = make(proxy.ProxyList, 0)
 	w.c.OnHTML("td.t_f", func(e *colly.HTMLElement) {
-		if strings.Contains(e.Text, "data-cfemail") {
-			mail := tool.CFEmailDecode(tool.GetCFEmailPayload(e.Text))
-			var re = regexp.MustCompile(`<a.*?href="/cdn-cgi.*?".*?>(.+?)</a>`)
-			e.Text = re.ReplaceAllString(e.Text, mail)
+		innerHTML, err := e.DOM.Html()
+		if err != nil {
+			return
+		}
+		if strings.Contains(innerHTML, "data-cfemail") {
+			decoded := tool.CFEmailDecode(tool.GetCFEmailPayload(innerHTML))
+			e.Text = strings.ReplaceAll(e.Text, "[email protected]", decoded)
 		}
 		w.results = append(w.results, FuzzParseProxyFromString(e.Text)...)
 		subUrls := urlRe.FindAllString(e.Text, -1)

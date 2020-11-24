@@ -10,7 +10,8 @@ TODO
 ## New
 
 2020-11-24
-- 修改一个getter，移除cf cdn的email obfs（可以爬到更多节点）。
+- 修改一个getter，移除cf cdn的email protection
+- 破解cf的js重写url保护
 
 2020-11-21
 - 重构healthcheck

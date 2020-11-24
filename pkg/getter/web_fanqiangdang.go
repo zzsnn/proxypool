@@ -54,6 +54,13 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 
 	w.c.OnHTML("th.new>a[href]", func(e *colly.HTMLElement) {
 		url := e.Attr("href")
+		if url == "javascript:;" {
+			return
+		}
+		url = tool.CFScriptRedirect(url)
+		if url[0] == '/' {
+			url = "https://fanqiangdang.com" + url
+		}
 		if strings.HasPrefix(url, "https://fanqiangdang.com/thread") {
 			_ = e.Request.Visit(url)
 		}

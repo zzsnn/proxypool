@@ -3,6 +3,7 @@ package tool
 import (
 	"bytes"
 	"github.com/robertkrimen/otto"
+	"io/ioutil"
 	"regexp"
 	"strconv"
 	"strings"
@@ -32,6 +33,30 @@ func CFEmailDecode(a string) (s string) {
 	return e.String()
 }
 
+// Return full accessible url from a script protected url. If not a script url, return input
+func CFScriptRedirect(url string) string {
+	resp, err := GetHttpClient().Get(url)
+	if err != nil {
+		return url
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return url
+	}
+	strbody := string(body)
+	if strbody[:7] == "<script" {
+		js := strings.Split(strbody, "javascript\">")[1]
+		js = strings.Split(js, "</script>")[0]
+		js = ScriptReplace(js, "strdecode")
+		reUrl := ScriptGet(js, "strdecode")
+		if reUrl != "" {
+			return reUrl
+		}
+	}
+	return url
+}
+
 // Get result var of a js script
 func ScriptGet(js string, varname string) string {
 	vm := otto.New()
@@ -47,7 +72,7 @@ func ScriptGet(js string, varname string) string {
 	return ""
 }
 
-// replace location with varname and remove window
+// Replace location with varname and remove window
 func ScriptReplace(js string, varname string) string {
 	strs := strings.Split(js, ";")
 	varWindow := ""
@@ -60,7 +85,7 @@ func ScriptReplace(js string, varname string) string {
 	for i, _ := range strs {
 		//replace location
 		if strings.Contains(strs[i], "location") {
-			strarr := strings.Split(strs[i], " = ")
+			strarr := strings.Split(strs[i], " = ") // _jzvXT = location
 			if len(strarr) == 2 {
 				varLocation = strarr[0]
 				strs[i] = ""

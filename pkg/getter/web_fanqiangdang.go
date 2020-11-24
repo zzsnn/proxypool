@@ -41,7 +41,7 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 	w.results = make(proxy.ProxyList, 0)
 	w.c.OnHTML("td.t_f", func(e *colly.HTMLElement) {
 		if strings.Contains(e.Text, "data-cfemail") {
-			mail := tool.CFDecode(tool.GetCFPayload(e.Text))
+			mail := tool.CFEmailDecode(tool.GetCFEmailPayload(e.Text))
 			var re = regexp.MustCompile(`<a.*?href="/cdn-cgi.*?".*?>(.+?)</a>`)
 			e.Text = re.ReplaceAllString(e.Text, mail)
 		}

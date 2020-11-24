@@ -31,6 +31,7 @@ require (
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/oschwald/maxminddb-golang v1.7.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/robertkrimen/otto v0.0.0-20200922221731-ef014fd054ac
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
@@ -39,6 +40,7 @@ require (
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	gopkg.in/sourcemap.v1 v1.0.5 // indirect
 	gorm.io/driver/postgres v1.0.0
 	gorm.io/gorm v1.20.0
 )

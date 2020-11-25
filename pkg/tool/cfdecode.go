@@ -24,13 +24,14 @@ func GetCFEmailPayload(str string) string {
 // Remove cloudflare email protection
 func CFEmailDecode(a string) (s string, err error) {
 	if a == "" {
-		return "", errors.New("empty payload to decode")
+		return "", errors.New("CFEmailDecodeError: empty payload to decode")
 	}
 	var e bytes.Buffer
 	r, _ := strconv.ParseInt(a[0:2], 16, 0)
 	for n := 4; n < len(a)+2; n += 2 {
 		i, _ := strconv.ParseInt(a[n-2:n], 16, 0)
-		e.WriteString(string(i ^ r))
+		//e.WriteString(string(i ^ r))
+		e.WriteString(string(rune(i ^ r)))
 	}
 	return e.String(), nil
 }
@@ -61,7 +62,7 @@ func CFScriptRedirect(url string) (string, error) {
 		if reUrl != "" {
 			return reUrl, nil
 		} else {
-			return url, errors.New("empty result from javascript")
+			return url, errors.New("RedirectionError: result from javascript")
 		}
 	}
 	return url, nil
@@ -94,29 +95,59 @@ func ScriptReplace(js string, varname string) string {
 	}
 	for i, _ := range strs {
 		//replace location
-		if strings.Contains(strs[i], "location") {
-			strarr := strings.Split(strs[i], " = ") // _jzvXT = location
-			if len(strarr) == 2 {
-				varLocation = strarr[0]
-				strs[i] = ""
-			} else {
-				re3, err := regexp.Compile("location.*?[]]") // location[_jzvXT]
-				if err == nil {
-					strs[i] = re3.ReplaceAllLiteralString(strs[i], varname)
-				}
-				strs[i] = strings.ReplaceAll(strs[i], "location.replace", varname+" = ")
-			}
-		}
 		if varLocation != "" && strings.Contains(strs[i], varLocation) {
 			re3, err := regexp.Compile(varLocation + ".*?[]]") // _LoKlO[_jzvXT]
 			if err == nil {
 				strs[i] = re3.ReplaceAllLiteralString(strs[i], varname)
 			}
 		}
+		if strings.Contains(strs[i], "location") {
+			strarr := strings.Split(strs[i], " = ")
+			if len(strarr) >= 2 { // get varname, _jzvXT = location  or  return '/t' } _qf14P = location
+				if strarr[len(strarr)-1] == "location" {
+					index := strings.LastIndex(strs[i], "}")
+					if index == -1 {
+						varLocation = strarr[0]
+						strs[i] = ""
+					} else {
+						strs[i] = strs[i][:index+1]
+						varLocation = strings.Split(strs[i][index+1:], " = ")[0]
+						varLocation = strings.TrimSpace(varLocation)
+					}
+				}
+			} else { // set varname
+				re, err := regexp.Compile("location.*?[]]=") // location[_jzvXT]=
+				if err == nil {
+					strs[i] = re.ReplaceAllLiteralString(strs[i], varname+"=")
+				}
+				re, err = regexp.Compile("location.*?[]]") // location[_jzvXT]
+				if err == nil {
+					strs[i] = re.ReplaceAllLiteralString(strs[i], varname+"=")
+				}
+				strs[i] = strings.ReplaceAll(strs[i], "location.replace = ", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.replace=", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.replace", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.assign = ", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.assign=", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.assign", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.href =", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.href=", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location.href", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "location=", varname+"=")
+				strs[i] = strings.ReplaceAll(strs[i], "==", varname+"=")
+			}
+		}
 		// remove window
 		if strings.Contains(strs[i], "window") {
-			varWindow = strings.Split(strs[i], " = window")[0]
-			strs[i] = ""
+			index := strings.LastIndex(strs[i], "}")
+			if index == -1 {
+				varWindow = strings.Split(strs[i], " = window")[0]
+				strs[i] = ""
+			} else {
+				varWindow = strings.Split(strs[i][index+1:], " = ")[0]
+				varWindow = strings.TrimSpace(varWindow)
+				strs[i] = strs[i][:index+1]
+			}
 		}
 	}
 

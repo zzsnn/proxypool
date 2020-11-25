@@ -2,6 +2,7 @@ package tool
 
 import (
 	"bytes"
+	"errors"
 	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"regexp"
@@ -9,6 +10,7 @@ import (
 	"strings"
 )
 
+// Find email playload
 func GetCFEmailPayload(str string) string {
 	s := strings.Split(str, "data-cfemail=")
 	if len(s) > 1 {
@@ -19,10 +21,10 @@ func GetCFEmailPayload(str string) string {
 	return ""
 }
 
-// Remove cloud flare email protection
-func CFEmailDecode(a string) (s string) {
+// Remove cloudflare email protection
+func CFEmailDecode(a string) (s string, err error) {
 	if a == "" {
-		return
+		return "", errors.New("empty payload to decode")
 	}
 	var e bytes.Buffer
 	r, _ := strconv.ParseInt(a[0:2], 16, 0)
@@ -30,46 +32,54 @@ func CFEmailDecode(a string) (s string) {
 		i, _ := strconv.ParseInt(a[n-2:n], 16, 0)
 		e.WriteString(string(i ^ r))
 	}
-	return e.String()
+	return e.String(), nil
 }
 
 // Return full accessible url from a script protected url. If not a script url, return input
-func CFScriptRedirect(url string) string {
+func CFScriptRedirect(url string) (string, error) {
 	resp, err := GetHttpClient().Get(url)
 	if err != nil {
-		return url
+		return url, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return url
+		return url, err
 	}
 	strbody := string(body)
+	if len(strbody) < 7 {
+		return url, nil
+	}
 	if strbody[:7] == "<script" {
 		js := strings.Split(strbody, "javascript\">")[1]
 		js = strings.Split(js, "</script>")[0]
 		js = ScriptReplace(js, "strdecode")
-		reUrl := ScriptGet(js, "strdecode")
+		reUrl, err := ScriptGet(js, "strdecode")
+		if err != nil {
+			return url, err
+		}
 		if reUrl != "" {
-			return reUrl
+			return reUrl, nil
+		} else {
+			return url, errors.New("empty result from javascript")
 		}
 	}
-	return url
+	return url, nil
 }
 
 // Get result var of a js script
-func ScriptGet(js string, varname string) string {
+func ScriptGet(js string, varname string) (string, error) {
 	vm := otto.New()
 	_, err := vm.Run(js)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	if value, err := vm.Get(varname); err == nil {
 		if v, err := value.ToString(); err == nil {
-			return v
+			return v, nil
 		}
 	}
-	return ""
+	return "", err
 }
 
 // Replace location with varname and remove window

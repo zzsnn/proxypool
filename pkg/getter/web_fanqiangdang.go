@@ -44,8 +44,10 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 			return
 		}
 		if strings.Contains(innerHTML, "data-cfemail") {
-			decoded := tool.CFEmailDecode(tool.GetCFEmailPayload(innerHTML))
-			e.Text = strings.ReplaceAll(e.Text, "[email protected]", decoded)
+			decoded, err := tool.CFEmailDecode(tool.GetCFEmailPayload(innerHTML))
+			if err == nil {
+				e.Text = strings.ReplaceAll(e.Text, "[email protected]", decoded)
+			}
 		}
 		w.results = append(w.results, FuzzParseProxyFromString(e.Text)...)
 		subUrls := urlRe.FindAllString(e.Text, -1)
@@ -59,8 +61,8 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 		if url == "javascript:;" {
 			return
 		}
-		url = tool.CFScriptRedirect(url)
-		if url[0] == '/' {
+		url, err := tool.CFScriptRedirect(url)
+		if err == nil && url[0] == '/' {
 			url = "https://fanqiangdang.com" + url
 		}
 		if strings.HasPrefix(url, "https://fanqiangdang.com/thread") {

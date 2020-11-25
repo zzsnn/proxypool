@@ -11,7 +11,7 @@ import (
 func GetColly() *colly.Collector {
 	c := colly.NewCollector(
 		colly.UserAgent(UserAgent),
-		colly.MaxDepth(3),
+		colly.MaxDepth(6),
 	)
 	c.WithTransport(&http.Transport{
 		Proxy: http.ProxyFromEnvironment,

@@ -42,7 +42,7 @@ type HTTPOptions struct {
 }
 
 type HTTP2Options struct {
-	Host []string `yaml:"host,omitempty" json:"method,omitempty"`
+	Host []string `yaml:"host,omitempty" json:"host,omitempty"`
 	Path string   `yaml:"path,omitempty" json:"path,omitempty"` // 暂只处理一个Path
 }
 
@@ -185,22 +185,23 @@ func ParseVmessLink(link string) (*Vmess, error) {
 
 		// Transmission protocol
 		wsHeaders := make(map[string]string)
-		h2Opt := HTTP2Options{}
+		h2Opt := HTTP2Options{
+			Host: make([]string, 0),
+		}
 		httpOpt := HTTPOptions{}
 
+		// Network <- obfs=websocket
 		obfs := moreInfo.Get("obfs")
 		network := "tcp"
 		if obfs == "http" {
 			httpOpt.Method = "GET" // 不知道Headers为空时会不会报错
 		}
-		// obfs=websocket
 		if obfs == "websocket" {
 			network = "ws"
 		} else { // when http h2
 			network = obfs
 		}
-
-		// obfsParam=www.036452916.xyz
+		// HTTP Object: Host <- obfsParam=www.036452916.xyz
 		host := moreInfo.Get("obfsParam")
 		if host != "" {
 			switch obfs {
@@ -210,7 +211,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 				h2Opt.Host = append(h2Opt.Host, host)
 			}
 		}
-
+		// HTTP Object: Path
 		path := moreInfo.Get("path")
 		if path == "" {
 			path = "/"

@@ -9,6 +9,9 @@ TODO
 
 ## New
 
+2020-11-25
+- 增加tg channel文件的抓取
+
 2020-11-24
 - 修改一个getter，移除cf cdn的email protection
 - 破解cf的js重写url保护

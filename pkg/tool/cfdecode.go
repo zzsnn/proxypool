@@ -104,6 +104,7 @@ func ScriptReplace(js string, varname string) string {
 				if err == nil {
 					strs[i] = re3.ReplaceAllLiteralString(strs[i], varname)
 				}
+				strs[i] = strings.ReplaceAll(strs[i], "location.replace", varname+" = ")
 			}
 		}
 		if varLocation != "" && strings.Contains(strs[i], varLocation) {

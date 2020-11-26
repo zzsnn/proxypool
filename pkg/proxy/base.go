@@ -9,15 +9,12 @@ import (
 type Base struct {
 	Name    string `yaml:"name" json:"name" gorm:"index"`
 	Server  string `yaml:"server" json:"server" gorm:"index"`
-	Port    int    `yaml:"port" json:"port" gorm:"index"`
 	Type    string `yaml:"type" json:"type" gorm:"index"`
-	UDP     bool   `yaml:"udp,omitempty" json:"udp,omitempty"`
 	Country string `yaml:"country,omitempty" json:"country,omitempty" gorm:"index"`
-	// 这个单词的原作者拼写是错误的，但我不想改了，我也没有早点发现这件事，在写where查询老写错，非常的无奈
-	Useable bool `yaml:"useable,omitempty" json:"useable,omitempty" gorm:"index"`
+	Port    int    `yaml:"port" json:"port" gorm:"index"`
+	UDP     bool   `yaml:"udp,omitempty" json:"udp,omitempty"`
+	Useable bool   `yaml:"useable,omitempty" json:"useable,omitempty" gorm:"index"`
 }
-
-// Note: Go只有值传递，必需传入指针才能改变传入的结构体
 
 // TypeName() Get specific proxy type
 func (b *Base) TypeName() string {

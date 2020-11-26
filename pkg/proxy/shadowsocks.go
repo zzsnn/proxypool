@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math/rand"
 	"net"
 	"net/url"
 	"regexp"
@@ -143,7 +142,7 @@ func ParseSSLink(link string) (*Shadowsocks, error) {
 
 	return &Shadowsocks{
 		Base: Base{
-			Name:   strconv.Itoa(rand.Int()),
+			Name:   "",
 			Server: server,
 			Port:   port,
 			Type:   "ss",

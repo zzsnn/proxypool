@@ -25,14 +25,14 @@ type Vmess struct {
 	UUID           string            `yaml:"uuid" json:"uuid"`
 	AlterID        int               `yaml:"alterId" json:"alterId"`
 	Cipher         string            `yaml:"cipher" json:"cipher"`
-	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	Network        string            `yaml:"network,omitempty" json:"network,omitempty"`
+	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
+	ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
+	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
 	HTTPOpts       HTTPOptions       `yaml:"http-opts,omitempty" json:"http-opts,omitempty"`
 	HTTP2Opts      HTTP2Options      `yaml:"h2-opts,omitempty" json:"h2-opts,omitempty"`
-	WSPath         string            `yaml:"ws-path,omitempty" json:"ws-path,omitempty"`
-	WSHeaders      map[string]string `yaml:"ws-headers,omitempty" json:"ws-headers,omitempty"`
+	TLS            bool              `yaml:"tls,omitempty" json:"tls,omitempty"`
 	SkipCertVerify bool              `yaml:"skip-cert-verify,omitempty" json:"skip-cert-verify,omitempty"`
-	ServerName     string            `yaml:"servername,omitempty" json:"servername,omitempty"`
 }
 
 type HTTPOptions struct {
@@ -314,7 +314,7 @@ func ParseVmessLink(link string) (*Vmess, error) {
 
 		return &Vmess{
 			Base: Base{
-				Name:   vmessJson.Ps + "_" + strconv.Itoa(rand.Int()),
+				Name:   "",
 				Server: vmessJson.Add,
 				Port:   vmessJson.Port,
 				Type:   "vmess",
@@ -323,14 +323,14 @@ func ParseVmessLink(link string) (*Vmess, error) {
 			UUID:           vmessJson.Id,
 			AlterID:        alterId,
 			Cipher:         "auto",
-			TLS:            tls,
 			Network:        vmessJson.Net,
 			HTTPOpts:       httpOpt,
 			HTTP2Opts:      h2Opt,
 			WSPath:         vmessJson.Path,
 			WSHeaders:      wsHeaders,
-			SkipCertVerify: true,
 			ServerName:     vmessJson.Host,
+			TLS:            tls,
+			SkipCertVerify: true,
 		}, nil
 	}
 }
@@ -385,6 +385,8 @@ func mapStrInter2VmessLinkJson(jsn map[string]interface{}) (vmessLinkJson, error
 				default:
 					vmessVal.Field(i).SetInt(443)
 				}
+			} else if strings.ToLower(tag[0]) == "ps" {
+				continue
 			} else { // set string in other fields
 				switch jsnVal.(type) {
 				case string:

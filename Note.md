@@ -24,7 +24,7 @@
 所有Getter最后存于package app的Getters中。
 
 ## proxy类
-节点的接口为interface proxy，由struct Base实现其基类，Vmess等实现多态。
+节点的接口为Proxy，由struct Base实现其基类，Vmess等实现多态。
 
 所有字段名依据clash的配置文件标准设计。比如
 ```
@@ -41,6 +41,8 @@ type ShadowsocksR struct {
 ```
 
 Proxylist是proxy数组加上一系列批量处理proxy的方法。
+
+不知道是否是有意为之，基类的Base的方法的传入参数全部用的指针，因为Base变成了Proxy的指针实现。因此Vmess等对于接口Proxy而言也是Proxy的指针，type assertion应该写为 `proxy.(*Vmess)`。
 
 ## 抓取
 task.go的Crawl.go实现抓取。

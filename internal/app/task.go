@@ -81,7 +81,6 @@ func CrawlGo() {
 	okproxies = append(okproxies, healthcheck.CleanBadProxiesWithGrpool(proxies[round*b:])...)
 	proxies = okproxies
 
-	proxies = healthcheck.CleanBadProxiesWithGrpool(proxies)
 	log.Println("CrawlGo clash usable proxy count:", len(proxies))
 
 	// 重命名节点名称为类似US_01的格式，并按国家排序
@@ -158,7 +157,7 @@ func uniqAppend(pl proxy.ProxyList, new proxy.ProxyList) proxy.ProxyList {
 	return pl
 }
 
-// Append unique new proxies to old proxy.ProxyList
+// Append an unique new proxy to old proxy.ProxyList
 func uniqAppendProxy(pl proxy.ProxyList, new proxy.Proxy) proxy.ProxyList {
 	if len(pl) == 0 {
 		pl = append(pl, new)

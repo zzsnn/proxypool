@@ -24,7 +24,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// 线程：延迟测试，测试过程通过grpool的job并发
 	go func() {
 		for _, p := range proxies {
-			pp := p // 复制一份，否则job执行时是按当前的p测试的
+			pp := p // 捕获，否则job执行时是按当前的p测试的
 			pool.JobQueue <- func() {
 				defer pool.JobDone()
 				delay, err := testDelay(pp)
@@ -65,8 +65,8 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 			// check usable proxy
 			for i, _ := range proxies {
 				if _, ok := okMap[proxies[i].Identifier()]; ok {
-					//cproxies = append(cproxies, p) // 没必要Clone因为range时就复制了一份
-					cproxies = append(cproxies, proxies[i]) // 使用对GC非常不友好的指针看看会不会有事
+					//cproxies = append(cproxies, p.Clone())
+					cproxies = append(cproxies, proxies[i]) // 返回对GC不友好的指针看会怎么样
 				}
 			}
 			return

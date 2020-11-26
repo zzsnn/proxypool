@@ -32,7 +32,7 @@ func CrawlGo() {
 		cache.LastCrawlTime = "抓取中，已载入上次数据库数据"
 		fmt.Println("Database: loaded")
 	}
-	proxies = uniqAppend(proxies, db_proxies)
+	proxies = uniqAppendProxyList(db_proxies, proxies)
 
 	go func() {
 		wg.Wait()
@@ -139,7 +139,7 @@ func SpeedTest(proxies proxy.ProxyList) {
 }
 
 // Append unique new proxies to old proxy.ProxyList
-func uniqAppend(pl proxy.ProxyList, new proxy.ProxyList) proxy.ProxyList {
+func uniqAppendProxyList(pl proxy.ProxyList, new proxy.ProxyList) proxy.ProxyList {
 	if len(new) == 0 {
 		return pl
 	}
@@ -147,12 +147,16 @@ func uniqAppend(pl proxy.ProxyList, new proxy.ProxyList) proxy.ProxyList {
 		return new
 	}
 	for _, p := range new {
+		isExist := false
 		for i, _ := range pl {
 			if pl[i].Identifier() == p.Identifier() {
-				continue
+				isExist = true
+				break
 			}
 		}
-		pl = append(pl, p)
+		if !isExist {
+			pl = append(pl, p)
+		}
 	}
 	return pl
 }

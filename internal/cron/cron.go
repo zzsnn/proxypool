@@ -20,7 +20,10 @@ func Cron() {
 }
 
 func crawlTask() {
-	_ = app.InitConfigAndGetters("")
+	err := app.InitConfigAndGetters("")
+	if err != nil {
+		log.Println("[cron.go] config parse error:", err)
+	}
 	app.CrawlGo()
 	app.Getters = nil
 	runtime.GC()
@@ -28,7 +31,10 @@ func crawlTask() {
 
 func speedTestTask() {
 	log.Println("Doing speed test task...")
-	_ = config.Parse("")
+	err := config.Parse("")
+	if err != nil {
+		log.Println("[cron.go] config parse error:", err)
+	}
 	pl := cache.GetProxies("proxies")
 
 	app.SpeedTest(pl)
@@ -47,7 +53,10 @@ func speedTestTask() {
 
 func frequentSpeedTestTask() {
 	log.Println("Doing speed test task for active proxies...")
-	_ = config.Parse("")
+	err := config.Parse("")
+	if err != nil {
+		log.Println("[cron.go] config parse error:", err)
+	}
 	pl_all := cache.GetProxies("proxies")
 	pl := healthcheck.ProxyStats.ReqCountThan(config.Config.ActiveFrequency, pl_all, true)
 	if len(pl) > int(config.Config.ActiveMaxNumber) {

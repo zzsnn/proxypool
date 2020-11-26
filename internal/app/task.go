@@ -25,14 +25,19 @@ func CrawlGo() {
 		go g.Get2Chan(pc, wg)
 	}
 	proxies := cache.GetProxies("allproxies")
-	db_proxies := database.GetAllProxies()
+	dbProxies := database.GetAllProxies()
 	// Show last time result when launch
-	if proxies == nil && db_proxies != nil {
-		cache.SetProxies("proxies", db_proxies)
+	if proxies == nil && dbProxies != nil {
+		cache.SetProxies("proxies", dbProxies)
 		cache.LastCrawlTime = "抓取中，已载入上次数据库数据"
 		fmt.Println("Database: loaded")
 	}
-	proxies = uniqAppendProxyList(db_proxies, proxies)
+	if dbProxies != nil {
+		proxies = dbProxies.UniqAppendProxyList(proxies)
+	}
+	if proxies == nil {
+		proxies = make(proxy.ProxyList, 0)
+	}
 
 	go func() {
 		wg.Wait()
@@ -40,7 +45,7 @@ func CrawlGo() {
 	}() // Note: 为何并发？可以一边抓取一边读取而非抓完再读
 	for p := range pc { // Note: pc关闭后不能发送数据可以读取剩余数据
 		if p != nil {
-			proxies = uniqAppendProxy(proxies, p)
+			proxies = proxies.UniqAppendProxy(p)
 		}
 	}
 
@@ -136,42 +141,4 @@ func SpeedTest(proxies proxy.ProxyList) {
 	} else {
 		cache.IsSpeedTest = "未开启"
 	}
-}
-
-// Append unique new proxies to old proxy.ProxyList
-func uniqAppendProxyList(pl proxy.ProxyList, new proxy.ProxyList) proxy.ProxyList {
-	if len(new) == 0 {
-		return pl
-	}
-	if len(pl) == 0 {
-		return new
-	}
-	for _, p := range new {
-		isExist := false
-		for i, _ := range pl {
-			if pl[i].Identifier() == p.Identifier() {
-				isExist = true
-				break
-			}
-		}
-		if !isExist {
-			pl = append(pl, p)
-		}
-	}
-	return pl
-}
-
-// Append an unique new proxy to old proxy.ProxyList
-func uniqAppendProxy(pl proxy.ProxyList, new proxy.Proxy) proxy.ProxyList {
-	if len(pl) == 0 {
-		pl = append(pl, new)
-		return pl
-	}
-	for i, _ := range pl {
-		if pl[i].Identifier() == new.Identifier() {
-			return pl
-		}
-	}
-	pl = append(pl, new)
-	return pl
 }

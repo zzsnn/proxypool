@@ -131,3 +131,41 @@ func (ps ProxyList) Derive() ProxyList {
 	}
 	return proxies.Deduplication()
 }
+
+// Append unique new proxies to original ProxyList
+func (ps *ProxyList) UniqAppendProxyList(new ProxyList) ProxyList {
+	if len(new) == 0 {
+		return *ps
+	}
+	if len(*ps) == 0 {
+		return new
+	}
+	for _, p := range new {
+		isExist := false
+		for i, _ := range *ps {
+			if (*ps)[i].Identifier() == p.Identifier() {
+				isExist = true
+				break
+			}
+		}
+		if !isExist {
+			*ps = append(*ps, p)
+		}
+	}
+	return *ps
+}
+
+// Append an unique new proxy to original ProxyList
+func (ps *ProxyList) UniqAppendProxy(new Proxy) ProxyList {
+	if len(*ps) == 0 {
+		*ps = append(*ps, new)
+		return *ps
+	}
+	for i, _ := range *ps {
+		if (*ps)[i].Identifier() == new.Identifier() {
+			return *ps
+		}
+	}
+	*ps = append(*ps, new)
+	return *ps
+}

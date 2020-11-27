@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	_ "net/http/pprof"
 	"os"
 
@@ -10,10 +9,12 @@ import (
 	"github.com/Sansui233/proxypool/internal/app"
 	"github.com/Sansui233/proxypool/internal/cron"
 	"github.com/Sansui233/proxypool/internal/database"
+	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 )
 
 var configFilePath = ""
+var debugMode = false
 
 func main() {
 	//go func() {
@@ -21,8 +22,12 @@ func main() {
 	//}()
 
 	flag.StringVar(&configFilePath, "c", "", "path to config file: config.yaml")
+	flag.BoolVar(&debugMode, "d", false, "debug output")
 	flag.Parse()
 
+	if debugMode {
+		log.SetLevel(log.DEBUG)
+	}
 	if configFilePath == "" {
 		configFilePath = os.Getenv("CONFIG_FILE")
 	}
@@ -31,6 +36,7 @@ func main() {
 	}
 	err := app.InitConfigAndGetters(configFilePath)
 	if err != nil {
+		log.Errorln("Configuration init error: %s", err.Error())
 		panic(err)
 	}
 
@@ -41,7 +47,7 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
-	fmt.Println("Do the first crawl...")
+	log.Infoln("Do the first crawl...")
 	go app.CrawlGo() // 抓取主程序
 	go cron.Cron()   // 定时运行
 	api.Run()        // Web Serve

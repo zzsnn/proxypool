@@ -3,9 +3,9 @@ package cron
 import (
 	"github.com/Sansui233/proxypool/config"
 	"github.com/Sansui233/proxypool/internal/cache"
+	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"github.com/Sansui233/proxypool/pkg/provider"
-	"log"
 	"runtime"
 
 	"github.com/Sansui233/proxypool/internal/app"
@@ -22,7 +22,7 @@ func Cron() {
 func crawlTask() {
 	err := app.InitConfigAndGetters("")
 	if err != nil {
-		log.Println("[cron.go] config parse error:", err)
+		log.Errorln("[cron.go] config parse error: %s", err)
 	}
 	app.CrawlGo()
 	app.Getters = nil
@@ -30,10 +30,10 @@ func crawlTask() {
 }
 
 func speedTestTask() {
-	log.Println("Doing speed test task...")
+	log.Infoln("Doing speed test task...")
 	err := config.Parse("")
 	if err != nil {
-		log.Println("[cron.go] config parse error:", err)
+		log.Errorln("[cron.go] config parse error: %s", err)
 	}
 	pl := cache.GetProxies("proxies")
 
@@ -52,17 +52,17 @@ func speedTestTask() {
 }
 
 func frequentSpeedTestTask() {
-	log.Println("Doing speed test task for active proxies...")
+	log.Infoln("Doing speed test task for active proxies...")
 	err := config.Parse("")
 	if err != nil {
-		log.Println("[cron.go] config parse error:", err)
+		log.Errorln("[cron.go] config parse error: %s", err)
 	}
 	pl_all := cache.GetProxies("proxies")
 	pl := healthcheck.ProxyStats.ReqCountThan(config.Config.ActiveFrequency, pl_all, true)
 	if len(pl) > int(config.Config.ActiveMaxNumber) {
 		pl = healthcheck.ProxyStats.SortProxiesBySpeed(pl)[:config.Config.ActiveMaxNumber]
 	}
-	log.Println("Active proxies count:", len(pl))
+	log.Infoln("Active proxies count: %d", len(pl))
 
 	app.SpeedTest(pl)
 	cache.SetString("clashproxies", provider.Clash{

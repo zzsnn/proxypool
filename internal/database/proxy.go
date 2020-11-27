@@ -1,10 +1,9 @@
 package database
 
 import (
-	"fmt"
+	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"gorm.io/gorm"
-	"log"
 	"time"
 )
 
@@ -25,11 +24,11 @@ func InitTables() {
 			return
 		}
 	}
-	// Warning: 自动迁移仅仅会创建表，缺少列和索引，并且不会改变现有列的类型或删除未使用的列以保护数据。
+	// Warnln: 自动迁移仅仅会创建表，缺少列和索引，并且不会改变现有列的类型或删除未使用的列以保护数据。
 	// 如更改表的Column请于数据库中操作
 	err := DB.AutoMigrate(&Proxy{})
 	if err != nil {
-		log.Println("\n\t\t[db/proxy.go] Database migration failed")
+		log.Errorln("\n\t\t[db/proxy.go] database migration failed")
 		panic(err)
 	}
 }
@@ -42,7 +41,7 @@ func SaveProxyList(pl proxy.ProxyList) {
 	DB.Transaction(func(tx *gorm.DB) error {
 		// Set All Usable to false
 		if err := DB.Model(&Proxy{}).Where("useable = ?", true).Update("useable", "false").Error; err != nil {
-			log.Println("\n\t\t[db/proxy.go] Reset useable to false failed: ", err)
+			log.Warnln("database: Reset useable to false failed: %s", err.Error())
 		}
 		// Create or Update proxies
 		for i := 0; i < pl.Len(); i++ {
@@ -57,13 +56,13 @@ func SaveProxyList(pl proxy.ProxyList) {
 				if uperr := DB.Model(&Proxy{}).Where("identifier = ?", p.Identifier).Updates(&Proxy{
 					Base: proxy.Base{Useable: true, Name: p.Name},
 				}).Error; uperr != nil {
-					log.Println("\n\t\t[db/proxy.go] DB Update failed: ",
-						"\n\t\t[db/proxy.go] When Created item: ", err,
-						"\n\t\t[db/proxy.go] When Updated item: ", uperr)
+					log.Warnln("\n\t\tdatabase: Update failed:"+
+						"\n\t\tdatabase: When Created item: %s"+
+						"\n\t\tdatabase: When Updated item: %s", err.Error(), uperr.Error())
 				}
 			}
 		}
-		fmt.Println("Database: Updated")
+		log.Infoln("database: Updated")
 		return nil
 	})
 }
@@ -100,11 +99,11 @@ func ClearOldItems() {
 		var count int64
 		DB.Model(&Proxy{}).Where("updated_at < ? AND useable = ?", lastWeek, false).Count(&count)
 		if count == 0 {
-			fmt.Println("Database: Nothing old to sweep") // TODO always this line?
+			log.Infoln("database: Nothing old to sweep") // TODO always this line?
 		} else {
-			log.Println("\n\t\t[db/proxy.go] Delete old item failed: ", err)
+			log.Warnln("database: Delete old item failed: %s", err)
 		}
 	} else {
-		fmt.Println("Database: Swept old and unusable proxies")
+		log.Infoln("database: Swept old and unusable proxies")
 	}
 }

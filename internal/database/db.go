@@ -1,7 +1,7 @@
 package database
 
 import (
-	"log"
+	"github.com/Sansui233/proxypool/log"
 	"os"
 
 	"github.com/Sansui233/proxypool/config"
@@ -26,11 +26,10 @@ func connect() (err error) {
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err == nil {
-		log.Println("Database: successfully connected to: ", DB.Name())
+		log.Infoln("database: successfully connected to: %s", DB.Name())
 	} else {
 		DB = nil
-		log.Println("\n\t\t[db.go] Database connection Info: ", err,
-			"\n\t\t[db.go] Use cache to store proxies")
+		log.Warnln("database connection Infoln: %s \n\t\tUse cache to store proxies", err.Error())
 	}
 	return
 }

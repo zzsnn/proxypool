@@ -2,8 +2,8 @@ package provider
 
 import (
 	"fmt"
+	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
-	"log"
 	"math"
 	"strconv"
 	"strings"
@@ -23,12 +23,15 @@ type Base struct {
 	Speed      string           `yaml:"speed"`
 }
 
+type logHook struct {
+}
+
 // 根据子类的的Provide()传入的信息筛选节点，结果会改变传入的proxylist。
 func (b *Base) preFilter() {
 	proxies := make(proxy.ProxyList, 0)
 
 	if ok := checkErrorProxies(*b.Proxies); !ok {
-		log.Println("[provider/base.go] Nothing to provide")
+		log.Warnln("provider: nothing to provide")
 		b.Proxies = &proxies
 		return
 	}

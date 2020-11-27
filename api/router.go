@@ -2,8 +2,8 @@ package api
 
 import (
 	binhtml "github.com/Sansui233/proxypool/internal/bindata/html"
+	"github.com/Sansui233/proxypool/log"
 	"html/template"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -233,16 +233,16 @@ func setupRouter() {
 func Run() {
 	setupRouter()
 	servePort := config.Config.Port
-	envp := os.Getenv("PORT") // envp for heroku. DO NOT SET ENV PORT IN PERSONAL SERVER UNLESS YOU KNOW WHAT YOU ARE DOING
+	envp := os.Getenv("PORT") // environment port for heroku app
 	if envp != "" {
 		servePort = envp
 	}
 	// Run on this server
 	err := router.Run(":" + servePort)
 	if err != nil {
-		log.Fatal("[router.go] Web server starting failed. Make sure your port [", servePort, "] has not been used.", err)
+		log.Errorln("router: Web server starting failed. Make sure your port %s has not been used. \n%s", servePort, err.Error())
 	} else {
-		log.Println("Proxypool is serving on port: ", servePort)
+		log.Infoln("Proxypool is serving on port: %d", servePort)
 	}
 }
 

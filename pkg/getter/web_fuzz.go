@@ -31,12 +31,19 @@ func (w *WebFuzz) Get() proxy.ProxyList {
 	if err != nil {
 		return nil
 	}
-
 	return FuzzParseProxyFromString(string(body))
 }
 
-func (w *WebFuzz) Get2Chan(pc chan proxy.Proxy, wg *sync.WaitGroup) {
+func (w *WebFuzz) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
+	nodes := w.Get()
+	log.Printf("STATISTIC: WebFuzz\tcount=%d\turl=%s\n", len(nodes), w.Url)
+	for _, node := range nodes {
+		pc <- node
+	}
+}
+
+func (w *WebFuzz) Get2Chan(pc chan proxy.Proxy) {
 	nodes := w.Get()
 	log.Printf("STATISTIC: WebFuzz\tcount=%d\turl=%s\n", len(nodes), w.Url)
 	for _, node := range nodes {

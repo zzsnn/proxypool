@@ -43,8 +43,16 @@ func (s *Subscribe) Get() proxy.ProxyList {
 }
 
 // Get2Chan() of Subscribe is to implement Getter interface. It gets proxies and send proxy to channel one by one
-func (s *Subscribe) Get2Chan(pc chan proxy.Proxy, wg *sync.WaitGroup) {
+func (s *Subscribe) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
+	nodes := s.Get()
+	log.Printf("STATISTIC: Subscribe\tcount=%d\turl=%s\n", len(nodes), s.Url)
+	for _, node := range nodes {
+		pc <- node
+	}
+}
+
+func (s *Subscribe) Get2Chan(pc chan proxy.Proxy) {
 	nodes := s.Get()
 	log.Printf("STATISTIC: Subscribe\tcount=%d\turl=%s\n", len(nodes), s.Url)
 	for _, node := range nodes {

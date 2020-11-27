@@ -79,8 +79,16 @@ func (w *WebFanqiangdang) Get() proxy.ProxyList {
 	return w.results
 }
 
-func (w *WebFanqiangdang) Get2Chan(pc chan proxy.Proxy, wg *sync.WaitGroup) {
+func (w *WebFanqiangdang) Get2ChanWG(pc chan proxy.Proxy, wg *sync.WaitGroup) {
 	defer wg.Done()
+	nodes := w.Get()
+	log.Printf("STATISTIC: Fanqiangdang\tcount=%d\turl=%s\n", len(nodes), w.Url)
+	for _, node := range nodes {
+		pc <- node
+	}
+}
+
+func (w *WebFanqiangdang) Get2Chan(pc chan proxy.Proxy) {
 	nodes := w.Get()
 	log.Printf("STATISTIC: Fanqiangdang\tcount=%d\turl=%s\n", len(nodes), w.Url)
 	for _, node := range nodes {

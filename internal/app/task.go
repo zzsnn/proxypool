@@ -22,7 +22,7 @@ func CrawlGo() {
 	for _, g := range Getters {
 		wg.Add(1)
 		// 并发执行抓取node并存到pc
-		go g.Get2Chan(pc, wg)
+		go g.Get2ChanWG(pc, wg)
 	}
 	proxies := cache.GetProxies("allproxies")
 	dbProxies := database.GetAllProxies()
@@ -43,6 +43,7 @@ func CrawlGo() {
 		wg.Wait()
 		close(pc)
 	}() // Note: 为何并发？可以一边抓取一边读取而非抓完再读
+	// for 用于阻塞goroutine
 	for p := range pc { // Note: pc关闭后不能发送数据可以读取剩余数据
 		if p != nil {
 			proxies = proxies.UniqAppendProxy(p)

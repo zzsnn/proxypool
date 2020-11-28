@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"github.com/x-cray/logrus-prefixed-formatter"
 	"os"
 	"sync"
 )
@@ -14,16 +15,16 @@ var (
 )
 
 func init() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp:   true,
-		TimestampFormat: "2006-01-02 15:04:05",
+	log.SetFormatter(&prefixed.TextFormatter{
+		ForceFormatting: true,
 	})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(levelMapping[level])
-	fileLogger.SetFormatter(&log.TextFormatter{
+	fileLogger.SetFormatter(&prefixed.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
 		DisableColors:   true,
+		ForceFormatting: true,
 	})
 	fileLogger.SetLevel(levelMapping[TRACE])
 }

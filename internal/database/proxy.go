@@ -101,7 +101,7 @@ func ClearOldItems() {
 		if count == 0 {
 			log.Infoln("database: Nothing old to sweep") // TODO always this line?
 		} else {
-			log.Warnln("database: Delete old item failed: %s", err)
+			log.Warnln("database: Delete old item failed: %s", err.Error.Error())
 		}
 	} else {
 		log.Infoln("database: Swept old and unusable proxies")

@@ -242,7 +242,7 @@ func Run() {
 	if err != nil {
 		log.Errorln("router: Web server starting failed. Make sure your port %s has not been used. \n%s", servePort, err.Error())
 	} else {
-		log.Infoln("Proxypool is serving on port: %d", servePort)
+		log.Infoln("Proxypool is serving on port: %s", servePort)
 	}
 }
 

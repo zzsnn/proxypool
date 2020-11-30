@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
+	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
-	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -34,7 +34,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	}
 	resultCount := 0
 
-	log.Println("Speed Test ON")
+	log.Infoln("Speed Test ON")
 	doneCount := 0
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
@@ -63,7 +63,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	pool.WaitAll()
 	pool.Release()
 	fmt.Println()
-	log.Println("Speed Test Done. Count all speed results:", resultCount)
+	log.Infoln("Speed Test Done. Count all speed results: %d", resultCount)
 }
 
 // SpeedTestNew tests speed of new proxies which is not in ProxyStats. Then appended to ProxyStats
@@ -81,7 +81,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	}
 	resultCount := 0
 
-	log.Println("Speed Test ON")
+	log.Infoln("Speed Test ON")
 	doneCount := 0
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
@@ -91,7 +91,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
 			if proxyStat, ok := ProxyStats.Find(pp); !ok {
-				// when ProxyStat not exits
+				// when proxy's Stat not exits
 				speed, err := ProxySpeedTest(pp)
 				if err == nil || speed > 0 {
 					ProxyStats = append(ProxyStats, Stat{
@@ -115,7 +115,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	pool.WaitAll()
 	pool.Release()
 	fmt.Println()
-	log.Println("Speed Test Done. New speed results count:", resultCount)
+	log.Infoln("Speed Test Done. New speed results count: %d", resultCount)
 }
 
 // ProxySpeedTest returns a speed result of a proxy. The speed result is like 20Mbit/s. -1 for error.

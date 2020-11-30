@@ -4,8 +4,7 @@ Clash客户端支持：
 - 不支持ClashXR与ClashR等非原生Clash Core客户端。
 
 TODO
-- [ ] 考虑更换grpool。
-  节点过多时会卡在节点检测上，并且本地无法复现。本以为是内存问题，但观察内存时发现mem和cpu的占用实际上都非常少。TCP连接关闭正常并非网络阻塞。
+-[ ] clash格式的getter
 
 ## New
 

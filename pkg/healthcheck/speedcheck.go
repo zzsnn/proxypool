@@ -33,6 +33,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 		numJob = (numWorker + 2) / 4
 	}
 	resultCount := 0
+	m := sync.Mutex{}
 
 	log.Infoln("Speed Test ON")
 	doneCount := 0
@@ -45,6 +46,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 			defer pool.JobDone()
 			speed, err := ProxySpeedTest(pp)
 			if err == nil || speed > 0 {
+				m.Lock()
 				if proxyStat, ok := ProxyStats.Find(pp); ok {
 					proxyStat.UpdatePSSpeed(speed)
 				} else {
@@ -54,6 +56,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 					})
 				}
 				resultCount++
+				m.Unlock()
 			}
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
@@ -80,6 +83,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 		numJob = (numWorker + 2) / 4
 	}
 	resultCount := 0
+	m := sync.Mutex{}
 
 	log.Infoln("Speed Test ON")
 	doneCount := 0
@@ -90,6 +94,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 		pp := p
 		pool.JobQueue <- func() {
 			defer pool.JobDone()
+			m.Lock()
 			if proxyStat, ok := ProxyStats.Find(pp); !ok {
 				// when proxy's Stat not exits
 				speed, err := ProxySpeedTest(pp)
@@ -107,6 +112,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 					resultCount++
 				}
 			}
+			m.Unlock()
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
 			fmt.Printf("\r\t[%5.1f%% DONE]", progress)

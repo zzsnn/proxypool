@@ -32,7 +32,11 @@ func (w *WebFuzzSub) Get() proxy.ProxyList {
 	subUrls := urlRe.FindAllString(text, -1)
 	result := make(proxy.ProxyList, 0)
 	for _, url := range subUrls {
-		result = append(result, (&Subscribe{Url: url}).Get()...)
+		newResult := (&Subscribe{Url: url}).Get()
+		if len(newResult) == 0 {
+			newResult = (&Clash{Url: url}).Get()
+		}
+		result = result.UniqAppendProxyList(newResult)
 	}
 	return result
 }

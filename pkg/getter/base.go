@@ -45,6 +45,17 @@ func StringArray2ProxyArray(origin []string) proxy.ProxyList {
 	return results
 }
 
+func ClashProxy2ProxyArray(origin []map[string]interface{}) proxy.ProxyList {
+	results := make(proxy.ProxyList, 0, len(origin))
+	for _, pjson := range origin {
+		p, err := proxy.ParseProxyFromClashProxy(pjson)
+		if err == nil && p != nil {
+			results = append(results, p)
+		}
+	}
+	return results
+}
+
 func GrepLinksFromString(text string) []string {
 	results := proxy.GrepSSRLinkFromString(text)
 	results = append(results, proxy.GrepVmessLinkFromString(text)...)

@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"encoding/json"
 	"errors"
 	"strings"
 )
@@ -98,4 +99,43 @@ func ParseProxyFromLink(link string) (p Proxy, err error) {
 	//	p.SetIP(ip)
 	//}
 	return
+}
+
+func ParseProxyFromClashProxy(p map[string]interface{}) (proxy Proxy, err error) {
+	p["name"] = ""
+	pjson, err := json.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+	switch p["type"].(string) {
+	case "ss":
+		var proxy Shadowsocks
+		err := json.Unmarshal(pjson, &proxy)
+		if err != nil {
+			return nil, err
+		}
+		return &proxy, nil
+	case "ssr":
+		var proxy ShadowsocksR
+		err := json.Unmarshal(pjson, &proxy)
+		if err != nil {
+			return nil, err
+		}
+		return &proxy, nil
+	case "vmess":
+		var proxy Vmess
+		err := json.Unmarshal(pjson, &proxy)
+		if err != nil {
+			return nil, err
+		}
+		return &proxy, nil
+	case "trojan":
+		var proxy Trojan
+		err := json.Unmarshal(pjson, &proxy)
+		if err != nil {
+			return nil, err
+		}
+		return &proxy, nil
+	}
+	return nil, errors.New("clash json parse failed")
 }

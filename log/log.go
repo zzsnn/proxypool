@@ -50,7 +50,7 @@ func Infoln(format string, v ...interface{}) {
 }
 
 func Warnln(format string, v ...interface{}) {
-	log.Errorln(fmt.Sprintf(format, v...))
+	log.Warnln(fmt.Sprintf(format, v...))
 	logToFile(WARNING, fmt.Sprintf(format, v...))
 }
 

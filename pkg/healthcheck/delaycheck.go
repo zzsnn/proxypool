@@ -88,8 +88,8 @@ func testDelay(p proxy.Proxy) (delay uint16, err error) {
 	pmap["port"] = int(pmap["port"].(float64))
 	if p.TypeName() == "vmess" {
 		pmap["alterId"] = int(pmap["alterId"].(float64))
-		if network := pmap["network"].(string); network == "h2" {
-			return 10, nil // todo 暂无方法测试h2的延迟，clash对于h2的connection会阻塞。但暂时不丢弃
+		if network, ok := pmap["network"]; ok && network.(string) == "h2" {
+			return 0, nil // todo 暂无方法测试h2的延迟，clash对于h2的connection会阻塞
 		}
 	}
 

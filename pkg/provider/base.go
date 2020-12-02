@@ -23,9 +23,6 @@ type Base struct {
 	Speed      string           `yaml:"speed"`
 }
 
-type logHook struct {
-}
-
 // 根据子类的的Provide()传入的信息筛选节点，结果会改变传入的proxylist。
 func (b *Base) preFilter() {
 	proxies := make(proxy.ProxyList, 0)

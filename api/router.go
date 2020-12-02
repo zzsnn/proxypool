@@ -142,7 +142,7 @@ func setupRouter() {
 			if text == "" {
 				proxies := appcache.GetProxies("proxies")
 				surge := provider.Surge{
-					provider.Base{
+					Base: provider.Base{
 						Proxies: &proxies,
 					},
 				}
@@ -152,7 +152,7 @@ func setupRouter() {
 		} else if proxyTypes == "all" {
 			proxies := appcache.GetProxies("allproxies")
 			surge := provider.Surge{
-				provider.Base{
+				Base: provider.Base{
 					Proxies:    &proxies,
 					Types:      proxyTypes,
 					Country:    proxyCountry,
@@ -164,7 +164,7 @@ func setupRouter() {
 		} else {
 			proxies := appcache.GetProxies("proxies")
 			surge := provider.Surge{
-				provider.Base{
+				Base: provider.Base{
 					Proxies:    &proxies,
 					Types:      proxyTypes,
 					Country:    proxyCountry,
@@ -179,7 +179,7 @@ func setupRouter() {
 	router.GET("/ss/sub", func(c *gin.Context) {
 		proxies := appcache.GetProxies("proxies")
 		ssSub := provider.SSSub{
-			provider.Base{
+			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ss",
 			},
@@ -189,7 +189,7 @@ func setupRouter() {
 	router.GET("/ssr/sub", func(c *gin.Context) {
 		proxies := appcache.GetProxies("proxies")
 		ssrSub := provider.SSRSub{
-			provider.Base{
+			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ssr",
 			},
@@ -199,7 +199,7 @@ func setupRouter() {
 	router.GET("/vmess/sub", func(c *gin.Context) {
 		proxies := appcache.GetProxies("proxies")
 		vmessSub := provider.VmessSub{
-			provider.Base{
+			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "vmess",
 			},
@@ -209,9 +209,19 @@ func setupRouter() {
 	router.GET("/sip002/sub", func(c *gin.Context) {
 		proxies := appcache.GetProxies("proxies")
 		sip002Sub := provider.SIP002Sub{
-			provider.Base{
+			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ss",
+			},
+		}
+		c.String(200, sip002Sub.Provide())
+	})
+	router.GET("/trojan/sub", func(c *gin.Context) {
+		proxies := appcache.GetProxies("proxies")
+		sip002Sub := provider.TrojanSub{
+			Base: provider.Base{
+				Proxies: &proxies,
+				Types:   "trojan",
 			},
 		}
 		c.String(200, sip002Sub.Provide())

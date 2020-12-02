@@ -218,13 +218,13 @@ func setupRouter() {
 	})
 	router.GET("/trojan/sub", func(c *gin.Context) {
 		proxies := appcache.GetProxies("proxies")
-		sip002Sub := provider.TrojanSub{
+		trojanSub := provider.TrojanSub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "trojan",
 			},
 		}
-		c.String(200, sip002Sub.Provide())
+		c.String(200, trojanSub.Provide())
 	})
 	router.GET("/link/:id", func(c *gin.Context) {
 		idx := c.Param("id")

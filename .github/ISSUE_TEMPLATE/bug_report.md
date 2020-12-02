@@ -12,9 +12,9 @@ assignees: ''
 
 - [ ] I'm using the newest release version, and bug isn't solved
   我使用的是最新的release版本，Bug仍未解决
--[ ] I've tested on the newest master, and bug isn't solved
+- [ ] I've tested on the newest master, and bug isn't solved
   我测试的是最新master分支，Bug仍未解决
--[ ] I've searched the issues and there's not a similar one
+- [ ] I've searched the issues and there's not a similar one
   我已经查看过其他issue，没有类似的情况
 
 Bug Version出现Bug的版本：v0.x.x  

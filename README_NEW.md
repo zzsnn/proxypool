@@ -8,6 +8,10 @@ TODO
 
 ## New
 
+2020-12-02
+- source增加Clash配置格式
+- 增加trojansub
+
 2020-12-01
 - 修复节点阻塞bug，取消对vmess h2的检测
 

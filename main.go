@@ -25,6 +25,7 @@ func main() {
 	flag.BoolVar(&debugMode, "d", false, "debug output")
 	flag.Parse()
 
+	log.SetLevel(log.INFO)
 	if debugMode {
 		log.SetLevel(log.DEBUG)
 	}

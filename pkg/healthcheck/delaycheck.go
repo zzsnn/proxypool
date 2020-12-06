@@ -32,7 +32,7 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 				delay, err := testDelay(pp)
 				if err == nil {
 					m.Lock()
-					if ps, ok := ProxyStats.Find(p); ok {
+					if ps, ok := ProxyStats.Find(pp); ok {
 						ps.UpdatePSDelay(delay)
 						c <- ps
 					} else {

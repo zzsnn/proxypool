@@ -34,10 +34,10 @@ func init() {
 
 // sort排序使用
 func (ps ProxyList) Less(i, j int) bool {
-	if ps[i].BaseInfo().Name == ps[j].BaseInfo().Name {
+	if ps[i].BaseInfo().Country == ps[j].BaseInfo().Country {
 		return sortType[ps[i].BaseInfo().Type] < sortType[ps[j].BaseInfo().Type]
 	} else {
-		return ps[i].BaseInfo().Name < ps[j].BaseInfo().Name
+		return ps[i].BaseInfo().Country < ps[j].BaseInfo().Country
 	}
 }
 

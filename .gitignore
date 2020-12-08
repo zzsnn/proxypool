@@ -27,4 +27,5 @@ vendor
 # assets
 assets/html/*
 assets/css/*
+assets/js/*
 

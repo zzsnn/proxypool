@@ -38,7 +38,7 @@ func setupRouter() {
 	}
 	router.SetHTMLTemplate(temp) // 应用模板
 
-	router.StaticFile("/css/index.css", "assets/css/index.css")
+	router.StaticFile("/js/index.js", "assets/js/index.js")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/index.html", gin.H{
@@ -65,6 +65,12 @@ func setupRouter() {
 
 	router.GET("/surge", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/surge.html", gin.H{
+			"domain": config.Config.Domain,
+		})
+	})
+
+	router.GET("/shadowrocket", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "assets/html/shadowrocket.html", gin.H{
 			"domain": config.Config.Domain,
 		})
 	})

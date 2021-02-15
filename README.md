@@ -51,7 +51,7 @@
 
 > 注册fly.io需要绑定银行卡，支持银联借记卡。同时使用fly.io主要通过命令行工具flyctl，详情到[fly.io](https://fly.io)官网了解。
 
-下载仓库源代码，修改`fly.toml`中的app与domain。在终端使用`flyctl deploy`部署即可。
+下载仓库源代码，修改 `fly.toml` 中的app与domain。在终端使用 `flyctl deploy` 部署即可。
 
 ### 3. 从源码编译
 

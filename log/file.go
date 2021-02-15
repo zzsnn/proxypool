@@ -11,15 +11,15 @@ var (
 )
 
 func init() {
-	ok := initDir(logDir)
-	fPath := filepath.Join(logDir, logFile)
-	if ok {
-		if f := initFile(fPath); f != nil {
-			if err := f.Close(); err != nil {
-				Infoln("init log file in %s", fPath)
-			}
-		}
-	}
+	//ok := initDir(logDir)
+	//fPath := filepath.Join(logDir, logFile)
+	//if ok {
+	//	if f := initFile(fPath); f != nil {
+	//		if err := f.Close(); err != nil {
+	//			Infoln("init log file in %s", fPath)
+	//		}
+	//	}
+	//}
 }
 
 func initDir(path string) bool {

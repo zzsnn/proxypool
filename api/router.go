@@ -19,7 +19,7 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 )
 
-const version = "v0.5.3"
+const version = "v0.6.0"
 
 var router *gin.Engine
 
@@ -97,8 +97,9 @@ func setupRouter() {
 		proxyCountry := c.DefaultQuery("c", "")
 		proxyNotCountry := c.DefaultQuery("nc", "")
 		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		text := ""
-		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == "" {
+		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == "" && proxyFilter == "" {
 			text = appcache.GetString("clashproxies") // A string. To show speed in this if condition, this must be updated after speedtest
 			if text == "" {
 				proxies := appcache.GetProxies("proxies")
@@ -119,6 +120,7 @@ func setupRouter() {
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
 					Speed:      proxySpeed,
+					Filter:     proxyFilter,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点
@@ -131,6 +133,7 @@ func setupRouter() {
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
 					Speed:      proxySpeed,
+					Filter:     proxyFilter,
 				},
 			}
 			text = clash.Provide() // 根据Query筛选节点
@@ -142,6 +145,7 @@ func setupRouter() {
 		proxyCountry := c.DefaultQuery("c", "")
 		proxyNotCountry := c.DefaultQuery("nc", "")
 		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		text := ""
 		if proxyTypes == "" && proxyCountry == "" && proxyNotCountry == "" && proxySpeed == "" {
 			text = appcache.GetString("surgeproxies") // A string. To show speed in this if condition, this must be updated after speedtest
@@ -164,6 +168,7 @@ func setupRouter() {
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
 					Speed:      proxySpeed,
+					Filter:     proxyFilter,
 				},
 			}
 			text = surge.Provide()
@@ -175,6 +180,7 @@ func setupRouter() {
 					Types:      proxyTypes,
 					Country:    proxyCountry,
 					NotCountry: proxyNotCountry,
+					Filter:     proxyFilter,
 				},
 			}
 			text = surge.Provide()

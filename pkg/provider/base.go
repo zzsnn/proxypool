@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/config"
 	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"math"
@@ -116,7 +115,7 @@ func (b *Base) preFilter() {
 			}
 		}
 
-		if needFilterSpeed && len(healthcheck.ProxyStats) != 0 && config.Config.SpeedTest == true {
+		if needFilterSpeed && len(healthcheck.ProxyStats) != 0 && healthcheck.SpeedExist {
 			if ps, ok := healthcheck.ProxyStats.Find(p); ok {
 				if ps.Speed != 0 {
 					// clear history speed tag

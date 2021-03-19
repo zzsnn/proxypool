@@ -18,6 +18,7 @@ import (
 )
 
 var SpeedTimeout = time.Second * 10
+var SpeedExist = false
 
 // SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
 func SpeedTestAll(proxies []proxy.Proxy, conns int) {
@@ -67,6 +68,7 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 	pool.Release()
 	fmt.Println()
 	log.Infoln("Speed Test Done. Count all speed results: %d", resultCount)
+	SpeedExist = true
 }
 
 // SpeedTestNew tests speed of new proxies which is not in ProxyStats. Then appended to ProxyStats
@@ -122,6 +124,7 @@ func SpeedTestNew(proxies []proxy.Proxy, conns int) {
 	pool.Release()
 	fmt.Println()
 	log.Infoln("Speed Test Done. New speed results count: %d", resultCount)
+	SpeedExist = true
 }
 
 // ProxySpeedTest returns a speed result of a proxy. The speed result is like 20Mbit/s. -1 for error.

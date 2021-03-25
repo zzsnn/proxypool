@@ -19,7 +19,7 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 )
 
-const version = "v0.6.0"
+const version = "v0.6.1"
 
 var router *gin.Engine
 
@@ -196,8 +196,8 @@ func setupRouter() {
 		proxies := appcache.GetProxies("proxies")
 		ssSub := provider.SSSub{
 			Base: provider.Base{
-				Proxies: &proxies,
-				Types:   "ss",
+				Proxies:    &proxies,
+				Types:      "ss",
 				Country:    proxyCountry,
 				NotCountry: proxyNotCountry,
 				Speed:      proxySpeed,
@@ -214,8 +214,8 @@ func setupRouter() {
 		proxies := appcache.GetProxies("proxies")
 		ssrSub := provider.SSRSub{
 			Base: provider.Base{
-				Proxies: &proxies,
-				Types:   "ssr",
+				Proxies:    &proxies,
+				Types:      "ssr",
 				Country:    proxyCountry,
 				NotCountry: proxyNotCountry,
 				Speed:      proxySpeed,
@@ -232,8 +232,8 @@ func setupRouter() {
 		proxies := appcache.GetProxies("proxies")
 		vmessSub := provider.VmessSub{
 			Base: provider.Base{
-				Proxies: &proxies,
-				Types:   "vmess",
+				Proxies:    &proxies,
+				Types:      "vmess",
 				Country:    proxyCountry,
 				NotCountry: proxyNotCountry,
 				Speed:      proxySpeed,
@@ -250,8 +250,8 @@ func setupRouter() {
 		proxies := appcache.GetProxies("proxies")
 		sip002Sub := provider.SIP002Sub{
 			Base: provider.Base{
-				Proxies: &proxies,
-				Types:   "ss",
+				Proxies:    &proxies,
+				Types:      "ss",
 				Country:    proxyCountry,
 				NotCountry: proxyNotCountry,
 				Speed:      proxySpeed,
@@ -268,8 +268,8 @@ func setupRouter() {
 		proxies := appcache.GetProxies("proxies")
 		trojanSub := provider.TrojanSub{
 			Base: provider.Base{
-				Proxies: &proxies,
-				Types:   "trojan",
+				Proxies:    &proxies,
+				Types:      "trojan",
 				Country:    proxyCountry,
 				NotCountry: proxyNotCountry,
 				Speed:      proxySpeed,

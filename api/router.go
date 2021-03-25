@@ -189,51 +189,91 @@ func setupRouter() {
 	})
 
 	router.GET("/ss/sub", func(c *gin.Context) {
+		proxyCountry := c.DefaultQuery("c", "")
+		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		proxies := appcache.GetProxies("proxies")
 		ssSub := provider.SSSub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ss",
+				Country:    proxyCountry,
+				NotCountry: proxyNotCountry,
+				Speed:      proxySpeed,
+				Filter:     proxyFilter,
 			},
 		}
 		c.String(200, ssSub.Provide())
 	})
 	router.GET("/ssr/sub", func(c *gin.Context) {
+		proxyCountry := c.DefaultQuery("c", "")
+		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		proxies := appcache.GetProxies("proxies")
 		ssrSub := provider.SSRSub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ssr",
+				Country:    proxyCountry,
+				NotCountry: proxyNotCountry,
+				Speed:      proxySpeed,
+				Filter:     proxyFilter,
 			},
 		}
 		c.String(200, ssrSub.Provide())
 	})
 	router.GET("/vmess/sub", func(c *gin.Context) {
+		proxyCountry := c.DefaultQuery("c", "")
+		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		proxies := appcache.GetProxies("proxies")
 		vmessSub := provider.VmessSub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "vmess",
+				Country:    proxyCountry,
+				NotCountry: proxyNotCountry,
+				Speed:      proxySpeed,
+				Filter:     proxyFilter,
 			},
 		}
 		c.String(200, vmessSub.Provide())
 	})
 	router.GET("/sip002/sub", func(c *gin.Context) {
+		proxyCountry := c.DefaultQuery("c", "")
+		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		proxies := appcache.GetProxies("proxies")
 		sip002Sub := provider.SIP002Sub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "ss",
+				Country:    proxyCountry,
+				NotCountry: proxyNotCountry,
+				Speed:      proxySpeed,
+				Filter:     proxyFilter,
 			},
 		}
 		c.String(200, sip002Sub.Provide())
 	})
 	router.GET("/trojan/sub", func(c *gin.Context) {
+		proxyCountry := c.DefaultQuery("c", "")
+		proxyNotCountry := c.DefaultQuery("nc", "")
+		proxySpeed := c.DefaultQuery("speed", "")
+		proxyFilter := c.DefaultQuery("filter", "")
 		proxies := appcache.GetProxies("proxies")
 		trojanSub := provider.TrojanSub{
 			Base: provider.Base{
 				Proxies: &proxies,
 				Types:   "trojan",
+				Country:    proxyCountry,
+				NotCountry: proxyNotCountry,
+				Speed:      proxySpeed,
+				Filter:     proxyFilter,
 			},
 		}
 		c.String(200, trojanSub.Provide())

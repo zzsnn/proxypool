@@ -100,13 +100,7 @@ func (ps ProxyList) NameReIndex() ProxyList {
 	return ps
 }
 
-func (ps ProxyList) NameAddTG() ProxyList {
-	num := len(ps)
-	for i := 0; i < num; i++ {
-		ps[i].SetName(fmt.Sprintf("%s %s", ps[i].BaseInfo().Name, "TG@peekfun"))
-	}
-	return ps
-}
+
 
 func (ps ProxyList) Clone() ProxyList {
 	result := make(ProxyList, 0, len(ps))

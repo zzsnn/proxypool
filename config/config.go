@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Sansui233/proxypool/pkg/tool"
+	"github.com/zzsnn/proxypool/pkg/tool"
 	"github.com/ghodss/yaml"
 )
 

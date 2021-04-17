@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"github.com/Sansui233/proxypool/pkg/tool"
+	"github.com/zzsnn/proxypool/pkg/tool"
 	"strings"
 )
 

@@ -2,14 +2,14 @@ package app
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/config"
-	"github.com/Sansui233/proxypool/internal/cache"
-	"github.com/Sansui233/proxypool/internal/database"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/geoIp"
-	"github.com/Sansui233/proxypool/pkg/healthcheck"
-	"github.com/Sansui233/proxypool/pkg/provider"
-	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/zzsnn/proxypool/config"
+	"github.com/zzsnn/proxypool/internal/cache"
+	"github.com/zzsnn/proxypool/internal/database"
+	"github.com/zzsnn/proxypool/log"
+	"github.com/zzsnn/proxypool/pkg/geoIp"
+	"github.com/zzsnn/proxypool/pkg/healthcheck"
+	"github.com/zzsnn/proxypool/pkg/provider"
+	"github.com/zzsnn/proxypool/pkg/proxy"
 	"sync"
 	"time"
 )

@@ -1,0 +1,12 @@
+{
+  "name": "proxypool-css",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss-watch": "sass --watch --no-source-map scss:css -s compressed",
+    "scss-build": "sass --no-source-map scss:css -s compressed"
+  },
+  "devDependencies": {
+    "bulma": "^0.9.1"
+  }
+}

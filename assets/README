@@ -1,0 +1,12 @@
+# proxypool前端主题
+
+Bulma scheme对darkmode的支持非常不全，需要自己定义很多内容。
+
+- 生产环境使用jsdelivr加载css
+- 如果有favicon需要放在img目录下
+
+
+[高优先级] 前后端完全分离需要写会ajax（重要），服务端的api也要更新。
+
+目前只有golang打包模板的版本。且gin的路由需要更新icon和Shadowrocket的页面，js也要更新
+

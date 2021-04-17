@@ -2,7 +2,7 @@ package app
 
 import (
 	"errors"
-	"github.com/zzsnn3/proxypool/log"
+	"github.com/zzsnn/proxypool/log"
 
 	"github.com/zzsnn/proxypool/internal/cache"
 

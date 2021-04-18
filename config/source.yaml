@@ -3,16 +3,6 @@
   options:
     url: https://raw.githubusercontent.com/du5/free/master/sub.list
 
- # 模糊抓取订阅链接1
-- type: webfuzzsub
-  options:
-    url: https://zfjvpn.gitbook.io/123/
-
- # 模糊抓取订阅链接2
-- type: webfuzzsub
-  options:
-    url: http://www.gaofumei.net/networks/
-
  # 订阅链接
 - type: subscribe
   options:
@@ -27,91 +17,6 @@
 - type: subscribe
   options:
     url: https://raw.githubusercontent.com/adskd/ffasdc1/main/12345
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0401.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0402.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0403.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0404.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0405.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0406.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0407.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0408.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0409.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0410.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0411.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0412.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0413.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0414.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0415.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0416.txt
-
-# 订阅链接
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0417.txt
 
 # 订阅链接
 - type: subscribe
@@ -142,11 +47,6 @@
 - type: subscribe
   options:
     url: https://telegram-kkv2r-d320.netlify.app
-
-# 订阅链接4
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/freefq/free/master/v2
 
 # 订阅链接5
 #自动动态更新
@@ -213,15 +113,6 @@
     url: https://raw.githubusercontent.com/ssrsub/ssr/master/ss-sub
   options:
     url: https://youlianboshi.netlify.app/
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adinetmuisc.yml
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt
 
 # 网页模糊抓取
 - type: webfuzz
@@ -252,6 +143,69 @@
 - type: webfuzz
   options:
     url: https://raw.githubusercontent.com/52bp/52bp.github.io/master/freesite.html
+
+# 网页模糊抓取3
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0401.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0402.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0403.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0404.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0405.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0406.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0407.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0408.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0409.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0410.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0411.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0412.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0413.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0414.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0415.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0416.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0417.txt
+
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adinetmuisc.yml
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt
 
 # tg频道抓取
 - type: tgchannel

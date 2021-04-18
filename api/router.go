@@ -31,7 +31,6 @@ func setupRouter() {
 
 	_ = binhtml.RestoreAssets("", "assets/html") // 恢复静态文件（不恢复问题也不大就是难修改）
 	_ = binhtml.RestoreAssets("", "assets/static")
-	_ = binhtml.RestoreAssets("", "assets/css")
 
 	temp, err := loadHTMLTemplate() // 加载html模板，模板源存放于html.go中的类似_assetsHtmlSurgeHtml的变量
 	if err != nil {
@@ -40,7 +39,6 @@ func setupRouter() {
 	router.SetHTMLTemplate(temp) // 应用模板
 
 	router.StaticFile("/static/index.js", "assets/static/index.js")
-	router.StaticFile("/css/index.css", "assets/css/index.css")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "assets/html/index.html", gin.H{

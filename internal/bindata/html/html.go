@@ -219,7 +219,6 @@ func assetsStaticIndexJsBytes() ([]byte, error) {
 	return bindataRead(
 		_assetsStaticIndexJs,
 		"assets/static/index.js",
-		"assets/css/index.css",
 	)
 }
 
@@ -294,7 +293,6 @@ var _bindata = map[string]func() (*asset, error){
 	"assets/html/surge.conf": assetsHtmlSurgeConf,
 	"assets/html/surge.html": assetsHtmlSurgeHtml,
 	"assets/static/index.js": assetsStaticIndexJs,
-	"assets/css/index.css": assetsCssIndexCss,
 }
 
 // AssetDir returns the file names below a certain
@@ -338,9 +336,6 @@ type bintree struct {
 }
 var _bintree = &bintree{nil, map[string]*bintree{
 	"assets": &bintree{nil, map[string]*bintree{
-		"css": &bintree{nil, map[string]*bintree{
-			"index.css": &bintree{assetsCssIndexCss, map[string]*bintree{}},
-		}},
 		"html": &bintree{nil, map[string]*bintree{
 			"clash-config-local.yaml": &bintree{assetsHtmlClashConfigLocalYaml, map[string]*bintree{}},
 			"clash-config.yaml": &bintree{assetsHtmlClashConfigYaml, map[string]*bintree{}},

@@ -59,6 +59,14 @@
  # 订阅链接
 - type: subscribe
   options:
+    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt
+- type: webfuzz
+  options:
+    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
+    
+ # 订阅链接
+- type: subscribe
+  options:
     url: https://raw.githubusercontent.com/adskd/ffasdc1/main/70m%2Bv2RAY
 - type: subscribe
   options:
@@ -191,15 +199,7 @@
   options:
     url: https://raw.githubusercontent.com/52bp/52bp.github.io/master/freesite.html
 
- # 网页模糊抓取4
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt
-
- # 网页模糊抓取5
+ # 网页模糊抓取3
 - type: webfuzz
   options:
     url: https://zfjvpn.gitbook.io/123/

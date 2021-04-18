@@ -63,7 +63,6 @@
 - type: webfuzz
   options:
     url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
-    
  # 订阅链接
 - type: subscribe
   options:
@@ -202,12 +201,10 @@
  # 网页模糊抓取3
 - type: webfuzz
   options:
-    url: http://www.gaofumei.net/networks/
-
- # 网页模糊抓取4
+    url: https://zfjvpn.gitbook.io/123/
 - type: webfuzz
   options:
-    url: https://raw.githubusercontent.com/zzsnn/proxypool/master/ss.txt
+    url: http://www.gaofumei.net/networks/
 
 # tg频道抓取
 - type: tgchannel

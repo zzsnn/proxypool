@@ -2,21 +2,6 @@
 - type: webfuzzsub
   options:
     url: https://raw.githubusercontent.com/du5/free/master/sub.list
-    
- # 模糊抓取订阅链接1
-- type: webfuzzsub
-  options:
-    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/70m%2Bv2RAY
-
- # 模糊抓取订阅链接2
-- type: webfuzzsub
-  options:
-    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/new%3Dpac
-
- # 模糊抓取订阅链接3
-- type: webfuzzsub
-  options:
-    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/12345
 
  # 模糊抓取订阅链接4
 - type: webfuzzsub
@@ -24,9 +9,24 @@
     url: https://zfjvpn.gitbook.io/123/
 
  # 模糊抓取订阅链接5
-- type: web-gaofumei
+- type: webfuzzsub
   options:
     url: http://www.gaofumei.net/networks/
+
+ # 订阅链接
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/70m%2Bv2RAY
+
+ # 订阅链接
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/new%3Dpac
+
+ # 订阅链接
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/12345
 
 # 订阅链接
 - type: subscribe
@@ -398,6 +398,436 @@
     channel: Surge4subscription
     num: 200
 - type: jingpingziyuanfenxiang
+  options:
+    channel: Surfboardsubscription
+    num: 200
+
+#tg频道抓取3
+- type: V2List
+  options:
+    channel: ssrList
+    num: 200
+- type: V2List
+  options:
+    channel: ssList
+    num: 200
+- type: V2List
+  options:
+    channel: SSRSUB
+    num: 200
+- type: V2List
+  options:
+    channel: FreeSSRNode
+    num: 200
+- type: V2List
+  options:
+    channel: ssrlists
+    num: 200
+- type: V2List
+  options:
+    channel: ssrshares
+    num: 200
+- type: V2List
+  options:
+    channel: V2List
+    num: 200
+- type: V2List
+  options:
+    channel: ssrtool
+    num: 100
+- type: V2List
+  options:
+    channel: ssrtool_crack
+    num: 100
+- type: V2List
+  options:
+    channel: vmessr
+    num: 200
+- type: V2List
+  options:
+    channel: FreeSSR666
+    num: 200
+- type: V2List
+  options:
+    channel: fanqiang666
+    num: 200
+- type: V2List
+  options:
+    channel: jiedianfenxiang
+    num: 200
+- type: V2List
+  options:
+    channel: freeshadowsock
+    num: 200
+- type: V2List
+  options:
+    channel: V2subscription
+    num: 200
+- type: V2List
+  options:
+    channel: Clashsubscription
+    num: 200
+- type: V2List
+  options:
+    channel: QuantumultXsubscription
+    num: 200
+- type: V2List
+  options:
+    channel: Surge2subscription
+    num: 200
+- type: V2List
+  options:
+    channel: Surge3subscription
+    num: 200
+- type: V2List
+  options:
+    channel: Surge4subscription
+    num: 200
+- type: V2List
+  options:
+    channel: Surfboardsubscription
+    num: 200
+
+#tg频道抓取4
+- type: ssList
+  options:
+    channel: ssrList
+    num: 200
+- type: ssList
+  options:
+    channel: ssList
+    num: 200
+- type: ssList
+  options:
+    channel: SSRSUB
+    num: 200
+- type: ssList
+  options:
+    channel: FreeSSRNode
+    num: 200
+- type: ssList
+  options:
+    channel: ssrlists
+    num: 200
+- type: ssList
+  options:
+    channel: ssrshares
+    num: 200
+- type: ssList
+  options:
+    channel: V2List
+    num: 200
+- type: ssList
+  options:
+    channel: ssrtool
+    num: 100
+- type: ssList
+  options:
+    channel: ssrtool_crack
+    num: 100
+- type: ssList
+  options:
+    channel: vmessr
+    num: 200
+- type: ssList
+  options:
+    channel: FreeSSR666
+    num: 200
+- type: ssList
+  options:
+    channel: fanqiang666
+    num: 200
+- type: ssList
+  options:
+    channel: jiedianfenxiang
+    num: 200
+- type: ssList
+  options:
+    channel: freeshadowsock
+    num: 200
+- type: ssList
+  options:
+    channel: V2subscription
+    num: 200
+- type: ssList
+  options:
+    channel: Clashsubscription
+    num: 200
+- type: ssList
+  options:
+    channel: QuantumultXsubscription
+    num: 200
+- type: ssList
+  options:
+    channel: Surge2subscription
+    num: 200
+- type: ssList
+  options:
+    channel: Surge3subscription
+    num: 200
+- type: ssList
+  options:
+    channel: Surge4subscription
+    num: 200
+- type: ssList
+  options:
+    channel: Surfboardsubscription
+    num: 200
+
+#tg频道抓取4
+- type: ssrList
+  options:
+    channel: ssrList
+    num: 200
+- type: ssrList
+  options:
+    channel: ssList
+    num: 200
+- type: ssrList
+  options:
+    channel: SSRSUB
+    num: 200
+- type: ssrList
+  options:
+    channel: FreeSSRNode
+    num: 200
+- type: ssrList
+  options:
+    channel: ssrlists
+    num: 200
+- type: ssrList
+  options:
+    channel: ssrshares
+    num: 200
+- type: ssrList
+  options:
+    channel: V2List
+    num: 200
+- type: ssrList
+  options:
+    channel: ssrtool
+    num: 100
+- type: ssrList
+  options:
+    channel: ssrtool_crack
+    num: 100
+- type: ssrList
+  options:
+    channel: vmessr
+    num: 200
+- type: ssrList
+  options:
+    channel: FreeSSR666
+    num: 200
+- type: ssrList
+  options:
+    channel: fanqiang666
+    num: 200
+- type: ssrList
+  options:
+    channel: jiedianfenxiang
+    num: 200
+- type: ssrList
+  options:
+    channel: freeshadowsock
+    num: 200
+- type: ssrList
+  options:
+    channel: V2subscription
+    num: 200
+- type: ssrList
+  options:
+    channel: Clashsubscription
+    num: 200
+- type: ssrList
+  options:
+    channel: QuantumultXsubscription
+    num: 200
+- type: ssrList
+  options:
+    channel: Surge2subscription
+    num: 200
+- type: ssrList
+  options:
+    channel: Surge3subscription
+    num: 200
+- type: ssrList
+  options:
+    channel: Surge4subscription
+    num: 200
+- type: ssrList
+  options:
+    channel: Surfboardsubscription
+    num: 200
+
+#tg频道抓取5
+- type: MeAndMyPY
+  options:
+    channel: ssrList
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: ssList
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: SSRSUB
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: FreeSSRNode
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: ssrlists
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: ssrshares
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: V2List
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: ssrtool
+    num: 100
+- type: MeAndMyPY
+  options:
+    channel: ssrtool_crack
+    num: 100
+- type: MeAndMyPY
+  options:
+    channel: vmessr
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: FreeSSR666
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: fanqiang666
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: jiedianfenxiang
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: freeshadowsock
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: V2subscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: Clashsubscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: QuantumultXsubscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: Surge2subscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: Surge3subscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: Surge4subscription
+    num: 200
+- type: MeAndMyPY
+  options:
+    channel: Surfboardsubscription
+    num: 200
+
+#tg频道抓取5
+- type: lanxhcom
+  options:
+    channel: ssrList
+    num: 200
+- type: lanxhcom
+  options:
+    channel: ssList
+    num: 200
+- type: lanxhcom
+  options:
+    channel: SSRSUB
+    num: 200
+- type: lanxhcom
+  options:
+    channel: FreeSSRNode
+    num: 200
+- type: lanxhcom
+  options:
+    channel: ssrlists
+    num: 200
+- type: lanxhcom
+  options:
+    channel: ssrshares
+    num: 200
+- type: lanxhcom
+  options:
+    channel: V2List
+    num: 200
+- type: lanxhcom
+  options:
+    channel: ssrtool
+    num: 100
+- type: lanxhcom
+  options:
+    channel: ssrtool_crack
+    num: 100
+- type: lanxhcom
+  options:
+    channel: vmessr
+    num: 200
+- type: lanxhcom
+  options:
+    channel: FreeSSR666
+    num: 200
+- type: lanxhcom
+  options:
+    channel: fanqiang666
+    num: 200
+- type: lanxhcom
+  options:
+    channel: jiedianfenxiang
+    num: 200
+- type: lanxhcom
+  options:
+    channel: freeshadowsock
+    num: 200
+- type: lanxhcom
+  options:
+    channel: V2subscription
+    num: 200
+- type: lanxhcom
+  options:
+    channel: Clashsubscription
+    num: 200
+- type: lanxhcom
+  options:
+    channel: QuantumultXsubscription
+    num: 200
+- type: lanxhcom
+  options:
+    channel: Surge2subscription
+    num: 200
+- type: lanxhcom
+  options:
+    channel: Surge3subscription
+    num: 200
+- type: lanxhcom
+  options:
+    channel: Surge4subscription
+    num: 200
+- type: lanxhcom
   options:
     channel: Surfboardsubscription
     num: 200

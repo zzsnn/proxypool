@@ -3,12 +3,12 @@
   options:
     url: https://raw.githubusercontent.com/du5/free/master/sub.list
 
- # 模糊抓取订阅链接4
+ # 模糊抓取订阅链接1
 - type: webfuzzsub
   options:
     url: https://zfjvpn.gitbook.io/123/
 
- # 模糊抓取订阅链接5
+ # 模糊抓取订阅链接2
 - type: webfuzzsub
   options:
     url: http://www.gaofumei.net/networks/

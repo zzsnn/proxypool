@@ -202,9 +202,6 @@
  # 网页模糊抓取3
 - type: webfuzz
   options:
-    url: https://zfjvpn.gitbook.io/123/
-- type: webfuzz
-  options:
     url: http://www.gaofumei.net/networks/
 
 # tg频道抓取

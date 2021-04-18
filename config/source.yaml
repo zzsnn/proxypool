@@ -12,12 +12,6 @@
     url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0402.txt
 - type: subscribe
   options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0403.txt
-- type: subscribe
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0404.txt
-- type: subscribe
-  options:
     url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0405.txt
 - type: subscribe
   options:

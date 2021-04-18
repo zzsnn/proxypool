@@ -6,14 +6,63 @@
  # 订阅链接
 - type: subscribe
   options:
-    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/70m%2Bv2RAY
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0401.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0402.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0403.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0404.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0405.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0406.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0407.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0408.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0409.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0410.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0411.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0412.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0413.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0414.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0415.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0416.txt
+- type: subscribe
+  options:
+    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0417.txt
 
  # 订阅链接
 - type: subscribe
   options:
+    url: https://raw.githubusercontent.com/adskd/ffasdc1/main/70m%2Bv2RAY
+- type: subscribe
+  options:
     url: https://raw.githubusercontent.com/adskd/ffasdc1/main/new%3Dpac
-
- # 订阅链接
 - type: subscribe
   options:
     url: https://raw.githubusercontent.com/adskd/ffasdc1/main/12345
@@ -22,8 +71,6 @@
 - type: subscribe
   options:
     url: https://raw.githubusercontent.com/freefq/free/master/ssr
-
-# 订阅链接
 - type: subscribe
   options:
     url: https://raw.githubusercontent.com/freefq/free/master/v2
@@ -144,70 +191,15 @@
   options:
     url: https://raw.githubusercontent.com/52bp/52bp.github.io/master/freesite.html
 
-# 网页模糊抓取3
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0401.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0402.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0403.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0404.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0405.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0406.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0407.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0408.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0409.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0410.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0411.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0412.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0413.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0414.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0415.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0416.txt
-- type: webfuzz
-  options:
-    url: https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/0417.txt
-
+ # 网页模糊抓取4
 - type: webfuzz
   options:
     url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.yml
 - type: webfuzz
   options:
-    url: https://raw.githubusercontent.com/adiwzx/freenode/main/adinetmuisc.yml
-- type: webfuzz
-  options:
     url: https://raw.githubusercontent.com/adiwzx/freenode/main/adispeed.txt
 
- # 网页模糊抓取4
+ # 网页模糊抓取5
 - type: webfuzz
   options:
     url: https://zfjvpn.gitbook.io/123/

@@ -1,7 +1,7 @@
 package log
 
 import (
-	log "github.com/zzsnn/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 type LogLevel int

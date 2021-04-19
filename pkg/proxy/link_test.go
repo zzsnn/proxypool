@@ -3,7 +3,7 @@ package proxy
 import (
 	"fmt"
 	"github.com/zzsnn/proxypool/pkg/tool"
-	"github.com/zzsnn/yaml"
+	"github.com/ghodss/yaml"
 	"testing"
 )
 

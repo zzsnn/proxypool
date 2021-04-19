@@ -3,7 +3,7 @@ package tool
 import (
 	"bytes"
 	"errors"
-	"github.com/zzsnn/otto"
+	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"regexp"
 	"strconv"

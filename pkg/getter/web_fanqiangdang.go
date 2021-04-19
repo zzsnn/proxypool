@@ -8,7 +8,7 @@ import (
 
 	"github.com/zzsnn/proxypool/pkg/proxy"
 	"github.com/zzsnn/proxypool/pkg/tool"
-	"github.com/zzsnn/colly"
+	"github.com/gocolly/colly"
 )
 
 func init() {

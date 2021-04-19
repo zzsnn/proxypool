@@ -9,7 +9,7 @@ import (
 	"runtime"
 
 	"github.com/zzsnn/proxypool/internal/app"
-	"github.com/jasonlvhit/gocron"
+	"github.com/zzsnn/gocron"
 )
 
 func Cron() {

@@ -9,7 +9,7 @@ import (
 	"os"
 
 	bingeoip "github.com/zzsnn/proxypool/internal/bindata/geoip"
-	"github.com/oschwald/geoip2-golang"
+	"github.com/zzsnn/geoip2-golang"
 )
 
 var GeoIpDB GeoIP

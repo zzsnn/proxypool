@@ -6,7 +6,7 @@ import (
 
 	"github.com/zzsnn/proxypool/internal/cache"
 
-	"github.com/ghodss/yaml"
+	"github.com/zzsnn/yaml"
 
 	"github.com/zzsnn/proxypool/config"
 	"github.com/zzsnn/proxypool/pkg/getter"

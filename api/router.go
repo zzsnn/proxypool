@@ -13,10 +13,10 @@ import (
 	"github.com/zzsnn/proxypool/config"
 	appcache "github.com/zzsnn/proxypool/internal/cache"
 	"github.com/zzsnn/proxypool/pkg/provider"
-	"github.com/gin-contrib/cache"
-	"github.com/gin-contrib/cache/persistence"
-	"github.com/gin-gonic/gin"
-	_ "github.com/heroku/x/hmetrics/onload"
+	"github.com/zzsnn/cache"
+	"github.com/zzsnn/cache/persistence"
+	"github.com/zzsnn/gin"
+	_ "github.com/zzsnn/x/hmetrics/onload"
 )
 
 const version = "v0.6.1"

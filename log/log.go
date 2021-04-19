@@ -2,8 +2,8 @@ package log
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/x-cray/logrus-prefixed-formatter"
+	log "github.com/zzsnn/logrus"
+	"github.com/zzsnn/logrus-prefixed-formatter"
 	"os"
 	"path/filepath"
 	"sync"

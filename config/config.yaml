@@ -1,5 +1,5 @@
 # your domain
-domain: origamiboy.herokuapp.com
+domain: example.com
 port:                 # default 12580
 
 # source list file
@@ -7,7 +7,7 @@ source-files:
   # use local file
   - ./config/source.yaml
   # use web file
-  # - https://origamiboy.herokuapp.com/config/source.yaml
+  # - https://example.com/config/source.yaml
 
 # ======= 可选项，留空使用default值  =======
 
@@ -17,12 +17,13 @@ database_url: ""
 # interval between each crawling
 crawl-interval:       # v0.5.x default 60 (minutes)
 crontime:             # v0.4.x default 60 (minutes). Deprecated in the newest version
+healthcheck-timeout:  # default 5 (seconds)
 
 # speed test
-speedtest: true      # default false. Warning: this will consume large network resources.
+speedtest: false      # default false. Warning: this will consume large network resources.
 speedtest-interval:   # default 720 (min)
+speed-timeout:        # default 10 (seconds).
 connection:           # default 5. The number of speed test connections simultaneously
-timeout:              # default 10 (seconds).
 ## active proxy speed test
 active-interval:      # default 60 (min)
 active-frequency:     # default 100 (requests per interval)

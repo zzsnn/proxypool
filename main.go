@@ -2,15 +2,15 @@ package main
 
 import (
 	"flag"
-	"github.com/Sansui233/proxypool/pkg/geoIp"
+	"github.com/zzsnn/proxypool/pkg/geoIp"
 	_ "net/http/pprof"
 	"os"
 
-	"github.com/Sansui233/proxypool/api"
-	"github.com/Sansui233/proxypool/internal/app"
-	"github.com/Sansui233/proxypool/internal/cron"
-	"github.com/Sansui233/proxypool/internal/database"
-	"github.com/Sansui233/proxypool/log"
+	"github.com/zzsnn/proxypool/api"
+	"github.com/zzsnn/proxypool/internal/app"
+	"github.com/zzsnn/proxypool/internal/cron"
+	"github.com/zzsnn/proxypool/internal/database"
+	"github.com/zzsnn/proxypool/log"
 )
 
 var configFilePath = ""

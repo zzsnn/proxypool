@@ -2,13 +2,13 @@ package provider
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/healthcheck"
+	"github.com/zzsnn/proxypool/log"
+	"github.com/zzsnn/proxypool/pkg/healthcheck"
 	"math"
 	"strconv"
 	"strings"
 
-	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/zzsnn/proxypool/pkg/proxy"
 )
 
 type Provider interface {
@@ -100,28 +100,16 @@ func (b *Base) preFilter() {
 		}
 
 		if needFilterFilter {
-			if b.Filter == "r" {
+			if b.Filter == "1" {
 				if !strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
-			} else if b.Filter == "p" {
+			} else if b.Filter == "2" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") {
 					goto exclude
 				}
-			} else if b.Filter == "rp" {
+			} else if b.Filter == "3" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") && !strings.Contains(p.BaseInfo().Name, "Relay") {
-					goto exclude
-				}
-			} else if b.Filter == "nr" {
-				if strings.Contains(p.BaseInfo().Name, "Relay") {
-					goto exclude
-				}
-			} else if b.Filter == "np" {
-				if strings.Contains(p.BaseInfo().Name, "Pool") {
-					goto exclude
-				}
-			} else if b.Filter == "nrp" {
-				if strings.Contains(p.BaseInfo().Name, "Pool") || strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
 			}

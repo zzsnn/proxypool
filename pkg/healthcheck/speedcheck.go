@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"github.com/Dreamacro/clash/adapters/outbound"
 	C "github.com/Dreamacro/clash/constant"
-	"github.com/Sansui233/proxypool/log"
-	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/zzsnn/proxypool/log"
+	"github.com/zzsnn/proxypool/pkg/proxy"
 	"github.com/ivpusic/grpool"
 	"sort"
 	"strconv"
@@ -16,6 +16,9 @@ import (
 	"sync"
 	"time"
 )
+
+var SpeedTimeout = time.Second * 10
+var SpeedExist = false
 
 // SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
 func SpeedTestAll(proxies []proxy.Proxy, conns int) {
@@ -36,7 +39,6 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 
 	log.Infoln("Speed Test ON")
 	doneCount := 0
-	dcm := sync.Mutex{}
 	// use grpool
 	pool := grpool.NewPool(numWorker, numJob)
 	pool.WaitCount(len(proxies))
@@ -58,13 +60,9 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 				resultCount++
 				m.Unlock()
 			}
-
-			// Progress status
-			dcm.Lock()
 			doneCount++
 			progress := float64(doneCount) * 100 / float64(len(proxies))
 			fmt.Printf("\r\t[%5.1f%% DONE]", progress)
-			dcm.Unlock()
 		}
 	}
 	pool.WaitAll()
@@ -266,7 +264,7 @@ func downloadTest(clashProxy C.Proxy, sURL string, latency time.Duration) float6
 func dlWarmUp(clashProxy C.Proxy, dlURL string) error {
 	size := dlSizes[2]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-	err := HTTPGetBodyViaProxyWithTimeNoReturn(clashProxy, url, SpeedTimeout)
+	err := HTTPGetBodyForSpeedTest(clashProxy, url, SpeedTimeout)
 	if err != nil {
 		return err
 	}
@@ -276,7 +274,7 @@ func dlWarmUp(clashProxy C.Proxy, dlURL string) error {
 func downloadRequest(clashProxy C.Proxy, dlURL string, w int) error {
 	size := dlSizes[w]
 	url := dlURL + "/random" + strconv.Itoa(size) + "x" + strconv.Itoa(size) + ".jpg"
-	err := HTTPGetBodyViaProxyWithTimeNoReturn(clashProxy, url, SpeedTimeout)
+	err := HTTPGetBodyForSpeedTest(clashProxy, url, SpeedTimeout)
 	if err != nil {
 		return err
 	}

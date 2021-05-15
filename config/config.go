@@ -13,20 +13,21 @@ import (
 var configFilePath = "config.yaml"
 
 type ConfigOptions struct {
-	Domain            string   `json:"domain" yaml:"domain"`
-	Port              string   `json:"port" yaml:"port"`
-	DatabaseUrl       string   `json:"database_url" yaml:"database_url"`
-	CrawlInterval     uint64   `json:"crawl-interval" yaml:"crawl-interval"`
-	CFEmail           string   `json:"cf_email" yaml:"cf_email"`
-	CFKey             string   `json:"cf_key" yaml:"cf_key"`
-	SourceFiles       []string `json:"source-files" yaml:"source-files"`
-	SpeedTest         bool     `json:"speedtest" yaml:"speedtest"`
-	SpeedTestInterval uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
-	Connection        int      `json:"connection" yaml:"connection"`
-	Timeout           int      `json:"timeout" yaml:"timeout"`
-	ActiveFrequency   uint16   `json:"active-frequency" yaml:"active-frequency" `
-	ActiveInterval    uint64   `json:"active-interval" yaml:"active-interval"`
-	ActiveMaxNumber   uint16   `json:"active-max-number" yaml:"active-max-number"`
+	Domain             string   `json:"domain" yaml:"domain"`
+	Port               string   `json:"port" yaml:"port"`
+	DatabaseUrl        string   `json:"database_url" yaml:"database_url"`
+	CrawlInterval      uint64   `json:"crawl-interval" yaml:"crawl-interval"`
+	CFEmail            string   `json:"cf_email" yaml:"cf_email"`
+	CFKey              string   `json:"cf_key" yaml:"cf_key"`
+	SourceFiles        []string `json:"source-files" yaml:"source-files"`
+	HealthCheckTimeout int      `json:"healthcheck-timeout" yaml:"healthcheck-timeout"`
+	SpeedTest          bool     `json:"speedtest" yaml:"speedtest"`
+	SpeedTestInterval  uint64   `json:"speedtest-interval" yaml:"speedtest-interval"`
+	SpeedTimeout       int      `json:"speed-timeout" yaml:"speed-timeout"`
+	Connection         int      `json:"connection" yaml:"connection"`
+	ActiveFrequency    uint16   `json:"active-frequency" yaml:"active-frequency" `
+	ActiveInterval     uint64   `json:"active-interval" yaml:"active-interval"`
+	ActiveMaxNumber    uint16   `json:"active-max-number" yaml:"active-max-number"`
 }
 
 // Config 配置

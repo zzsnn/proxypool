@@ -55,20 +55,22 @@
 
 ### 3. 从源码编译
 
-需要安装Golang 
+需要安装Golang
 
-```sh
+```shell
 $ go get -u -v github.com/Sansui233/proxypool
 ```
 
 运行
-```shell script
+
+```shell
 $ go run main.go -c ./config/config.yaml
 ```
 
 编译
-```
-make
+
+```shell
+$ make
 ```
 
 ### 4. 下载预编译程序
@@ -77,9 +79,26 @@ make
 
 ### 5. 使用docker
 
-```sh
-docker pull ghcr.io/sansui233/proxypool:v0.6.0
+运行下面的命令下载 proxypool 镜像
+
+```shell
+$ docker pull ghcr.io/sansui233/proxypool:latest
 ```
+
+然后运行 proxypool 即可
+
+```shell
+$ docker run -d --restart=always \
+  --name=proxypool \
+  -p 12580:12580 \
+  -v /path/to/config:/proxypool-src/config \
+  ghcr.io/sansui233/proxypool \
+  -c config/config.yaml
+```
+
+使用 `-p` 参数映射配置文件里的端口  
+使用 `-v` 参数指定配置文件夹位置（配置文件要自行下载放到目录,方便修改）  
+使用 `-c` 参数指定配置文件路径，支持http链接
 
 ## 使用
 
@@ -94,16 +113,16 @@ docker pull ghcr.io/sansui233/proxypool:v0.6.0
 使用 `-c` 参数指定配置文件路径，支持http链接
 
 ```shell
-proxypool -c ./config/config.yaml
+$ proxypool -c ./config/config.yaml
 ```
 
 如果需要部署到VPS，更多细节请[查看wiki](https://github.com/Sansui233/proxypool/wiki/%E9%83%A8%E7%BD%B2%E5%88%B0VPS-Step-by-Step)。
 
 ## Clash配置文件
 
-远程部署时Clash配置文件访问：https://domain/clash/config
+远程部署时Clash配置文件访问：<https://domain/clash/config>
 
-本地运行时Clash配置文件访问：http://127.0.0.1:[端口]/clash/localconfig
+本地运行时Clash配置文件访问：<http://127.0.0.1:[端口]/clash/localconfig>
 
 ## 本地检查节点可用性
 

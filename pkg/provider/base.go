@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"github.com/Sansui233/proxypool/config"
 	"github.com/Sansui233/proxypool/log"
 	"github.com/Sansui233/proxypool/pkg/healthcheck"
 	"math"
@@ -101,22 +100,34 @@ func (b *Base) preFilter() {
 		}
 
 		if needFilterFilter {
-			if b.Filter == "1" {
+			if b.Filter == "r" {
 				if !strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
-			} else if b.Filter == "2" {
+			} else if b.Filter == "p" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") {
 					goto exclude
 				}
-			} else if b.Filter == "3" {
+			} else if b.Filter == "rp" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") && !strings.Contains(p.BaseInfo().Name, "Relay") {
+					goto exclude
+				}
+			} else if b.Filter == "nr" {
+				if strings.Contains(p.BaseInfo().Name, "Relay") {
+					goto exclude
+				}
+			} else if b.Filter == "np" {
+				if strings.Contains(p.BaseInfo().Name, "Pool") {
+					goto exclude
+				}
+			} else if b.Filter == "nrp" {
+				if strings.Contains(p.BaseInfo().Name, "Pool") || strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
 			}
 		}
 
-		if needFilterSpeed && len(healthcheck.ProxyStats) != 0 && config.Config.SpeedTest == true {
+		if needFilterSpeed && len(healthcheck.ProxyStats) != 0 && healthcheck.SpeedExist {
 			if ps, ok := healthcheck.ProxyStats.Find(p); ok {
 				if ps.Speed != 0 {
 					// clear history speed tag

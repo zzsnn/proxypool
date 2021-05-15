@@ -10,7 +10,6 @@ import (
 	"github.com/ivpusic/grpool"
 	"net"
 	"sync"
-	"time"
 )
 
 func RelayCheck(proxies proxy.ProxyList) {
@@ -20,6 +19,7 @@ func RelayCheck(proxies proxy.ProxyList) {
 
 	log.Infoln("Relay Test ON")
 	doneCount := 0
+	dcm := sync.Mutex{}
 	go func() {
 		for _, p := range proxies {
 			pp := p
@@ -56,9 +56,12 @@ func RelayCheck(proxies proxy.ProxyList) {
 					}
 					m.Unlock()
 				}
+
+				dcm.Lock()
 				doneCount++
 				progress := float64(doneCount) * 100 / float64(len(proxies))
 				fmt.Printf("\r\t[%5.1f%% DONE]", progress)
+				dcm.Unlock()
 			}
 		}
 	}()
@@ -88,7 +91,7 @@ func testRelay(p proxy.Proxy) (outip string, err error) {
 		return "", err
 	}
 
-	b, err := HTTPGetBodyViaProxyWithTime(clashProxy, "http://ipinfo.io/ip", time.Second*10)
+	b, err := HTTPGetBodyViaProxyWithTime(clashProxy, "http://ipinfo.io/ip", RelayTimeout)
 	if err != nil {
 		return "", err
 	}
@@ -107,7 +110,7 @@ func testRelay(p proxy.Proxy) (outip string, err error) {
 
 // Distinguish pool ip from relay. false for pool, true for relay
 func isRelay(src string, out string) bool {
-	ipv4Mask := net.CIDRMask(24, 32)
+	ipv4Mask := net.CIDRMask(16, 32)
 	ip1 := net.ParseIP(src)
 	ip2 := net.ParseIP(out)
 	if fmt.Sprint(ip1.Mask(ipv4Mask)) == fmt.Sprint(ip2.Mask(ipv4Mask)) { // Pool

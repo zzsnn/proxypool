@@ -1,13 +1,13 @@
 package getter
 
 import (
-	"github.com/zzsnn/proxypool/log"
+	"github.com/Sansui233/proxypool/log"
 	"io/ioutil"
 	"regexp"
 	"sync"
 
-	"github.com/zzsnn/proxypool/pkg/proxy"
-	"github.com/zzsnn/proxypool/pkg/tool"
+	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/Sansui233/proxypool/pkg/tool"
 )
 
 func init() {

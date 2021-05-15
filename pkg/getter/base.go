@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/zzsnn/proxypool/pkg/proxy"
-	"github.com/zzsnn/proxypool/pkg/tool"
+	"github.com/Sansui233/proxypool/pkg/proxy"
+	"github.com/Sansui233/proxypool/pkg/tool"
 )
 
 // functions for getters

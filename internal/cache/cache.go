@@ -3,7 +3,7 @@ package cache
 import (
 	"time"
 
-	"github.com/zzsnn/proxypool/pkg/proxy"
+	"github.com/Sansui233/proxypool/pkg/proxy"
 	"github.com/patrickmn/go-cache"
 )
 

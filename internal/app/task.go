@@ -74,21 +74,25 @@ func CrawlGo() {
 	log.Infoln("TrojanProxiesCount: %d", cache.TrojanProxiesCount)
 	cache.LastCrawlTime = time.Now().In(location).Format("2006-01-02 15:04:05")
 
-	// Health Check
+	// 节点可用性检测，使用batchsize不能降低内存占用，只是为了看性能
 	log.Infoln("Now proceed proxy health check...")
-	if config.Config.HealthCheckTimeout > 0 {
-		healthcheck.DelayTimeout = time.Second * time.Duration(config.Config.HealthCheckTimeout)
-		log.Infoln("CONF: Health check timeout is set to %d seconds", config.Config.HealthCheckTimeout)
+	b := 1000
+	round := len(proxies) / b
+	okproxies := make(proxy.ProxyList, 0)
+	for i := 0; i < round; i++ {
+		okproxies = append(okproxies, healthcheck.CleanBadProxiesWithGrpool(proxies[i*b:(i+1)*b])...)
+		log.Infoln("\tChecking round: %d", i)
 	}
-	proxies = healthcheck.CleanBadProxiesWithGrpool(proxies)
+	okproxies = append(okproxies, healthcheck.CleanBadProxiesWithGrpool(proxies[round*b:])...)
+	proxies = okproxies
 
 	log.Infoln("CrawlGo clash usable proxy count: %d", len(proxies))
 
-	// Format name like US_01 sorted by country
+	// 重命名节点名称为类似US_01的格式，并按国家排序
 	proxies.NameAddCounrty().Sort()
 	log.Infoln("Proxy rename DONE!")
 
-	// Relay check and rename
+	// 中转检测并命名
 	healthcheck.RelayCheck(proxies)
 	for i, _ := range proxies {
 		if s, ok := healthcheck.ProxyStats.Find(proxies[i]); ok {
@@ -131,9 +135,8 @@ func CrawlGo() {
 func speedTestNew(proxies proxy.ProxyList) {
 	if config.Config.SpeedTest {
 		cache.IsSpeedTest = "已开启"
-		if config.Config.SpeedTimeout > 0 {
-			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.SpeedTimeout)
-			log.Infoln("config: Speed test timeout is set to %d seconds", config.Config.SpeedTimeout)
+		if config.Config.Timeout > 0 {
+			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
 		}
 		healthcheck.SpeedTestNew(proxies, config.Config.Connection)
 	} else {
@@ -145,9 +148,8 @@ func speedTestNew(proxies proxy.ProxyList) {
 func SpeedTest(proxies proxy.ProxyList) {
 	if config.Config.SpeedTest {
 		cache.IsSpeedTest = "已开启"
-		if config.Config.SpeedTimeout > 0 {
-			log.Infoln("config: Speed test timeout is set to %d seconds", config.Config.SpeedTimeout)
-			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.SpeedTimeout)
+		if config.Config.Timeout > 0 {
+			healthcheck.SpeedTimeout = time.Second * time.Duration(config.Config.Timeout)
 		}
 		healthcheck.SpeedTestAll(proxies, config.Config.Connection)
 	} else {

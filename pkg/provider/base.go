@@ -100,28 +100,16 @@ func (b *Base) preFilter() {
 		}
 
 		if needFilterFilter {
-			if b.Filter == "r" {
+			if b.Filter == "1" {
 				if !strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
-			} else if b.Filter == "p" {
+			} else if b.Filter == "2" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") {
 					goto exclude
 				}
-			} else if b.Filter == "rp" {
+			} else if b.Filter == "3" {
 				if !strings.Contains(p.BaseInfo().Name, "Pool") && !strings.Contains(p.BaseInfo().Name, "Relay") {
-					goto exclude
-				}
-			} else if b.Filter == "nr" {
-				if strings.Contains(p.BaseInfo().Name, "Relay") {
-					goto exclude
-				}
-			} else if b.Filter == "np" {
-				if strings.Contains(p.BaseInfo().Name, "Pool") {
-					goto exclude
-				}
-			} else if b.Filter == "nrp" {
-				if strings.Contains(p.BaseInfo().Name, "Pool") || strings.Contains(p.BaseInfo().Name, "Relay") {
 					goto exclude
 				}
 			}

@@ -12,16 +12,17 @@ import (
 	"github.com/Dreamacro/clash/adapters/outbound"
 )
 
+const defaultURLTestTimeout = time.Second * 5
+
 func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 	// Note: Grpool实现对go并发管理的封装，主要是在数据量大时减少内存占用，不会提高效率。
 	pool := grpool.NewPool(500, 200)
-	cproxies = make(proxy.ProxyList, 0, 500)
 
+	c := make(chan *Stat)
+	defer close(c)
 	m := sync.Mutex{}
 
 	pool.WaitCount(len(proxies))
-	doneCount := 0
-	dcm := sync.Mutex{}
 	// 线程：延迟测试，测试过程通过grpool的job并发
 	go func() {
 		for _, p := range proxies {
@@ -31,32 +32,50 @@ func CleanBadProxiesWithGrpool(proxies []proxy.Proxy) (cproxies []proxy.Proxy) {
 				delay, err := testDelay(pp)
 				if err == nil && delay != 0 {
 					m.Lock()
-					cproxies = append(cproxies, pp)
 					if ps, ok := ProxyStats.Find(pp); ok {
 						ps.UpdatePSDelay(delay)
+						c <- ps
 					} else {
 						ps = &Stat{
 							Id:    pp.Identifier(),
 							Delay: delay,
 						}
 						ProxyStats = append(ProxyStats, *ps)
+						c <- ps
 					}
 					m.Unlock()
 				}
-				// Progress status
-				dcm.Lock()
-				doneCount++
-				progress := float64(doneCount) * 100 / float64(len(proxies))
-				fmt.Printf("\r\t[%5.1f%% DONE]", progress)
-				dcm.Unlock()
 			}
 		}
 	}()
+	done := make(chan struct{}) // 用于多线程的运行结束标识
+	defer close(done)
 
-	pool.WaitAll()
-	pool.Release()
-	fmt.Println()
-	return
+	go func() {
+		pool.WaitAll()
+		pool.Release()
+		done <- struct{}{}
+	}()
+
+	okMap := make(map[string]struct{})
+	for { // Note: 无限循环，直到能读取到done
+		select {
+		case ps := <-c:
+			if ps.Delay > 0 {
+				okMap[ps.Id] = struct{}{}
+			}
+		case <-done:
+			cproxies = make(proxy.ProxyList, 0, 500) // 定义返回的proxylist
+			// check usable proxy
+			for i, _ := range proxies {
+				if _, ok := okMap[proxies[i].Identifier()]; ok {
+					//cproxies = append(cproxies, p.Clone())
+					cproxies = append(cproxies, proxies[i]) // 返回对GC不友好的指针看会怎么样
+				}
+			}
+			return
+		}
+	}
 }
 
 // Return 0 for error

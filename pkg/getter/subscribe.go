@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/zzsnn/proxypool/pkg/proxy"
+	"github.com/zzsnn3/proxypool/pkg/proxy"
 	"github.com/zzsnn/proxypool/pkg/tool"
 )
 

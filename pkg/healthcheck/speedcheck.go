@@ -18,11 +18,9 @@ import (
 )
 
 var SpeedTimeout = time.Second * 10
-var SpeedExist = false
 
 // SpeedTestAll tests speed of a group of proxies. Results are stored in ProxyStats
 func SpeedTestAll(proxies []proxy.Proxy, conns int) {
-	SpeedExist = true
 	if ok := checkErrorProxies(proxies); !ok {
 		return
 	}
@@ -73,7 +71,6 @@ func SpeedTestAll(proxies []proxy.Proxy, conns int) {
 
 // SpeedTestNew tests speed of new proxies which is not in ProxyStats. Then appended to ProxyStats
 func SpeedTestNew(proxies []proxy.Proxy, conns int) {
-	SpeedExist = true
 	if ok := checkErrorProxies(proxies); !ok {
 		return
 	}

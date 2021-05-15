@@ -2,7 +2,7 @@ package getter
 
 import (
 	"fmt"
-	"github.com/zzsnn/proxypool/log"
+	"github.com/zzsnn3/proxypool/log"
 	"strings"
 	"sync"
 
